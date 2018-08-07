@@ -119,12 +119,10 @@ public class TMJobConverterServiceImpl implements TMJobConverterService {
     GregorianCalendar dueDateCalendar = GregorianCalendar
         .from(ingest.getDueDate().atTime(23, 59, 59).atZone(ZoneId.of("UTC")));
     request.getJob().setDueDate(datatypeFactory.newXMLGregorianCalendar(dueDateCalendar));
-    //request.getJob().setDescription(ingest.getTla() + " Wave " + ingest.getWave());
     request.getJob().getAllocatedTo().setUsername(username);
 
     // additional properties
     setFromAdditionalPropertyAnnotations(ingest, request);
-    //setFromAdditionalPropertyAnnotations(ingest.getGffData(), request);
 
     request.getJob().setDuration(1);
     request.getJob().setVisitComplete(false);
@@ -168,15 +166,15 @@ public class TMJobConverterServiceImpl implements TMJobConverterService {
     return info;
   }
 
-//  public SendCreateJobRequestMessage createJob(LegacySampleIngest ingest, String username) {
-//    CreateJobRequest request = createJobRequestFromIngest(ingest, username);
-//
-//    SendCreateJobRequestMessage message = new SendCreateJobRequestMessage();
-//    message.setSendMessageRequestInfo(makeSendMessageRequestInfo(ingest.getTmJobId()));
-//    message.setCreateJobRequest(request);
-//
-//    return message;
-//  }
+  public SendCreateJobRequestMessage createJob(rmSampleIngest ingest, String username) {
+    CreateJobRequest request = createJobRequestFromIngest(ingest, username);
+
+    SendCreateJobRequestMessage message = new SendCreateJobRequestMessage();
+    message.setSendMessageRequestInfo(makeSendMessageRequestInfo(ingest.getJobIdentity()));
+    message.setCreateJobRequest(request);
+
+    return message;
+  }
 
   public SendUpdateJobHeaderRequestMessage updateJob(String tmJobId, String username) {
     UpdateJobHeaderRequest request = makeUpdateJobHeaderRequest(tmJobId, username);
@@ -187,13 +185,13 @@ public class TMJobConverterServiceImpl implements TMJobConverterService {
 
     return message;
   }
-//
-//  public SendUpdateJobHeaderRequestMessage updateJob(LegacySampleIngest ingest, String username) {
-//    return updateJob(ingest.getTmJobId(), username);
-//  }
-//
-//  public SendCreateJobRequestMessage createReissue(LegacySampleIngest ingest, String username) {
-//    return createJob(ingest, username);
-//  }
+
+  public SendUpdateJobHeaderRequestMessage updateJob(rmSampleIngest ingest, String username) {
+    return updateJob(ingest.getJobIdentity(), username);
+  }
+
+  public SendCreateJobRequestMessage createReissue(rmSampleIngest ingest, String username) {
+    return createJob(ingest, username);
+  }
 }
 
