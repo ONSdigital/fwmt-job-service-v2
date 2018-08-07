@@ -5,7 +5,7 @@ import lombok.Data;
 import java.time.LocalDate;
 
 @Data
-public class rmSampleIngest {
+public class RmSampleIngest {
 
     public String jobIdentity;
     public String addressLine1;
