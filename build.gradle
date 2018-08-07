@@ -25,7 +25,7 @@ apply plugin: 'org.springframework.boot'
 apply plugin: 'jacoco'
 apply plugin: "findbugs"
 
-mainClassName = 'uk.gov.ons.fwmt.job_service.ApplicationConfig'
+mainClassName = 'uk.gov.ons.fwmt.job_service_v2.ApplicationConfig'
 
 description = "fwmt-job-service"
 

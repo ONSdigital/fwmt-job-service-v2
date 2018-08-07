@@ -8,7 +8,7 @@ info:
 
 server:
   contextPath: /jobs
-  port: 9091
+  port: 9999
 
 spring:
   application:
