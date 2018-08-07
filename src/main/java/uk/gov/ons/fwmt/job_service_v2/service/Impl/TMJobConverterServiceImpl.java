@@ -24,7 +24,7 @@ import org.springframework.beans.PropertyAccessor;
 import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.stereotype.Service;
 import uk.gov.ons.fwmt.job_service_v2.data.annotation.JobAdditionalProperty;
-import uk.gov.ons.fwmt.job_service_v2.data.rmSampleIngest;
+import uk.gov.ons.fwmt.job_service_v2.data.RmSampleIngest;
 import uk.gov.ons.fwmt.job_service_v2.service.TMJobConverterService;
 
 import javax.xml.datatype.DatatypeConfigurationException;
@@ -81,7 +81,7 @@ public class TMJobConverterServiceImpl implements TMJobConverterService {
     }
   }
 
-  protected CreateJobRequest createJobRequestFromIngest(rmSampleIngest ingest, String username) {
+  protected CreateJobRequest createJobRequestFromIngest(RmSampleIngest ingest, String username) {
     CreateJobRequest request = new CreateJobRequest();
     JobType job = new JobType();
     request.setJob(job);
@@ -166,7 +166,7 @@ public class TMJobConverterServiceImpl implements TMJobConverterService {
     return info;
   }
 
-  public SendCreateJobRequestMessage createJob(rmSampleIngest ingest, String username) {
+  public SendCreateJobRequestMessage createJob(RmSampleIngest ingest, String username) {
     CreateJobRequest request = createJobRequestFromIngest(ingest, username);
 
     SendCreateJobRequestMessage message = new SendCreateJobRequestMessage();
@@ -186,11 +186,11 @@ public class TMJobConverterServiceImpl implements TMJobConverterService {
     return message;
   }
 
-  public SendUpdateJobHeaderRequestMessage updateJob(rmSampleIngest ingest, String username) {
+  public SendUpdateJobHeaderRequestMessage updateJob(RmSampleIngest ingest, String username) {
     return updateJob(ingest.getJobIdentity(), username);
   }
 
-  public SendCreateJobRequestMessage createReissue(rmSampleIngest ingest, String username) {
+  public SendCreateJobRequestMessage createReissue(RmSampleIngest ingest, String username) {
     return createJob(ingest, username);
   }
 }
