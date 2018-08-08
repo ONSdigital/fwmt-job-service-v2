@@ -30,18 +30,11 @@ import uk.gov.ons.fwmt.job_service_v2.QueueReceiver.RMJobCreate;
 
 @Slf4j
 @SpringBootApplication
-@EnableRabbit
 public class ApplicationConfig {
-
-  @Value("${service.resource.username}")
-  private String userName;
-  @Value("${service.resource.password}")
-  private String password;
-
 
   static final String topicExchangeName = "rm-create-exchange";
 
-  static final String queueName = "rm-create";
+  static final String queueName = "job-svc-create";
 
 
   @Bean
@@ -56,7 +49,7 @@ public class ApplicationConfig {
 
   @Bean
   Binding binding(Queue queue, TopicExchange exchange) {
-    return BindingBuilder.bind(queue).to(exchange).with("foo.bar.#");
+    return BindingBuilder.bind(queue).to(exchange).with("job.svc.job.request.#");
   }
 
   @Bean
@@ -81,37 +74,5 @@ public class ApplicationConfig {
     SpringApplication.run(ApplicationConfig.class, args);
     log.debug("Started application");
   }
-
-  /**
-   * @param
-   * @return
-   */
-  @Bean
-  CommandLineRunner init() {
-    return (args) -> {
-      //storageService.deleteAll();
-      //storageService.init();
-    };
-  }
-
-//  @Bean(name="processExecutor")
-//  public TaskExecutor workExecutor() {
-//    ThreadPoolTaskExecutor threadPoolTaskExecutor = new ThreadPoolTaskExecutor();
-//    threadPoolTaskExecutor.setThreadNamePrefix("Async-");
-//    threadPoolTaskExecutor.setCorePoolSize(3);
-//    threadPoolTaskExecutor.setMaxPoolSize(3);
-//    threadPoolTaskExecutor.setQueueCapacity(600);
-//    threadPoolTaskExecutor.setTaskDecorator(new MDCTaskDecorator());
-//    threadPoolTaskExecutor.afterPropertiesSet();
-//    return threadPoolTaskExecutor;
-//  }
-//
-//  @Bean
-//  public RestTemplate resourcesRestTemplate(RestTemplateBuilder builder) {
-//    return builder
-//        .basicAuthorization(userName, password)
-//        .interceptors(Collections.singletonList(new CorrelationIdInterceptor()))
-//        .build();
-//  }
 
 }
