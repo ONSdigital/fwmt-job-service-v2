@@ -22,7 +22,7 @@ public class RMProducer {
 
   @Scheduled(fixedDelay = 1000, initialDelay = 500)
   public void send(UnknownDto unknownDto) {
-    template.convertAndSend(String.valueOf(queue), unknownDto);
+    this.template.convertAndSend(queue.getName(), unknownDto);
     log.info("Sent" + unknownDto.toString() + "...");
   }
 }
