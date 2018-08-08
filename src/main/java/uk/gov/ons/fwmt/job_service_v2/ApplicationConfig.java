@@ -4,16 +4,23 @@
 
 package uk.gov.ons.fwmt.job_service_v2;
 
+
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.core.Binding;
+import org.springframework.amqp.core.BindingBuilder;
+import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.core.TopicExchange;
+import org.springframework.amqp.rabbit.connection.ConnectionFactory;
+import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
+import org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.EnableAsync;
+import uk.gov.ons.fwmt.job_service_v2.QueueReceiver.RMJobCreate;
 
-
-import java.util.Collections;
 
 /**
  * Main entry point into the Legacy Gateway
@@ -32,6 +39,42 @@ public class ApplicationConfig {
   private String userName;
   @Value("${service.resource.password}")
   private String password;
+
+
+  static final String topicExchangeName = "rm-create-exchange";
+
+  static final String queueName = "rm-create";
+
+
+  @Bean
+  Queue queue() {
+    return new Queue(queueName, false);
+  }
+
+  @Bean
+  TopicExchange exchnage() {
+    return new TopicExchange(topicExchangeName);
+  }
+
+  @Bean
+  Binding binding(Queue queue, TopicExchange exchange) {
+    return BindingBuilder.bind(queue).to(exchange).with("foo.bar.#");
+  }
+
+  @Bean
+  SimpleMessageListenerContainer container(ConnectionFactory connectionFactory,
+                                           MessageListenerAdapter listenerAdapter) {
+    SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
+    container.setConnectionFactory(connectionFactory);
+    container.setQueueNames(queueName);
+    container.setMessageListener(listenerAdapter);
+    return container;
+  }
+
+  @Bean
+  MessageListenerAdapter listenerAdapter(RMJobCreate receiver) {
+    return new MessageListenerAdapter(receiver, "receiveMessage");
+  }
 
   /**
    * @param args
