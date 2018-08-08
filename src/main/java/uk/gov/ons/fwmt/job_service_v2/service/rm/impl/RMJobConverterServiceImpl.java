@@ -21,7 +21,9 @@ public class RMJobConverterServiceImpl implements RMJobConverterService {
 
   public RMJobConverterServiceImpl() {}
 
-  @Override public void transformRequest(JAXBElement<CompositeVisitRequest> request) throws Exception {
+  @Override public void transformRequest(JAXBElement<CompositeVisitRequest> request) {
+    log.debug("Inside Request", request);
+
     UnknownDto unknownDto = new UnknownDto();
 
     unknownDto.setIdentity(request.getValue().getIdentity().getGuid());
