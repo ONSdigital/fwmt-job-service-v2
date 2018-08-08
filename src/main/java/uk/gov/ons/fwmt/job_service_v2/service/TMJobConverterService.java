@@ -5,6 +5,7 @@ import com.consiliumtechnologies.schemas.services.mobile._2009._03.messaging.Sen
 import uk.gov.ons.fwmt.fwmtgatewaycommon.FWMTCreateJobRequest;
 
 public interface TMJobConverterService {
+  void convertMessageFromQueue (String message);
   SendCreateJobRequestMessage createJob(FWMTCreateJobRequest ingest, String username);
   SendUpdateJobHeaderRequestMessage updateJob(String tmJobId, String username);
   SendUpdateJobHeaderRequestMessage updateJob(FWMTCreateJobRequest ingest, String username);

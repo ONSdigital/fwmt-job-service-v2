@@ -18,6 +18,7 @@ import com.consiliumtechnologies.schemas.mobile._2015._05.optimisetypes.WorldIde
 import com.consiliumtechnologies.schemas.services.mobile._2009._03.messaging.SendCreateJobRequestMessage;
 import com.consiliumtechnologies.schemas.services.mobile._2009._03.messaging.SendMessageRequestInfo;
 import com.consiliumtechnologies.schemas.services.mobile._2009._03.messaging.SendUpdateJobHeaderRequestMessage;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.PropertyAccessor;
@@ -29,6 +30,7 @@ import uk.gov.ons.fwmt.job_service_v2.service.TMJobConverterService;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
+import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.time.ZoneId;
@@ -166,7 +168,22 @@ public class TMJobConverterServiceImpl implements TMJobConverterService {
     return info;
   }
 
+  public void convertMessageFromQueue(String message) {
+    ObjectMapper mapper = new ObjectMapper();
+    FWMTCreateJobRequest ingest = new FWMTCreateJobRequest();
+    try {
+      ingest = mapper.readValue(message, FWMTCreateJobRequest.class);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+    this.createJob(ingest,"");
+
+  }
+
   public SendCreateJobRequestMessage createJob(FWMTCreateJobRequest ingest, String username) {
+
+
     CreateJobRequest request = createJobRequestFromIngest(ingest, username);
 
     SendCreateJobRequestMessage message = new SendCreateJobRequestMessage();

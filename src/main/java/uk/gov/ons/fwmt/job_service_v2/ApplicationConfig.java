@@ -10,6 +10,7 @@ import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.core.TopicExchange;
+import org.springframework.amqp.rabbit.annotation.EnableRabbit;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
 import org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter;
@@ -18,21 +19,18 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.scheduling.annotation.EnableAsync;
 import uk.gov.ons.fwmt.job_service_v2.QueueReceiver.RMJobCreate;
 
 
 /**
- * Main entry point into the Legacy Gateway
+ * Main entry point into the TM Gateway
  *
- * @author Thomas Poot
- * @author James Berry
- * @author Jacob Harrison
+ * @author Chris Hardman
  */
 
 @Slf4j
 @SpringBootApplication
-@EnableAsync
+@EnableRabbit
 public class ApplicationConfig {
 
   @Value("${service.resource.username}")
