@@ -14,6 +14,7 @@ import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
 import org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -29,7 +30,6 @@ import uk.gov.ons.fwmt.job_service_v2.QueueReceiver.RMJobCreate;
 
 @Slf4j
 @SpringBootApplication
-@EnableRabbit
 public class ApplicationConfig {
 
   static final String topicExchangeName = "rm-create-exchange";
@@ -70,7 +70,7 @@ public class ApplicationConfig {
 
   @Bean
   Binding binding(@Qualifier("queue") Queue queue, TopicExchange exchange) {
-    return BindingBuilder.bind(queue).to(exchange).with("foo.bar.#");
+    return BindingBuilder.bind(queue).to(exchange).with("job.svc.job.request.#");
   }
 
   @Bean
@@ -87,37 +87,4 @@ public class ApplicationConfig {
   MessageListenerAdapter listenerAdapter(RMJobCreate receiver) {
     return new MessageListenerAdapter(receiver, "receiveMessage");
   }
-
-  /**
-   * @param
-   * @return
-   */
-  @Bean
-  CommandLineRunner init() {
-    return (args) -> {
-      //storageService.deleteAll();
-      //storageService.init();
-    };
-  }
-
-  //  @Bean(name="processExecutor")
-  //  public TaskExecutor workExecutor() {
-  //    ThreadPoolTaskExecutor threadPoolTaskExecutor = new ThreadPoolTaskExecutor();
-  //    threadPoolTaskExecutor.setThreadNamePrefix("Async-");
-  //    threadPoolTaskExecutor.setCorePoolSize(3);
-  //    threadPoolTaskExecutor.setMaxPoolSize(3);
-  //    threadPoolTaskExecutor.setQueueCapacity(600);
-  //    threadPoolTaskExecutor.setTaskDecorator(new MDCTaskDecorator());
-  //    threadPoolTaskExecutor.afterPropertiesSet();
-  //    return threadPoolTaskExecutor;
-  //  }
-  //
-  //  @Bean
-  //  public RestTemplate resourcesRestTemplate(RestTemplateBuilder builder) {
-  //    return builder
-  //        .basicAuthorization(userName, password)
-  //        .interceptors(Collections.singletonList(new CorrelationIdInterceptor()))
-  //        .build();
-  //  }
-
 }

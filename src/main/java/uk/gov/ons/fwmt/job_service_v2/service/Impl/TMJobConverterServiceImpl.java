@@ -1,43 +1,32 @@
 package uk.gov.ons.fwmt.job_service_v2.service.Impl;
 
 import com.consiliumtechnologies.schemas.mobile._2009._03.visitstypes.AdditionalPropertyCollectionType;
-import com.consiliumtechnologies.schemas.mobile._2009._03.visitstypes.AdditionalPropertyType;
 import com.consiliumtechnologies.schemas.mobile._2015._05.optimisemessages.CreateJobRequest;
-import com.consiliumtechnologies.schemas.mobile._2015._05.optimisemessages.UpdateJobHeaderRequest;
 import com.consiliumtechnologies.schemas.mobile._2015._05.optimisetypes.AddressDetailType;
 import com.consiliumtechnologies.schemas.mobile._2015._05.optimisetypes.ContactInfoType;
-import com.consiliumtechnologies.schemas.mobile._2015._05.optimisetypes.JobHeaderType;
 import com.consiliumtechnologies.schemas.mobile._2015._05.optimisetypes.JobIdentityType;
 import com.consiliumtechnologies.schemas.mobile._2015._05.optimisetypes.JobType;
 import com.consiliumtechnologies.schemas.mobile._2015._05.optimisetypes.LocationType;
 import com.consiliumtechnologies.schemas.mobile._2015._05.optimisetypes.NameValueAttributeCollectionType;
-import com.consiliumtechnologies.schemas.mobile._2015._05.optimisetypes.ObjectFactory;
 import com.consiliumtechnologies.schemas.mobile._2015._05.optimisetypes.ResourceIdentityType;
 import com.consiliumtechnologies.schemas.mobile._2015._05.optimisetypes.SkillCollectionType;
 import com.consiliumtechnologies.schemas.mobile._2015._05.optimisetypes.WorldIdentityType;
 import com.consiliumtechnologies.schemas.services.mobile._2009._03.messaging.SendCreateJobRequestMessage;
 import com.consiliumtechnologies.schemas.services.mobile._2009._03.messaging.SendMessageRequestInfo;
-import com.consiliumtechnologies.schemas.services.mobile._2009._03.messaging.SendUpdateJobHeaderRequestMessage;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.PropertyAccessor;
-import org.springframework.beans.PropertyAccessorFactory;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.FWMTCreateJobRequest;
-import uk.gov.ons.fwmt.job_service_v2.data.annotation.JobAdditionalProperty;
 import uk.gov.ons.fwmt.job_service_v2.service.TMJobConverterService;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import java.io.IOException;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
 import java.time.ZoneId;
-import java.util.Arrays;
 import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -48,39 +37,8 @@ public class TMJobConverterServiceImpl implements TMJobConverterService {
   protected static final String JOB_WORLD = "Default";
 
   private final DatatypeFactory datatypeFactory = DatatypeFactory.newInstance();
-  private final ObjectFactory factory = new ObjectFactory();
 
   public TMJobConverterServiceImpl() throws DatatypeConfigurationException {
-  }
-
-  protected static void addAdditionalProperty(CreateJobRequest request, String key, String value) {
-    AdditionalPropertyType propertyType = new AdditionalPropertyType();
-    propertyType.setName(key);
-    propertyType.setValue(value);
-    request.getJob().getAdditionalProperties().getAdditionalProperty().add(propertyType);
-  }
-
-  /**
-   * Read the JobAdditionalProperty annotations on the class T and set additional properties on the TM request
-   */
-  private static <T> void setFromAdditionalPropertyAnnotations(T instance, CreateJobRequest request) {
-    Class<?> tClass = instance.getClass();
-    PropertyAccessor accessor = PropertyAccessorFactory.forBeanPropertyAccess(instance);
-    for (Field field : tClass.getDeclaredFields()) {
-      Optional<Annotation> annotation = Arrays.stream(field.getDeclaredAnnotations())
-          .filter(an -> an.annotationType() == JobAdditionalProperty.class)
-          .findFirst();
-      if (annotation.isPresent()) {
-        JobAdditionalProperty jobAdditionalProperty = (JobAdditionalProperty) annotation.get();
-        Object value = accessor.getPropertyValue(field.getName());
-        if (value != null) {
-          addAdditionalProperty(request, jobAdditionalProperty.value(), value.toString());
-        } else {
-          log.warn("Unprocessed job property: " + field.getName());
-          addAdditionalProperty(request, jobAdditionalProperty.value(), "");
-        }
-      }
-    }
   }
 
   protected CreateJobRequest createJobRequestFromIngest(FWMTCreateJobRequest ingest, String username) {
@@ -119,12 +77,9 @@ public class TMJobConverterServiceImpl implements TMJobConverterService {
     request.getJob().getWorld().setReference(JOB_WORLD);
 
     GregorianCalendar dueDateCalendar = GregorianCalendar
-        .from(ingest.getDueDate().atTime(23, 59, 59).atZone(ZoneId.of("UTC")));
+            .from(ingest.getDueDate().atTime(23, 59, 59).atZone(ZoneId.of("UTC")));
     request.getJob().setDueDate(datatypeFactory.newXMLGregorianCalendar(dueDateCalendar));
     request.getJob().getAllocatedTo().setUsername(username);
-
-    // additional properties
-    setFromAdditionalPropertyAnnotations(ingest, request);
 
     request.getJob().setDuration(1);
     request.getJob().setVisitComplete(false);
@@ -147,18 +102,6 @@ public class TMJobConverterServiceImpl implements TMJobConverterService {
       addressLines.set(2, addressConcat);
       addressLines.remove(3);
     }
-  }
-
-  protected UpdateJobHeaderRequest makeUpdateJobHeaderRequest(String tmJobId, String username) {
-    UpdateJobHeaderRequest request = new UpdateJobHeaderRequest();
-    request.setJobHeader(new JobHeaderType());
-    request.getJobHeader().setAllocatedTo(new ResourceIdentityType());
-    request.getJobHeader().setJobIdentity(new JobIdentityType());
-
-    request.getJobHeader().getAllocatedTo().setUsername(username);
-    request.getJobHeader().getJobIdentity().setReference(tmJobId);
-
-    return request;
   }
 
   protected SendMessageRequestInfo makeSendMessageRequestInfo(String key) {
@@ -191,24 +134,6 @@ public class TMJobConverterServiceImpl implements TMJobConverterService {
     message.setCreateJobRequest(request);
 
     return message;
-  }
-
-  public SendUpdateJobHeaderRequestMessage updateJob(String tmJobId, String username) {
-    UpdateJobHeaderRequest request = makeUpdateJobHeaderRequest(tmJobId, username);
-
-    SendUpdateJobHeaderRequestMessage message = new SendUpdateJobHeaderRequestMessage();
-    message.setSendMessageRequestInfo(makeSendMessageRequestInfo(tmJobId));
-    message.setUpdateJobHeaderRequest(request);
-
-    return message;
-  }
-
-  public SendUpdateJobHeaderRequestMessage updateJob(FWMTCreateJobRequest ingest, String username) {
-    return updateJob(ingest.getJobIdentity(), username);
-  }
-
-  public SendCreateJobRequestMessage createReissue(FWMTCreateJobRequest ingest, String username) {
-    return createJob(ingest, username);
   }
 }
 
