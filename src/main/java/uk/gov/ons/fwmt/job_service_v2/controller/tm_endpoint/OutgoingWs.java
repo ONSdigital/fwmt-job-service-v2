@@ -22,7 +22,7 @@ public class OutgoingWs {
   // mirrored in @Value("outgoing-ws-namespace")
   private static final String NAMESPACE_URI = "http://schemas.consiliumtechnologies.com/services/mobile/2009/03/messaging";
 
-  RMJobConverterServiceImpl rmJobConverterService = new RMJobConverterServiceImpl();
+  private RMJobConverterServiceImpl rmJobConverterService = new RMJobConverterServiceImpl();
 
   private void stub(String messageType) {
     log.debug("Found message of type {}", messageType);

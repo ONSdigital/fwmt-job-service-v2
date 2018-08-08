@@ -13,12 +13,14 @@ import uk.gov.ons.fwmt.job_service_v2.dto.UnknownDto;
 @Component
 public class RMProducer {
 
-  @Autowired
-  @Qualifier("tmConicalQueue")
-  private Queue queue;
+  private final Queue queue;
 
-  @Autowired
-  private RabbitTemplate template;
+  private final RabbitTemplate template;
+
+  @Autowired public RMProducer(@Qualifier("tmConicalQueue") Queue queue, RabbitTemplate template) {
+    this.queue = queue;
+    this.template = template;
+  }
 
   @Scheduled(fixedDelay = 1000, initialDelay = 500)
   public void send(UnknownDto unknownDto) {

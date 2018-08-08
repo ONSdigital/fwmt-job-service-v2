@@ -13,7 +13,13 @@ import javax.xml.bind.JAXBElement;
 @Slf4j
 @Service
 public class RMJobConverterServiceImpl implements RMJobConverterService {
-  @Autowired RMProducer rmProducer;
+  private RMProducer rmProducer;
+
+  @Autowired public RMJobConverterServiceImpl(RMProducer rmProducer) {
+    this.rmProducer = rmProducer;
+  }
+
+  public RMJobConverterServiceImpl() {}
 
   @Override public void transformRequest(JAXBElement<CompositeVisitRequest> request) throws Exception {
     UnknownDto unknownDto = new UnknownDto();
