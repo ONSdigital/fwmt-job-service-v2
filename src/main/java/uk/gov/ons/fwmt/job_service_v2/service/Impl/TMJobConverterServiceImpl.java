@@ -18,17 +18,19 @@ import com.consiliumtechnologies.schemas.mobile._2015._05.optimisetypes.WorldIde
 import com.consiliumtechnologies.schemas.services.mobile._2009._03.messaging.SendCreateJobRequestMessage;
 import com.consiliumtechnologies.schemas.services.mobile._2009._03.messaging.SendMessageRequestInfo;
 import com.consiliumtechnologies.schemas.services.mobile._2009._03.messaging.SendUpdateJobHeaderRequestMessage;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.PropertyAccessor;
 import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.stereotype.Service;
+import uk.gov.ons.fwmt.fwmtgatewaycommon.FWMTCreateJobRequest;
 import uk.gov.ons.fwmt.job_service_v2.data.annotation.JobAdditionalProperty;
-import uk.gov.ons.fwmt.job_service_v2.data.RmSampleIngest;
 import uk.gov.ons.fwmt.job_service_v2.service.TMJobConverterService;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
+import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.time.ZoneId;
@@ -81,7 +83,7 @@ public class TMJobConverterServiceImpl implements TMJobConverterService {
     }
   }
 
-  protected CreateJobRequest createJobRequestFromIngest(RmSampleIngest ingest, String username) {
+  protected CreateJobRequest createJobRequestFromIngest(FWMTCreateJobRequest ingest, String username) {
     CreateJobRequest request = new CreateJobRequest();
     JobType job = new JobType();
     request.setJob(job);
@@ -101,17 +103,17 @@ public class TMJobConverterServiceImpl implements TMJobConverterService {
     LocationType location = request.getJob().getLocation();
     List<String> addressLines = location.getAddressDetail().getLines().getAddressLine();
 
-    addAddressLines(addressLines, ingest.getAddressLine1());
-    addAddressLines(addressLines, ingest.getAddressLine2());
-    addAddressLines(addressLines, ingest.getAddressLine3());
-    addAddressLines(addressLines, ingest.getAddressLine4());
-    addAddressLines(addressLines, ingest.getTownName());
+    addAddressLines(addressLines, ingest.getAddress().getLine1());
+    addAddressLines(addressLines, ingest.getAddress().getLine2());
+    addAddressLines(addressLines, ingest.getAddress().getLine3());
+    addAddressLines(addressLines, ingest.getAddress().getLine4());
+    addAddressLines(addressLines, ingest.getAddress().getTownName());
     checkNumberOfAddressLines(addressLines);
 
-    location.getAddressDetail().setPostCode(ingest.getPostcode());
+    location.getAddressDetail().setPostCode(ingest.getAddress().getPostCode());
     //location.setReference(ingest.getSerNo());
 
-    request.getJob().getContact().setName(ingest.getPostcode());
+    request.getJob().getContact().setName(ingest.getAddress().getPostCode());
     request.getJob().getSkills().getSkill().add(JOB_SKILL);
     request.getJob().setWorkType(JOB_WORK_TYPE);
     request.getJob().getWorld().setReference(JOB_WORLD);
@@ -166,7 +168,22 @@ public class TMJobConverterServiceImpl implements TMJobConverterService {
     return info;
   }
 
-  public SendCreateJobRequestMessage createJob(RmSampleIngest ingest, String username) {
+  public void convertMessageFromQueue(String message) {
+    ObjectMapper mapper = new ObjectMapper();
+    FWMTCreateJobRequest ingest = new FWMTCreateJobRequest();
+    try {
+      ingest = mapper.readValue(message, FWMTCreateJobRequest.class);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+    this.createJob(ingest,"");
+
+  }
+
+  public SendCreateJobRequestMessage createJob(FWMTCreateJobRequest ingest, String username) {
+
+
     CreateJobRequest request = createJobRequestFromIngest(ingest, username);
 
     SendCreateJobRequestMessage message = new SendCreateJobRequestMessage();
@@ -186,11 +203,11 @@ public class TMJobConverterServiceImpl implements TMJobConverterService {
     return message;
   }
 
-  public SendUpdateJobHeaderRequestMessage updateJob(RmSampleIngest ingest, String username) {
+  public SendUpdateJobHeaderRequestMessage updateJob(FWMTCreateJobRequest ingest, String username) {
     return updateJob(ingest.getJobIdentity(), username);
   }
 
-  public SendCreateJobRequestMessage createReissue(RmSampleIngest ingest, String username) {
+  public SendCreateJobRequestMessage createReissue(FWMTCreateJobRequest ingest, String username) {
     return createJob(ingest, username);
   }
 }

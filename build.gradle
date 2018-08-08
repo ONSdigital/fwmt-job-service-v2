@@ -24,6 +24,7 @@ apply plugin: 'application'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'jacoco'
 apply plugin: "findbugs"
+apply plugin: "maven"
 
 mainClassName = 'uk.gov.ons.fwmt.job_service_v2.ApplicationConfig'
 
@@ -46,7 +47,7 @@ repositories {
     maven { url "http://artifactory-sdc.onsdigital.uk/artifactory/libs-release" }
     maven { url "https://oss.sonatype.org/content/repositories/libs-snapshot" }
     maven { url "http://repo.maven.apache.org/maven2" }
-    flatDir { dirs 'libs' }
+    mavenLocal()
 }
 
 configurations {
@@ -131,6 +132,9 @@ dependencies {
     jaxb "com.sun.xml.bind:jaxb-xjc:2.1.7"
     compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.5'
     compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: '2.9.5'
+
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-amqp', version: '2.0.4.RELEASE'
+    compile group: 'uk.gov.ons.fwmt', name: 'fwmt-gateway-common', version: '0.0.1-SNAPSHOT'
 
     testCompile(group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '1.5.9.RELEASE') {
         exclude(module: 'android-json')

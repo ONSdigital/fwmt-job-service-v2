@@ -2,12 +2,13 @@ package uk.gov.ons.fwmt.job_service_v2.service;
 
 import com.consiliumtechnologies.schemas.services.mobile._2009._03.messaging.SendCreateJobRequestMessage;
 import com.consiliumtechnologies.schemas.services.mobile._2009._03.messaging.SendUpdateJobHeaderRequestMessage;
-import uk.gov.ons.fwmt.job_service_v2.data.RmSampleIngest;
+import uk.gov.ons.fwmt.fwmtgatewaycommon.FWMTCreateJobRequest;
 
 public interface TMJobConverterService {
-  SendCreateJobRequestMessage createJob(RmSampleIngest ingest, String username);
+  void convertMessageFromQueue (String message);
+  SendCreateJobRequestMessage createJob(FWMTCreateJobRequest ingest, String username);
   SendUpdateJobHeaderRequestMessage updateJob(String tmJobId, String username);
-  SendUpdateJobHeaderRequestMessage updateJob(RmSampleIngest ingest, String username);
-  SendCreateJobRequestMessage createReissue(RmSampleIngest ingest, String username);
+  SendUpdateJobHeaderRequestMessage updateJob(FWMTCreateJobRequest ingest, String username);
+  SendCreateJobRequestMessage createReissue(FWMTCreateJobRequest ingest, String username);
 }
 
