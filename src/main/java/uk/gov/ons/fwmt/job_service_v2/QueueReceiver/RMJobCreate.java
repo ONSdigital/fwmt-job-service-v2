@@ -13,8 +13,10 @@ public class RMJobCreate {
     @Autowired
     private TMJobConverterService jobService;
 
-    public void receiveMessage(String message) {
+    public void receiveMessage(byte[] message) {
         System.out.println("Received create job request <" + message + ">");
+        //String received = new String(message);
+        //System.out.println("Received create job request <" + received + ">");
         jobService.convertMessageFromQueue(message);
         latch.countDown();
     }
