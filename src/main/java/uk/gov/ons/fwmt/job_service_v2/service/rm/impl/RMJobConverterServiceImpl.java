@@ -28,6 +28,6 @@ public class RMJobConverterServiceImpl implements RMJobConverterService {
     UnknownDto unknownDto = new UnknownDto();
 
     unknownDto.setIdentity(request.getValue().getIdentity().getGuid());
-    rmProducer.send(unknownDto.toString().getBytes());
+    rmProducer.send(unknownDto);
   }
 }

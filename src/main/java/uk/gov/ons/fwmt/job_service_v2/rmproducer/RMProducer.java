@@ -5,8 +5,7 @@ import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.Arrays;
+import uk.gov.ons.fwmt.job_service_v2.dto.UnknownDto;
 
 @Slf4j
 @Component
@@ -21,8 +20,8 @@ public class RMProducer {
     this.template = template;
   }
 
-  public void send(byte[] unknownDto) {
+  public void send(UnknownDto unknownDto) {
     this.template.convertAndSend(queue.getName(), unknownDto);
-    log.info("Sent" + Arrays.toString(unknownDto) + "...");
+    log.info("Sent" + (unknownDto.toString()) + "...");
   }
 }
