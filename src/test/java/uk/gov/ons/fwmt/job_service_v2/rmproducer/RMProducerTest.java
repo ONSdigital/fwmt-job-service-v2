@@ -7,7 +7,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import uk.gov.ons.fwmt.job_service_v2.dto.UnknownDto;
+import uk.gov.ons.fwmt.fwmtgatewaycommon.DummyTMResponse;
 
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doNothing;
@@ -24,14 +24,14 @@ public class RMProducerTest {
   @Test
   public void send() {
     //Given
-    UnknownDto unknownDto = new UnknownDto();
+    DummyTMResponse dummyTMResponse = new DummyTMResponse();
     when(queue.getName()).thenReturn("testQueue");
-    doNothing().when(template).convertAndSend(eq("testQueue"), eq(unknownDto));
+    doNothing().when(template).convertAndSend(eq("testQueue"), eq(dummyTMResponse));
 
     //When
-    rmProducer.send(unknownDto);
+    rmProducer.send(dummyTMResponse);
 
     //Then
-    verify(template).convertAndSend(eq("testQueue"), eq(unknownDto));
+    verify(template).convertAndSend(eq("testQueue"), eq(dummyTMResponse));
   }
 }

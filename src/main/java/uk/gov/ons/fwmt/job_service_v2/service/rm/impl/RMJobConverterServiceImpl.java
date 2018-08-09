@@ -4,7 +4,7 @@ import com.consiliumtechnologies.schemas.mobile._2009._09.compositemessages.Comp
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import uk.gov.ons.fwmt.job_service_v2.dto.UnknownDto;
+import uk.gov.ons.fwmt.fwmtgatewaycommon.DummyTMResponse;
 import uk.gov.ons.fwmt.job_service_v2.rmproducer.RMProducer;
 import uk.gov.ons.fwmt.job_service_v2.service.rm.RMJobConverterService;
 
@@ -25,10 +25,10 @@ public class RMJobConverterServiceImpl implements RMJobConverterService {
   @Override public void transformRequest(JAXBElement<CompositeVisitRequest> request) {
     log.debug("Request inside transformRequest", request);
 
-    UnknownDto unknownDto = new UnknownDto();
+    DummyTMResponse dummyTMResponse = new DummyTMResponse();
 
-    unknownDto.setIdentity(request.getValue().getIdentity().getGuid());
-    rmProducer.send(unknownDto);
-    log.debug("DTO send", unknownDto);
+    dummyTMResponse.setIdentity(request.getValue().getIdentity().getGuid());
+    rmProducer.send(dummyTMResponse);
+    log.debug("DTO send", dummyTMResponse);
   }
 }

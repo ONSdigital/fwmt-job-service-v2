@@ -5,7 +5,7 @@ import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import uk.gov.ons.fwmt.job_service_v2.dto.UnknownDto;
+import uk.gov.ons.fwmt.fwmtgatewaycommon.DummyTMResponse;
 
 @Slf4j
 @Component
@@ -20,8 +20,8 @@ public class RMProducer {
     this.template = template;
   }
 
-  public void send(UnknownDto unknownDto) {
-    this.template.convertAndSend(queue.getName(), unknownDto);
-    log.info("Message sent to queue" + (unknownDto.toString()) + "...");
+  public void send(DummyTMResponse dummyTMResponse) {
+    this.template.convertAndSend(queue.getName(), dummyTMResponse);
+    log.info("Message sent to queue" + (dummyTMResponse.toString()) + "...");
   }
 }

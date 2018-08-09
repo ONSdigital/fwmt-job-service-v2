@@ -11,7 +11,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
-import uk.gov.ons.fwmt.job_service_v2.dto.UnknownDto;
+import uk.gov.ons.fwmt.fwmtgatewaycommon.DummyTMResponse;
 import uk.gov.ons.fwmt.job_service_v2.rmproducer.RMProducer;
 import uk.gov.ons.fwmt.job_service_v2.service.rm.impl.RMJobConverterServiceImpl;
 
@@ -46,8 +46,8 @@ public class RMJobConverterServiceImplTest {
     rmJobConverterService.transformRequest(input);
 
     //Then
-    Mockito.verify(rmProducer).send((UnknownDto) argCaptor.capture());
-    UnknownDto result = (UnknownDto) argCaptor.getValue();
+    Mockito.verify(rmProducer).send((DummyTMResponse) argCaptor.capture());
+    DummyTMResponse result = (DummyTMResponse) argCaptor.getValue();
     assertEquals(visitIdentityType.getGuid(), result.getIdentity());
   }
 }
