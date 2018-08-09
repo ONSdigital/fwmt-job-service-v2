@@ -7,6 +7,7 @@ package uk.gov.ons.fwmt.job_service_v2;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
+import org.springframework.amqp.core.FanoutExchange;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
@@ -29,9 +30,9 @@ import uk.gov.ons.fwmt.job_service_v2.QueueReceiver.RMJobCreate;
 @SpringBootApplication
 public class ApplicationConfig {
 
-  static final String topicExchangeName = "rm-create-exchange";
-  static final String queueName = "rm-create";
-  static final String QUEUE_NAME = "tm-canonical-queue";
+  private static final String topicExchangeName = "rm-create-exchange";
+  private static final String queueName = "rm-create";
+  private static final String RM_ADAPTER_QUEUE = "tmConicalQueue";
   @Value("${service.resource.username}")
   private String userName;
   @Value("${service.resource.password}")
@@ -44,7 +45,7 @@ public class ApplicationConfig {
 
   @Bean
   Queue tmConicalQueue() {
-    return new Queue(QUEUE_NAME, false);
+    return new Queue(RM_ADAPTER_QUEUE, false);
   }
 
   @Bean
@@ -72,7 +73,7 @@ public class ApplicationConfig {
       MessageListenerAdapter listenerAdapter) {
     SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
     container.setConnectionFactory(connectionFactory);
-    container.setQueueNames(queueName, QUEUE_NAME);
+    container.setQueueNames(queueName);
     container.setMessageListener(listenerAdapter);
     return container;
   }

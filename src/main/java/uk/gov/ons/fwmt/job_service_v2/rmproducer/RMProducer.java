@@ -6,6 +6,7 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
+import uk.gov.ons.fwmt.job_service_v2.ApplicationConfig;
 import uk.gov.ons.fwmt.job_service_v2.dto.UnknownDto;
 
 @Slf4j
@@ -16,13 +17,13 @@ public class RMProducer {
 
   private final RabbitTemplate template;
 
-  @Autowired public RMProducer(@Qualifier("tmConicalQueue") Queue queue, RabbitTemplate template) {
+  @Autowired public RMProducer(RabbitTemplate template, Queue queue) {
     this.queue = queue;
     this.template = template;
   }
 
-  public void send(UnknownDto unknownDto) {
+  public void send(byte[] unknownDto) {
     this.template.convertAndSend(queue.getName(), unknownDto);
-    log.info("Sent" + unknownDto.toString() + "...");
+    log.info("Sent" + unknownDto.toString().getBytes() + "...");
   }
 }
