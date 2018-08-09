@@ -1,4 +1,4 @@
-package uk.gov.ons.fwmt.job_service_v2.service.Impl;
+package uk.gov.ons.fwmt.job_service_v2.service.tm.Impl;
 
 import com.consiliumtechnologies.schemas.mobile._2009._03.visitstypes.AdditionalPropertyCollectionType;
 import com.consiliumtechnologies.schemas.mobile._2015._05.optimisemessages.CreateJobRequest;
@@ -18,7 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.FWMTCreateJobRequest;
-import uk.gov.ons.fwmt.job_service_v2.service.TMJobConverterService;
+import uk.gov.ons.fwmt.job_service_v2.service.tm.TMJobConverterService;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;

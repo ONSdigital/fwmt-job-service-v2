@@ -1,8 +1,8 @@
-package uk.gov.ons.fwmt.job_service_v2.QueueReceiver;
+package uk.gov.ons.fwmt.job_service_v2.queuereceiver;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import uk.gov.ons.fwmt.job_service_v2.service.TMJobConverterService;
+import uk.gov.ons.fwmt.job_service_v2.service.tm.TMJobConverterService;
 
 import java.util.concurrent.CountDownLatch;
 

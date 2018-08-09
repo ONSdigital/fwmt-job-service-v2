@@ -1,4 +1,4 @@
-package uk.gov.ons.fwmt.job_service_v2.service;
+package uk.gov.ons.fwmt.job_service_v2.service.rm;
 
 import com.consiliumtechnologies.schemas.mobile._2009._03.visitstypes.VisitIdentityType;
 import com.consiliumtechnologies.schemas.mobile._2009._09.compositemessages.CompositeVisitRequest;
