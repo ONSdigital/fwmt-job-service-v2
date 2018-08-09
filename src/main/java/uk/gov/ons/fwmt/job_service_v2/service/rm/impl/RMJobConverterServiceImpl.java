@@ -23,11 +23,12 @@ public class RMJobConverterServiceImpl implements RMJobConverterService {
   }
 
   @Override public void transformRequest(JAXBElement<CompositeVisitRequest> request) {
-    log.debug("Inside Request", request);
+    log.debug("Request inside transformRequest", request);
 
     UnknownDto unknownDto = new UnknownDto();
 
     unknownDto.setIdentity(request.getValue().getIdentity().getGuid());
     rmProducer.send(unknownDto);
+    log.debug("DTO send", unknownDto);
   }
 }

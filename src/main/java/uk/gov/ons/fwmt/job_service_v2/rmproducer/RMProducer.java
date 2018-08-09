@@ -22,6 +22,6 @@ public class RMProducer {
 
   public void send(UnknownDto unknownDto) {
     this.template.convertAndSend(queue.getName(), unknownDto);
-    log.info("Sent" + (unknownDto.toString()) + "...");
+    log.info("Message sent to queue" + (unknownDto.toString()) + "...");
   }
 }
