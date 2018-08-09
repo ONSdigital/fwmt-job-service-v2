@@ -4,10 +4,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
-import uk.gov.ons.fwmt.job_service_v2.ApplicationConfig;
-import uk.gov.ons.fwmt.job_service_v2.dto.UnknownDto;
+
+import java.util.Arrays;
 
 @Slf4j
 @Component
@@ -24,6 +23,6 @@ public class RMProducer {
 
   public void send(byte[] unknownDto) {
     this.template.convertAndSend(queue.getName(), unknownDto);
-    log.info("Sent" + unknownDto.toString().getBytes() + "...");
+    log.info("Sent" + Arrays.toString(unknownDto) + "...");
   }
 }

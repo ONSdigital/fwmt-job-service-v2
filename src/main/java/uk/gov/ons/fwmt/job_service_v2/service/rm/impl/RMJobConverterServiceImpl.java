@@ -19,7 +19,8 @@ public class RMJobConverterServiceImpl implements RMJobConverterService {
     this.rmProducer = rmProducer;
   }
 
-  public RMJobConverterServiceImpl() {}
+  public RMJobConverterServiceImpl() {
+  }
 
   @Override public void transformRequest(JAXBElement<CompositeVisitRequest> request) {
     log.debug("Inside Request", request);

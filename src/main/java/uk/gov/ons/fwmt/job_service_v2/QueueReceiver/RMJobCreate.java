@@ -8,18 +8,18 @@ import java.util.concurrent.CountDownLatch;
 
 @Component
 public class RMJobCreate {
-    private CountDownLatch latch = new CountDownLatch(1);
+  private CountDownLatch latch = new CountDownLatch(1);
 
-    @Autowired
-    private TMJobConverterService jobService;
+  @Autowired
+  private TMJobConverterService jobService;
 
-    public void receiveMessage(String message) {
-        System.out.println("Received create job request <" + message + ">");
-        jobService.convertMessageFromQueue(message);
-        latch.countDown();
-    }
+  public void receiveMessage(String message) {
+    System.out.println("Received create job request <" + message + ">");
+    jobService.convertMessageFromQueue(message);
+    latch.countDown();
+  }
 
-    public CountDownLatch getLatch() {
-        return latch;
-    }
+  public CountDownLatch getLatch() {
+    return latch;
+  }
 }

@@ -14,7 +14,6 @@ import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
 import org.springframework.ws.server.endpoint.annotation.RequestPayload;
 import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
 import uk.gov.ons.fwmt.job_service_v2.service.rm.RMJobConverterService;
-import uk.gov.ons.fwmt.job_service_v2.service.rm.impl.RMJobConverterServiceImpl;
 
 import javax.xml.bind.JAXBElement;
 

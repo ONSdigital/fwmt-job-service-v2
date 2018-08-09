@@ -16,7 +16,6 @@ import com.consiliumtechnologies.schemas.services.mobile._2009._03.messaging.Sen
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.FWMTCreateJobRequest;
 import uk.gov.ons.fwmt.job_service_v2.service.TMJobConverterService;
@@ -77,7 +76,7 @@ public class TMJobConverterServiceImpl implements TMJobConverterService {
     request.getJob().getWorld().setReference(JOB_WORLD);
 
     GregorianCalendar dueDateCalendar = GregorianCalendar
-            .from(ingest.getDueDate().atTime(23, 59, 59).atZone(ZoneId.of("UTC")));
+        .from(ingest.getDueDate().atTime(23, 59, 59).atZone(ZoneId.of("UTC")));
     request.getJob().setDueDate(datatypeFactory.newXMLGregorianCalendar(dueDateCalendar));
     request.getJob().getAllocatedTo().setUsername(username);
 
@@ -97,7 +96,7 @@ public class TMJobConverterServiceImpl implements TMJobConverterService {
   }
 
   protected void checkNumberOfAddressLines(List<String> addressLines) {
-    if (addressLines.size() == 6 ) {
+    if (addressLines.size() == 6) {
       String addressConcat = addressLines.get(2) + " " + addressLines.get(3);
       addressLines.set(2, addressConcat);
       addressLines.remove(3);
@@ -120,12 +119,11 @@ public class TMJobConverterServiceImpl implements TMJobConverterService {
       e.printStackTrace();
     }
 
-    this.createJob(ingest,"");
+    this.createJob(ingest, "");
 
   }
 
   public SendCreateJobRequestMessage createJob(FWMTCreateJobRequest ingest, String username) {
-
 
     CreateJobRequest request = createJobRequestFromIngest(ingest, username);
 
