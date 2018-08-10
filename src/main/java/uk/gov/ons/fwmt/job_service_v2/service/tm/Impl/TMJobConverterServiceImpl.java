@@ -115,7 +115,7 @@ public class TMJobConverterServiceImpl implements TMJobConverterService {
     return info;
   }
 
-  public void convertMessageFromQueue(byte[] message) {
+  public void convertMessageFromQueue(String message) {
     ObjectMapper mapper = new ObjectMapper();
     SimpleModule module = new SimpleModule();
     module.addDeserializer(LocalDate.class, new LocalDateDeserializer(DateTimeFormatter.BASIC_ISO_DATE));
