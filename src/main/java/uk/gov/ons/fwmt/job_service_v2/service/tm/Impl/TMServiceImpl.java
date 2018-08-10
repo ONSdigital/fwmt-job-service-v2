@@ -59,12 +59,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.stereotype.Service;
-import org.springframework.ws.client.WebServiceClientException;
 import org.springframework.ws.client.core.support.WebServiceGatewaySupport;
 import org.springframework.ws.client.support.interceptor.ClientInterceptor;
-import org.springframework.ws.context.MessageContext;
 import org.springframework.ws.soap.client.core.SoapActionCallback;
 import org.springframework.ws.transport.http.HttpComponentsMessageSender;
+import uk.gov.ons.fwmt.job_service_v2.interceptor.MyClientInterceptor;
 import uk.gov.ons.fwmt.job_service_v2.service.tm.TMService;
 
 import javax.xml.bind.JAXBElement;
@@ -122,6 +121,7 @@ public class TMServiceImpl extends WebServiceGatewaySupport implements TMService
     messageActionMap.put(ResetMessageRequest.class, "Reset");
   }
 
+  @Autowired MyClientInterceptor myClientInterceptor;
   private final String messageQueueUrl;
   private final String namespace;
   ObjectFactory objectFactory;
@@ -147,27 +147,7 @@ public class TMServiceImpl extends WebServiceGatewaySupport implements TMService
     messageSender.afterPropertiesSet();
     this.setMessageSender(messageSender);
 
-    ClientInterceptor[] interceptors = {new ClientInterceptor() {
-      @Override public boolean handleRequest(MessageContext messageContext) throws WebServiceClientException {
-        log.info(messageContext.getRequest().toString());
-        return true;
-      }
-
-      @Override public boolean handleResponse(MessageContext messageContext) throws WebServiceClientException {
-        log.info(messageContext.getRequest().toString());
-        return true;
-      }
-
-      @Override public boolean handleFault(MessageContext messageContext) throws WebServiceClientException {
-        log.info(messageContext.getRequest().toString());
-        return true;
-      }
-
-      @Override public void afterCompletion(MessageContext messageContext, Exception ex)
-          throws WebServiceClientException {
-        // un-used method, which must be implemented
-      }
-    }};
+    ClientInterceptor[] interceptors = {myClientInterceptor};
     this.setInterceptors(interceptors);
 
     this.objectFactory = new ObjectFactory();
@@ -225,5 +205,4 @@ public class TMServiceImpl extends WebServiceGatewaySupport implements TMService
         response.getClass().getSimpleName());
     return response;
   }
-
 }
