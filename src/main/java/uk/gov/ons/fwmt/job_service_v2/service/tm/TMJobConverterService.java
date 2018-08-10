@@ -8,6 +8,6 @@ public interface TMJobConverterService {
 
   SendCreateJobRequestMessage createJob(FWMTCreateJobRequest ingest, String username);
 
-  void deleteJob(String jobID);
+  void deleteJob(String jobIdentity, String deletionReason);
 }
 

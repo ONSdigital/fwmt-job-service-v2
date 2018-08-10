@@ -146,20 +146,20 @@ public class TMJobConverterServiceImpl implements TMJobConverterService {
   }
 
   @Override
-  public void deleteJob(String jobID) {
+  public void deleteJob(String jobIdentity, String deletionReason) {
     SendDeleteJobRequestMessage message = new SendDeleteJobRequestMessage();
     DeleteJobRequest deleteJobRequest = new DeleteJobRequest();
     JobIdentityType jobIdentityType = new JobIdentityType();
     AuditType auditType = new AuditType();
 
-    jobIdentityType.setReference(jobID);
+    jobIdentityType.setReference(jobIdentity);
     deleteJobRequest.setIdentity(jobIdentityType);
-    deleteJobRequest.setDeletionReason("Unique ID duplication");
+    deleteJobRequest.setDeletionReason(deletionReason);
     deleteJobRequest.setDeletionNotes("Jobs deleted due to duplication of unique ID's in data extract");
     auditType.setUsername("fwmt.gateway");
     deleteJobRequest.setDeletedBy(auditType);
 
-    message.setSendMessageRequestInfo(makeSendMessageRequestInfo(jobID));
+    message.setSendMessageRequestInfo(makeSendMessageRequestInfo(jobIdentity));
     message.setDeleteJobRequest(deleteJobRequest);
 
     tmService.send(message);
