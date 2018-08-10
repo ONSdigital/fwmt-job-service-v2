@@ -28,23 +28,13 @@ import uk.gov.ons.fwmt.job_service_v2.queuereceiver.MessageParser;
 @SpringBootApplication
 public class ApplicationConfig {
 
-  private static final String RM_ADAPTER_QUEUE = "tmConicalQueue";
+  public static final String RM_ADAPTER_QUEUE = "tmConicalQueue";
   private static final String TOPIC_EXCHANGE_NAME = "rm-jobsvc-adapterExchange";
   private static final String ADAPTER_QUEUE_NAME = "adapter-jobSvc";
 
   public static void main(String[] args) {
     SpringApplication.run(ApplicationConfig.class, args);
     log.debug("Started application");
-  }
-
-  @Bean
-  Queue tmConicalQueue() {
-    return new Queue(RM_ADAPTER_QUEUE, false);
-  }
-
-  @Bean
-  Binding tmConicalQueueBinding(@Qualifier("tmConicalQueue") Queue queue, TopicExchange exchange) {
-    return BindingBuilder.bind(queue).to(exchange).with("job.svc.job.response.#");
   }
 
   @Bean

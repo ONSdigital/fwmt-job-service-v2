@@ -34,13 +34,8 @@ public class TMJobConverterServiceImpl implements TMJobConverterService {
   protected static final String JOB_SKILL = "Survey";
   protected static final String JOB_WORK_TYPE = "SS";
   protected static final String JOB_WORLD = "Default";
-  private final DatatypeFactory datatypeFactory = DatatypeFactory.newInstance();
-  private final String username;
-
-  public TMJobConverterServiceImpl(@Value("${totalmobile.username}") String username)
-      throws DatatypeConfigurationException {
-    this.username = username;
-  }
+  @Value("${totalmobile.username}")
+  private  String username;
 
   protected CreateJobRequest createJobRequestFromIngest(FWMTCreateJobRequest ingest, String username) {
     CreateJobRequest request = new CreateJobRequest();

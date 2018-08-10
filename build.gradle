@@ -1,3 +1,4 @@
+
 import org.apache.tools.ant.filters.ReplaceTokens
 
 import java.util.concurrent.Callable
@@ -9,7 +10,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.5.13.RELEASE")
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:2.0.2.RELEASE")
     }
 }
 
@@ -23,7 +24,6 @@ apply plugin: 'application'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'jacoco'
 apply plugin: "findbugs"
-apply plugin: "maven"
 
 mainClassName = 'uk.gov.ons.fwmt.job_service_v2.ApplicationConfig'
 
@@ -47,6 +47,7 @@ repositories {
     maven { url "https://oss.sonatype.org/content/repositories/libs-snapshot" }
     maven { url "http://repo.maven.apache.org/maven2" }
     mavenLocal()
+    flatDir { dirs 'libs' }
 }
 
 configurations {
@@ -104,6 +105,7 @@ task genJaxb {
 }
 
 dependencies {
+    compile group: 'uk.gov.ons.fwmt', name: 'fwmt-gateway-common', version: '0.0.1-SNAPSHOT'
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '1.5.13.RELEASE'
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-web-services', version: '1.5.13.RELEASE'
     compile(group: 'org.springframework.cloud', name: 'spring-cloud-spring-service-connector', version: '1.2.5.RELEASE') {
@@ -111,7 +113,7 @@ dependencies {
     }
     compile group: 'org.springframework.cloud', name: 'spring-cloud-cloudfoundry-connector', version: '1.2.5.RELEASE'
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: '1.5.13.RELEASE'
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-amqp', version: '2.0.2.RELEASE'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-amqp', version: '1.5.13.RELEASE'
     compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.7'
     compile(group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.3') {
         exclude(module: 'commons-logging')
@@ -124,17 +126,14 @@ dependencies {
     compile group: 'org.jsoup', name: 'jsoup', version: '1.11.3'
     compile group: 'org.json', name: 'json', version: '20180130'
     compile group: 'org.projectlombok', name: 'lombok', version: '1.16.8'
-    compile group: 'org.yaml', name: 'snakeyaml', version: '1.21'
+    compile group: 'org.yaml', name: 'snakeyaml', version: '1.19'
     compile group: 'org.apache.commons', name: 'commons-csv', version: '1.5'
     compile group: 'io.springfox', name: 'springfox-swagger2', version: '2.9.1'
     compile group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.9.1'
     compile(files(genJaxb.classesDir).builtBy(genJaxb))
     jaxb "com.sun.xml.bind:jaxb-xjc:2.1.7"
-    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind'
-    compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310'
-
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-amqp', version: '2.0.4.RELEASE'
-    compile group: 'uk.gov.ons.fwmt', name: 'fwmt-gateway-common', version: '0.0.1-SNAPSHOT'
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.5'
+    compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: '2.9.5'
 
     testCompile(group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '1.5.9.RELEASE') {
         exclude(module: 'android-json')
@@ -143,6 +142,10 @@ dependencies {
     testCompile group: 'io.cucumber', name: 'cucumber-java8', version: '3.0.2'
     testCompile group: 'io.cucumber', name: 'cucumber-junit', version: '3.0.2'
     testCompile group: 'io.cucumber', name: 'cucumber-spring', version: '3.0.2'
+    testCompile group: 'org.powermock', name: 'powermock-api-mockito2', version: '1.7.0'
+    testCompile group: 'org.powermock', name: 'powermock-core', version: '1.7.0'
+    testCompile group: 'org.powermock', name: 'powermock-module-junit4', version: '1.7.0'
+    testCompile group: 'org.mockito', name: 'mockito-core', version: '2.7.1'
     testCompile "junit:junit:4.12"
     testCompile("org.springframework.boot:spring-boot-starter-test")
 
@@ -182,8 +185,8 @@ task runMocks(type: com.github.psxpaul.task.JavaExecFork) {
     String mockJarPath = configurations.integrationTestRuntime.find { it.name.startsWith("fwmt-service-mocks") }
     classpath = sourceSets.main.runtimeClasspath
     main = '-jar'
-    args = [mockJarPath]
-    jvmArgs = ['-Xmx500m']
+    args = [ mockJarPath ]
+    jvmArgs = [ '-Xmx500m' ]
     workingDir = "$buildDir"
     standardOutput = "$buildDir/fwmt-service-mocks.log"
     errorOutput = "$buildDir/fwmt-service-mocks-errors.log"
@@ -209,7 +212,21 @@ jacocoTestReport {
         xml.enabled true
         html.enabled false
     }
+    afterEvaluate {
+        classDirectories = files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: [
+                    '**/legacy_ingest/*',
+                    '**/dto/*',
+                    '**/data/tm/*',
+                    '**/config/*',
+                    '**/CSVParseFinalResult.java',
+                    '**/ApplicationConfig.java',
+                    '**/WebConfig.java'
+            ])
+        })
+    }
 }
+test.finalizedBy(project.tasks.jacocoTestReport)
 
 check.dependsOn jacocoTestReport
 

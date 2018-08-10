@@ -8,22 +8,18 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.DummyTMResponse;
 
+import static uk.gov.ons.fwmt.job_service_v2.ApplicationConfig.RM_ADAPTER_QUEUE;
+
 @Slf4j
 @Component
 public class RMProducer {
 
-  private final Queue queue;
+  @Autowired
+  private RabbitTemplate template;
 
-  private final RabbitTemplate template;
-
-  @Autowired public RMProducer(RabbitTemplate template,
-      @Qualifier("tmConicalQueue") Queue queue) {
-    this.queue = queue;
-    this.template = template;
-  }
 
   public void send(DummyTMResponse dummyTMResponse) {
-    this.template.convertAndSend(queue.getName(), dummyTMResponse);
+    this.template.convertAndSend(RM_ADAPTER_QUEUE, dummyTMResponse);
     log.info("Message sent to queue" + (dummyTMResponse.toString()) + "...");
   }
 }
