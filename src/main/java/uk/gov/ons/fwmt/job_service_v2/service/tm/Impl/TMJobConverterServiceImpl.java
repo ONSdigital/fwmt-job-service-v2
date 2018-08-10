@@ -16,22 +16,15 @@ import com.consiliumtechnologies.schemas.mobile._2015._05.optimisetypes.WorldIde
 import com.consiliumtechnologies.schemas.services.mobile._2009._03.messaging.SendCreateJobRequestMessage;
 import com.consiliumtechnologies.schemas.services.mobile._2009._03.messaging.SendDeleteJobRequestMessage;
 import com.consiliumtechnologies.schemas.services.mobile._2009._03.messaging.SendMessageRequestInfo;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.FWMTCreateJobRequest;
 import uk.gov.ons.fwmt.job_service_v2.service.tm.TMJobConverterService;
-import uk.gov.ons.fwmt.job_service_v2.service.tm.TMService;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
-import java.io.IOException;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Slf4j
@@ -42,10 +35,11 @@ public class TMJobConverterServiceImpl implements TMJobConverterService {
   protected static final String JOB_WORK_TYPE = "SS";
   protected static final String JOB_WORLD = "Default";
   private final DatatypeFactory datatypeFactory = DatatypeFactory.newInstance();
-  @Autowired
-  private TMService tmService;
+  private final String username;
 
-  public TMJobConverterServiceImpl() throws DatatypeConfigurationException {
+  public TMJobConverterServiceImpl(@Value("${totalmobile.username}") String username)
+      throws DatatypeConfigurationException {
+    this.username = username;
   }
 
   protected CreateJobRequest createJobRequestFromIngest(FWMTCreateJobRequest ingest, String username) {
@@ -118,22 +112,6 @@ public class TMJobConverterServiceImpl implements TMJobConverterService {
     return info;
   }
 
-  public void convertMessageFromQueue(String message) {
-    ObjectMapper mapper = new ObjectMapper();
-    SimpleModule module = new SimpleModule();
-    module.addDeserializer(LocalDate.class, new LocalDateDeserializer(DateTimeFormatter.BASIC_ISO_DATE));
-    mapper.registerModule(module);
-    FWMTCreateJobRequest ingest = new FWMTCreateJobRequest();
-    try {
-      ingest = mapper.readValue(message, FWMTCreateJobRequest.class);
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-
-    SendCreateJobRequestMessage request = this.createJob(ingest, "");
-    tmService.send(request);
-  }
-
   public SendCreateJobRequestMessage createJob(FWMTCreateJobRequest ingest, String username) {
 
     CreateJobRequest request = createJobRequestFromIngest(ingest, username);
@@ -146,7 +124,7 @@ public class TMJobConverterServiceImpl implements TMJobConverterService {
   }
 
   @Override
-  public void deleteJob(String jobIdentity, String deletionReason) {
+  public SendDeleteJobRequestMessage deleteJob(String jobIdentity, String deletionReason) {
     SendDeleteJobRequestMessage message = new SendDeleteJobRequestMessage();
     DeleteJobRequest deleteJobRequest = new DeleteJobRequest();
     JobIdentityType jobIdentityType = new JobIdentityType();
@@ -155,14 +133,13 @@ public class TMJobConverterServiceImpl implements TMJobConverterService {
     jobIdentityType.setReference(jobIdentity);
     deleteJobRequest.setIdentity(jobIdentityType);
     deleteJobRequest.setDeletionReason(deletionReason);
-    deleteJobRequest.setDeletionNotes("Jobs deleted due to duplication of unique ID's in data extract");
-    auditType.setUsername("fwmt.gateway");
+    auditType.setUsername(username);
     deleteJobRequest.setDeletedBy(auditType);
 
     message.setSendMessageRequestInfo(makeSendMessageRequestInfo(jobIdentity));
     message.setDeleteJobRequest(deleteJobRequest);
 
-    tmService.send(message);
+    return message;
   }
 }
 
