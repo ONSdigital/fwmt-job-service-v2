@@ -1,4 +1,4 @@
-package uk.gov.ons.fwmt.job_service_v2.queuereceiver;
+package uk.gov.ons.fwmt.job_service_v2.QueueReceiver;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

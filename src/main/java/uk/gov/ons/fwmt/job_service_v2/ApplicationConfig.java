@@ -13,11 +13,10 @@ import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
 import org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import uk.gov.ons.fwmt.job_service_v2.queuereceiver.RMJobCreate;
+import uk.gov.ons.fwmt.job_service_v2.QueueReceiver.RMJobCreate;
 
 /**
  * Main entry point into the TM Gateway
@@ -32,15 +31,8 @@ public class ApplicationConfig {
   private static final String topicExchangeName = "rm-create-exchange";
   private static final String queueName = "rm-create";
   private static final String RM_ADAPTER_QUEUE = "tmConicalQueue";
-  @Value("${service.resource.username}")
-  private String userName;
-  @Value("${service.resource.password}")
-  private String password;
-
-  public static void main(String[] args) {
-    SpringApplication.run(ApplicationConfig.class, args);
-    log.debug("Started application");
-  }
+  static final String topicExchangeName = "rm-jobsvc-exchange";
+  static final String queueName = "adapter-jobSvc";
 
   @Bean
   Queue tmConicalQueue() {
@@ -81,4 +73,13 @@ public class ApplicationConfig {
   MessageListenerAdapter listenerAdapter(RMJobCreate receiver) {
     return new MessageListenerAdapter(receiver, "receiveMessage");
   }
+
+  /**
+   * @param args
+   */
+  public static void main(String[] args) {
+    SpringApplication.run(ApplicationConfig.class, args);
+    log.debug("Started application");
+  }
+
 }
