@@ -2,7 +2,9 @@ package uk.gov.ons.fwmt.job_service_v2.service.tm.Impl;
 
 import com.consiliumtechnologies.schemas.mobile._2009._03.visitstypes.AdditionalPropertyCollectionType;
 import com.consiliumtechnologies.schemas.mobile._2015._05.optimisemessages.CreateJobRequest;
+import com.consiliumtechnologies.schemas.mobile._2015._05.optimisemessages.DeleteJobRequest;
 import com.consiliumtechnologies.schemas.mobile._2015._05.optimisetypes.AddressDetailType;
+import com.consiliumtechnologies.schemas.mobile._2015._05.optimisetypes.AuditType;
 import com.consiliumtechnologies.schemas.mobile._2015._05.optimisetypes.ContactInfoType;
 import com.consiliumtechnologies.schemas.mobile._2015._05.optimisetypes.JobIdentityType;
 import com.consiliumtechnologies.schemas.mobile._2015._05.optimisetypes.JobType;
@@ -12,6 +14,7 @@ import com.consiliumtechnologies.schemas.mobile._2015._05.optimisetypes.Resource
 import com.consiliumtechnologies.schemas.mobile._2015._05.optimisetypes.SkillCollectionType;
 import com.consiliumtechnologies.schemas.mobile._2015._05.optimisetypes.WorldIdentityType;
 import com.consiliumtechnologies.schemas.services.mobile._2009._03.messaging.SendCreateJobRequestMessage;
+import com.consiliumtechnologies.schemas.services.mobile._2009._03.messaging.SendDeleteJobRequestMessage;
 import com.consiliumtechnologies.schemas.services.mobile._2009._03.messaging.SendMessageRequestInfo;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
@@ -129,7 +132,6 @@ public class TMJobConverterServiceImpl implements TMJobConverterService {
 
     SendCreateJobRequestMessage request = this.createJob(ingest, "");
     tmService.send(request);
-
   }
 
   public SendCreateJobRequestMessage createJob(FWMTCreateJobRequest ingest, String username) {
@@ -141,6 +143,26 @@ public class TMJobConverterServiceImpl implements TMJobConverterService {
     message.setCreateJobRequest(request);
 
     return message;
+  }
+
+  @Override
+  public void deleteJob(String jobID) {
+    SendDeleteJobRequestMessage message = new SendDeleteJobRequestMessage();
+    DeleteJobRequest deleteJobRequest = new DeleteJobRequest();
+    JobIdentityType jobIdentityType = new JobIdentityType();
+    AuditType auditType = new AuditType();
+
+    jobIdentityType.setReference(jobID);
+    deleteJobRequest.setIdentity(jobIdentityType);
+    deleteJobRequest.setDeletionReason("Unique ID duplication");
+    deleteJobRequest.setDeletionNotes("Jobs deleted due to duplication of unique ID's in data extract");
+    auditType.setUsername("fwmt.gateway");
+    deleteJobRequest.setDeletedBy(auditType);
+
+    message.setSendMessageRequestInfo(makeSendMessageRequestInfo(jobID));
+    message.setDeleteJobRequest(deleteJobRequest);
+
+    tmService.send(message);
   }
 }
 

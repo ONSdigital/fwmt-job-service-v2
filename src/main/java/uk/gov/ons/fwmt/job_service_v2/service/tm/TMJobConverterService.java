@@ -7,5 +7,7 @@ public interface TMJobConverterService {
   void convertMessageFromQueue(String message);
 
   SendCreateJobRequestMessage createJob(FWMTCreateJobRequest ingest, String username);
+
+  void deleteJob(String jobID);
 }
 
