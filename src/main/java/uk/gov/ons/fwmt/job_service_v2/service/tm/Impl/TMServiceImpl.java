@@ -1,4 +1,4 @@
-package uk.gov.ons.fwmt.job_service_v2.service.Impl;
+package uk.gov.ons.fwmt.job_service_v2.service.tm.Impl;
 
 import com.consiliumtechnologies.schemas.services.mobile._2009._03.messaging.DeleteMessageRequest;
 import com.consiliumtechnologies.schemas.services.mobile._2009._03.messaging.DeleteMessageResponse;
@@ -65,7 +65,7 @@ import org.springframework.ws.client.support.interceptor.ClientInterceptor;
 import org.springframework.ws.context.MessageContext;
 import org.springframework.ws.soap.client.core.SoapActionCallback;
 import org.springframework.ws.transport.http.HttpComponentsMessageSender;
-import uk.gov.ons.fwmt.job_service_v2.service.TMService;
+import uk.gov.ons.fwmt.job_service_v2.service.tm.TMService;
 
 import javax.xml.bind.JAXBElement;
 import java.util.Arrays;

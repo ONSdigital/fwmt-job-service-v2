@@ -6,7 +6,8 @@ import uk.gov.ons.fwmt.fwmtgatewaycommon.FWMTCreateJobRequest;
 public interface TMJobConverterService {
   void convertMessageFromQueue(String message);
 
-  void convertMessageFromQueue (byte[] message);
+  void convertMessageFromQueue(byte[] message);
+
   SendCreateJobRequestMessage createJob(FWMTCreateJobRequest ingest, String username);
 }
 

@@ -28,11 +28,14 @@ import uk.gov.ons.fwmt.job_service_v2.QueueReceiver.RMJobCreate;
 @SpringBootApplication
 public class ApplicationConfig {
 
-  private static final String topicExchangeName = "rm-create-exchange";
-  private static final String queueName = "rm-create";
   private static final String RM_ADAPTER_QUEUE = "tmConicalQueue";
-  static final String topicExchangeName = "rm-jobsvc-exchange";
-  static final String queueName = "adapter-jobSvc";
+  private static final String TOPIC_EXCHANGE_NAME = "rm-jobsvc-adapterExchange";
+  private static final String ADAPTER_QUEUE_NAME = "adapter-jobSvc";
+
+  public static void main(String[] args) {
+    SpringApplication.run(ApplicationConfig.class, args);
+    log.debug("Started application");
+  }
 
   @Bean
   Queue tmConicalQueue() {
@@ -45,17 +48,17 @@ public class ApplicationConfig {
   }
 
   @Bean
-  Queue queue() {
-    return new Queue(queueName, false);
+  Queue adapterQueue() {
+    return new Queue(ADAPTER_QUEUE_NAME, false);
   }
 
   @Bean
-  TopicExchange exchange() {
-    return new TopicExchange(topicExchangeName);
+  TopicExchange adapterExchange() {
+    return new TopicExchange(TOPIC_EXCHANGE_NAME);
   }
 
   @Bean
-  Binding binding(@Qualifier("queue") Queue queue, TopicExchange exchange) {
+  Binding adapterBinding(@Qualifier("adapterQueue") Queue queue, TopicExchange exchange) {
     return BindingBuilder.bind(queue).to(exchange).with("job.svc.job.request.#");
   }
 
@@ -64,7 +67,7 @@ public class ApplicationConfig {
       MessageListenerAdapter listenerAdapter) {
     SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
     container.setConnectionFactory(connectionFactory);
-    container.setQueueNames(queueName);
+    container.setQueueNames(ADAPTER_QUEUE_NAME);
     container.setMessageListener(listenerAdapter);
     return container;
   }
@@ -73,13 +76,4 @@ public class ApplicationConfig {
   MessageListenerAdapter listenerAdapter(RMJobCreate receiver) {
     return new MessageListenerAdapter(receiver, "receiveMessage");
   }
-
-  /**
-   * @param args
-   */
-  public static void main(String[] args) {
-    SpringApplication.run(ApplicationConfig.class, args);
-    log.debug("Started application");
-  }
-
 }
