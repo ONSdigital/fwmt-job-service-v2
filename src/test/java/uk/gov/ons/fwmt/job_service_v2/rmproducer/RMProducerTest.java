@@ -13,6 +13,7 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static uk.gov.ons.fwmt.job_service_v2.ApplicationConfig.RM_ADAPTER_QUEUE;
 
 @RunWith(MockitoJUnitRunner.class)
 public class RMProducerTest {
@@ -25,13 +26,12 @@ public class RMProducerTest {
   public void send() {
     //Given
     DummyTMResponse dummyTMResponse = new DummyTMResponse();
-    when(queue.getName()).thenReturn("testQueue");
-    doNothing().when(template).convertAndSend(eq("testQueue"), eq(dummyTMResponse));
+    doNothing().when(template).convertAndSend(eq(RM_ADAPTER_QUEUE), eq(dummyTMResponse));
 
     //When
     rmProducer.send(dummyTMResponse);
 
     //Then
-    verify(template).convertAndSend(eq("testQueue"), eq(dummyTMResponse));
+    verify(template).convertAndSend(eq(RM_ADAPTER_QUEUE), eq(dummyTMResponse));
   }
 }
