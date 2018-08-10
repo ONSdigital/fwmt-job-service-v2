@@ -16,7 +16,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import uk.gov.ons.fwmt.job_service_v2.QueueReceiver.RMJobCreate;
+import uk.gov.ons.fwmt.job_service_v2.queuereceiver.RMJobCreate;
 
 /**
  * Main entry point into the TM Gateway
