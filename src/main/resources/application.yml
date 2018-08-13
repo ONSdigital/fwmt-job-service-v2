@@ -17,15 +17,15 @@ spring:
     max-file-size: 12800MB
     max-request-size: 12800MB
   jackson:
-      serialization:
-        WRITE_DATES_AS_TIMESTAMPS: false
+    serialization:
+      WRITE_DATES_AS_TIMESTAMPS: false
   rabbitmq:
-      username: guest
-      password: guest
-      host: localhost
-      port: 5672
-      virtualhost: /
-      
+    username: guest
+    password: guest
+    host: localhost
+    port: 5672
+    virtualhost: /
+
 management.endpoint.health.show-details: always
 
 logging:
