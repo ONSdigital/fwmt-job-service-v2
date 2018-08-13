@@ -5,26 +5,16 @@
 package uk.gov.ons.fwmt.job_service_v2;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.amqp.core.Binding;
-import org.springframework.amqp.core.BindingBuilder;
-import org.springframework.amqp.core.Queue;
-import org.springframework.amqp.core.TopicExchange;
-import org.springframework.amqp.rabbit.connection.ConnectionFactory;
-import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
-import org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
+import org.springframework.integration.annotation.IntegrationComponentScan;
+import org.springframework.integration.config.EnableIntegration;
 
-/**
- * Main entry point into the TM Gateway
- *
- * @author Chris Hardman
- */
 
 @Slf4j
 @SpringBootApplication
+@EnableIntegration
+@IntegrationComponentScan(basePackages = "uk.gov.ons.fwmt.job_service_v2")
 public class ApplicationConfig {
 
   public static final String RM_ADAPTER_QUEUE = "tmConicalQueue";

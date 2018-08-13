@@ -40,9 +40,9 @@ security.user:
   password: "password"
 
 totalmobile:
-  username: ""
-  password: ""
-  url: ""
+  username: "user"
+  password: "password"
+  url: "http://localhost:9090/"
   message-queue-path: "/Services/TM/v20/Messaging/MessageQueueWs.asmx"
   message-queue-wsdl-path: "src/main/resources/wsdl/Messaging_MessageQueueWs.wsdl"
   message-queue-namespace: "http://schemas.consiliumtechnologies.com/wsdl/mobile/2007/07/messaging/"

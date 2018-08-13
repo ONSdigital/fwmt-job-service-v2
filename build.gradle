@@ -42,8 +42,8 @@ jar {
 
 repositories {
     mavenCentral()
-    maven { url "http://artifactory-sdc.onsdigital.uk/artifactory/libs-snapshot" }
-    maven { url "http://artifactory-sdc.onsdigital.uk/artifactory/libs-release" }
+//    maven { url "http://artifactory-sdc.onsdigital.uk/artifactory/libs-snapshot" }
+//    maven { url "http://artifactory-sdc.onsdigital.uk/artifactory/libs-release" }
     maven { url "https://oss.sonatype.org/content/repositories/libs-snapshot" }
     maven { url "http://repo.maven.apache.org/maven2" }
     mavenLocal()
@@ -143,7 +143,7 @@ dependencies {
 
     integrationTestCompile 'org.assertj:assertj-core:3.0.0'
 
-    integrationTestRuntime group: 'uk.gov.ons.fwmt', name: 'fwmt-service-mocks', version: '1.0.0'
+//    integrationTestRuntime group: 'uk.gov.ons.fwmt', name: 'fwmt-service-mocks', version: '1.0.0'
 }
 
 class RunAsyncTask extends DefaultTask {
@@ -169,9 +169,9 @@ task integrationTest(type: Test) {
     classpath = sourceSets.integrationTest.runtimeClasspath
     outputs.upToDateWhen { false }
 }
-check.dependsOn integrationTest
+//check.dependsOn integrationTest
 check.dependsOn jacocoTestReport
-integrationTest.mustRunAfter test
+//integrationTest.mustRunAfter test
 
 task runMocks(type: com.github.psxpaul.task.JavaExecFork) {
     String mockJarPath = configurations.integrationTestRuntime.find { it.name.startsWith("fwmt-service-mocks") }
@@ -186,7 +186,7 @@ task runMocks(type: com.github.psxpaul.task.JavaExecFork) {
     waitForPort = 9099
     waitForOutput = 'Started Application'
 }
-integrationTest.dependsOn runMocks
+//integrationTest.dependsOn runMocks
 
 processResources {
     filter ReplaceTokens, tokens: [
