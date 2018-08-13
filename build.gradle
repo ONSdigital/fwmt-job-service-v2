@@ -10,7 +10,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:2.0.2.RELEASE")
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.5.15.RELEASE")
     }
 }
 
@@ -106,20 +106,14 @@ task genJaxb {
 
 dependencies {
     compile group: 'uk.gov.ons.fwmt', name: 'fwmt-gateway-common', version: '0.0.1-SNAPSHOT'
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '1.5.13.RELEASE'
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-web-services', version: '1.5.13.RELEASE'
-    compile(group: 'org.springframework.cloud', name: 'spring-cloud-spring-service-connector', version: '1.2.5.RELEASE') {
-        exclude(module: 'log4j')
-    }
-    compile group: 'org.springframework.cloud', name: 'spring-cloud-cloudfoundry-connector', version: '1.2.5.RELEASE'
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: '1.5.13.RELEASE'
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-amqp', version: '1.5.13.RELEASE'
+    compile("org.springframework.boot:spring-boot-starter")
+    compile("org.springframework.boot:spring-boot-starter-integration")
+    compile("org.springframework.integration:spring-integration-file")
+    compile("org.springframework.integration:spring-integration-ws")
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-amqp', version: '1.5.15.RELEASE'
+    compile group: 'org.springframework.integration', name: 'spring-integration-amqp', version: '4.3.17.RELEASE'
+
     compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.7'
-    compile(group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.3') {
-        exclude(module: 'commons-logging')
-    }
-    compile group: 'org.springframework.cloud', name: 'spring-cloud-cloudfoundry-connector', version: '1.2.5.RELEASE'
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: '1.5.13.RELEASE'
     compile(group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.3') {
         exclude(module: 'commons-logging')
     }
@@ -132,8 +126,6 @@ dependencies {
     compile group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.9.1'
     compile(files(genJaxb.classesDir).builtBy(genJaxb))
     jaxb "com.sun.xml.bind:jaxb-xjc:2.1.7"
-    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.5'
-    compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: '2.9.5'
 
     testCompile(group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '1.5.9.RELEASE') {
         exclude(module: 'android-json')
