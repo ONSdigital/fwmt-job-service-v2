@@ -25,17 +25,18 @@ public class MessageParser {
   @Autowired private TMService tmService;
 
   public void receiveMessage(String message) throws IllegalAccessException, InstantiationException {
-    log.info("received a message: ", message);
+    log.info("received a message: " + message);
+    log.info(message);
     this.convertMessageFromQueueToDTO(message);
   }
 
   private void convertMessageFromQueueToDTO(String message) throws InstantiationException, IllegalAccessException {
-    if (message.contains("FWMTCreateJobRequest")) {
+    if (message.contains("Create")) {
       FWMTCreateJobRequest fwmtCreateJobRequest = convertMessageToDTO(FWMTCreateJobRequest.class, message);
       SendCreateJobRequestMessage createRequest = tmJobConverterService.createJob(fwmtCreateJobRequest, "");
       tmService.send(createRequest);
     }
-    if (message.contains("FWMTCancelJobRequest")) {
+    if (message.contains("Cancel")) {
       FWMTCancelJobRequest fwmtCancelJobRequest = convertMessageToDTO(FWMTCancelJobRequest.class, message);
       SendDeleteJobRequestMessage deleteRequest = tmJobConverterService
           .deleteJob(fwmtCancelJobRequest.getJobIdentity(), fwmtCancelJobRequest.getReason());

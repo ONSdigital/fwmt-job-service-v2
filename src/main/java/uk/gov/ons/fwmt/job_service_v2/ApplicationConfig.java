@@ -28,8 +28,8 @@ import uk.gov.ons.fwmt.job_service_v2.queuereceiver.MessageParser;
 @SpringBootApplication
 public class ApplicationConfig {
 
-  public static final String RM_ADAPTER_QUEUE = "tmConicalQueue";
-  private static final String TOPIC_EXCHANGE_NAME = "rm-jobsvc-adapterExchange";
+  public static final String RM_ADAPTER_QUEUE = "jobsvc-adapter";
+  private static final String TOPIC_EXCHANGE_NAME = "rm-jobsvc-exchange";
   private static final String ADAPTER_QUEUE_NAME = "adapter-jobSvc";
 
   public static void main(String[] args) {
