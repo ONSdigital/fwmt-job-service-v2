@@ -27,6 +27,7 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import java.time.ZoneId;
 import java.util.GregorianCalendar;
+
 import java.util.List;
 
 @Slf4j
@@ -71,7 +72,7 @@ public class TMJobConverterServiceImpl implements TMJobConverterService {
 
     request.getJob().getContact().setName(ingest.getAddress().getPostCode());
     request.getJob().getSkills().getSkill().add(JOB_SKILL);
-    request.getJob().setWorkType(JOB_WORK_TYPE);
+    request.getJob().setWorkType(ingest.getSurveyType());
     request.getJob().getWorld().setReference(JOB_WORLD);
 
     GregorianCalendar dueDateCalendar = GregorianCalendar
