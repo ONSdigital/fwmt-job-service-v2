@@ -26,7 +26,7 @@ public class MessageParser {
 
   public void receiveMessage(String message) throws IllegalAccessException, InstantiationException {
     log.info("received a message: " + message);
-    convertMessageFromQueueToDTO(new String(message));
+    convertMessageFromQueueToDTO(message);
   }
 
   private void convertMessageFromQueueToDTO(String message) throws InstantiationException, IllegalAccessException {
