@@ -57,17 +57,17 @@ public class TMJobConverterServiceImpl implements TMJobConverterService {
     LocationType location = request.getJob().getLocation();
     List<String> addressLines = location.getAddressDetail().getLines().getAddressLine();
 
-    //    addAddressLines(addressLines, ingest.getAddress().getLine1());
-    //    addAddressLines(addressLines, ingest.getAddress().getLine2());
-    //    addAddressLines(addressLines, ingest.getAddress().getLine3());
-    //    addAddressLines(addressLines, ingest.getAddress().getLine4());
-    //    addAddressLines(addressLines, ingest.getAddress().getTownName());
+        addAddressLines(addressLines, ingest.getAddress().getLine1());
+        addAddressLines(addressLines, ingest.getAddress().getLine2());
+        addAddressLines(addressLines, ingest.getAddress().getLine3());
+        addAddressLines(addressLines, ingest.getAddress().getLine4());
+        addAddressLines(addressLines, ingest.getAddress().getTownName());
     checkNumberOfAddressLines(addressLines);
 
-    //    location.getAddressDetail().setPostCode(ingest.getAddress().getPostCode());
+        location.getAddressDetail().setPostCode(ingest.getAddress().getPostCode());
     //location.setReference(ingest.getSerNo());
 
-    //    request.getJob().getContact().setName(ingest.getAddress().getPostCode());
+        request.getJob().getContact().setName(ingest.getAddress().getPostCode());
     request.getJob().getSkills().getSkill().add(JOB_SKILL);
     request.getJob().setWorkType(JOB_WORK_TYPE);
     request.getJob().getWorld().setReference(JOB_WORLD);

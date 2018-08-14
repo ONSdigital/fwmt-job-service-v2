@@ -147,8 +147,8 @@ public class TMServiceImpl extends WebServiceGatewaySupport implements TMService
     messageSender.afterPropertiesSet();
     this.setMessageSender(messageSender);
 
-    ClientInterceptor[] interceptors = {myClientInterceptor};
-    this.setInterceptors(interceptors);
+   // ClientInterceptor[] interceptors = {myClientInterceptor};
+  // this.setInterceptors(interceptors);
 
     this.objectFactory = new ObjectFactory();
   }

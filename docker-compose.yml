@@ -16,8 +16,8 @@ services:
        - "${ADAPTER_PORT}:9094"
       networks:
        - internal
-      environment: 
-       - spring.rabbitmq.host==rabbit
+      environment:
+       - spring.rabbitmq.host=rabbit
     rabbit:
       container_name: rabbit
       image: rabbitmq:3.6.10-management
