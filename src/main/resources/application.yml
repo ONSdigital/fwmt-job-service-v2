@@ -52,6 +52,14 @@ totalmobile:
     login-url: "/WebAdmin/Login"
     save-user-url: "/WebAdmin/Administration/Users/SaveUser"
 
+queue:
+  rabbit:
+    read:
+      name: "FWMT_JOB_SVC_REQUEST_QUEUE"
+    host: "localhost"
+    port: "5672"
+
+
 service:
   resource:
     username: "user"
