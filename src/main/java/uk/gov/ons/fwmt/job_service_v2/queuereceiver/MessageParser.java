@@ -25,8 +25,7 @@ public class MessageParser {
   @Autowired private TMService tmService;
 
   public void receiveMessage(String message) throws IllegalAccessException, InstantiationException {
-    log.info("received a message: " + message);
-    log.info(message);
+    log.info("received a message: ", message);
     this.convertMessageFromQueueToDTO(message);
   }
 
@@ -36,11 +35,14 @@ public class MessageParser {
       SendCreateJobRequestMessage createRequest = tmJobConverterService.createJob(fwmtCreateJobRequest, "");
       tmService.send(createRequest);
     }
-    if (message.contains("Cancel")) {
+    else if (message.contains("Cancel")) {
       FWMTCancelJobRequest fwmtCancelJobRequest = convertMessageToDTO(FWMTCancelJobRequest.class, message);
       SendDeleteJobRequestMessage deleteRequest = tmJobConverterService
           .deleteJob(fwmtCancelJobRequest.getJobIdentity(), fwmtCancelJobRequest.getReason());
       tmService.send(deleteRequest);
+    }
+    else{
+      log.error("Message can be processed due to unknow type");
     }
   }
 
