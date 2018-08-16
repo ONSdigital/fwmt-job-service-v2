@@ -26,9 +26,7 @@ import static uk.gov.ons.fwmt.job_service_v2.ApplicationConfig.RM_ADAPTER_QUEUE;
 public class RMProducerTest {
 
   @InjectMocks RMProducer rmProducer;
-  @Mock Queue queue;
   @Mock RabbitTemplate template;
-  @Captor ArgumentCaptor argCaptor;
   @Mock ObjectMapper objectMapper;
 
 
@@ -37,7 +35,6 @@ public class RMProducerTest {
     //Given
     DummyTMResponse dummyTMResponse = new DummyTMResponse();
     dummyTMResponse.setIdentity("test");
-    doNothing().when(template).convertAndSend(eq(RM_ADAPTER_QUEUE), eq(dummyTMResponse));
     when(objectMapper.writeValueAsString(eq(dummyTMResponse))).thenReturn("dummyResponseStr");
 
     //When
