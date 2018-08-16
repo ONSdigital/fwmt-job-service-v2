@@ -18,7 +18,8 @@ import static org.mockito.Mockito.never;
 public class MessageParserTest {
 
 
-    @InjectMocks MessageParser messageParser;
+    @InjectMocks
+    MessageParser messageParser;
 
     @Mock
     private TMJobConverterService tmJobConverterService;

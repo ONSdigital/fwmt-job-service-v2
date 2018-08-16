@@ -30,7 +30,7 @@ public class TMJobConverterServiceImplTest {
     SendCreateJobRequestMessage sendCreateJobRequestMessage;
 
     @Test
-    public void createJobRequest(){
+    public void createJobRequestTest(){
 
         String user = "bob.smith";
         FWMTCreateJobRequest ingest = new FWMTCreateJobRequest();
