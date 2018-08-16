@@ -3,7 +3,9 @@ package uk.gov.ons.fwmt.job_service_v2.queuereceiver;
 import com.consiliumtechnologies.schemas.services.mobile._2009._03.messaging.SendCreateJobRequestMessage;
 import com.consiliumtechnologies.schemas.services.mobile._2009._03.messaging.SendDeleteJobRequestMessage;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,8 +23,14 @@ import java.time.format.DateTimeFormatter;
 @Component
 public class MessageParser {
 
-  @Autowired private TMJobConverterService tmJobConverterService;
-  @Autowired private TMService tmService;
+  @Autowired
+  private TMJobConverterService tmJobConverterService;
+
+  @Autowired
+  private TMService tmService;
+
+  @Autowired
+  private ObjectMapper mapper;
 
   public void receiveMessage(String message) throws IllegalAccessException, InstantiationException {
     log.info("received a message: " + message);
@@ -50,10 +58,8 @@ public class MessageParser {
 
   private <T> T convertMessageToDTO(Class<T> klass, String message)
       throws IllegalAccessException, InstantiationException {
-    ObjectMapper mapper = new ObjectMapper();
-    SimpleModule module = new SimpleModule();
-    module.addDeserializer(LocalDate.class, new LocalDateDeserializer(DateTimeFormatter.BASIC_ISO_DATE));
-    mapper.registerModule(module);
+    mapper.registerModule(new JavaTimeModule());
+    mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     T dto = klass.newInstance();
     try {
       dto = mapper.readValue(message, klass);

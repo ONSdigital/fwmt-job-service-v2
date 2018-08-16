@@ -23,57 +23,64 @@ import org.springframework.stereotype.Service;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.FWMTCreateJobRequest;
 import uk.gov.ons.fwmt.job_service_v2.service.tm.TMJobConverterService;
 
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
+import java.time.ZoneId;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 @Slf4j
 @Service
 public class TMJobConverterServiceImpl implements TMJobConverterService {
   protected static final String JOB_QUEUE = "\\OPTIMISE\\INPUT";
-  protected static final String JOB_SKILL = "Survey";
-  protected static final String JOB_WORK_TYPE = "SS";
-  protected static final String JOB_WORLD = "Default";
+  protected static final String JOB_SKILL = "Demo";
+  protected static final String JOB_WORK_TYPE = "Household";
+  protected static final String JOB_WORLD = "MOD World";
   @Value("${totalmobile.username}")
-  private  String username;
+  private  String TMAdminUsername;
 
   protected CreateJobRequest createJobRequestFromIngest(FWMTCreateJobRequest ingest, String username) {
     CreateJobRequest request = new CreateJobRequest();
     JobType job = new JobType();
     request.setJob(job);
-    job.setLocation(new LocationType());
     job.setIdentity(new JobIdentityType());
-    job.getLocation().setAddressDetail(new AddressDetailType());
-    job.getLocation().getAddressDetail().setLines(new AddressDetailType.Lines());
-    job.setContact(new ContactInfoType());
-    job.setAttributes(new NameValueAttributeCollectionType());
-    job.setAllocatedTo(new ResourceIdentityType());
     job.setSkills(new SkillCollectionType());
-    job.setAdditionalProperties(new AdditionalPropertyCollectionType());
+    job.setContact(new ContactInfoType());
     job.setWorld(new WorldIdentityType());
 
-    request.getJob().getIdentity().setReference(ingest.getJobIdentity());
+    job.setDescription("TEST MESSAGE");
 
+    request.getJob().getIdentity().setReference(ingest.getJobIdentity());
+    request.getJob().getContact().setName(ingest.getAddress().getPostCode());
+    request.getJob().getSkills().getSkill().add(JOB_SKILL);
+    request.getJob().setWorkType(JOB_WORK_TYPE);
+    request.getJob().getWorld().setReference(JOB_WORLD);
+
+    job.setLocation(new LocationType());
+    job.getLocation().setAddressDetail(new AddressDetailType());
+    job.getLocation().getAddressDetail().setLines(new AddressDetailType.Lines());
     LocationType location = request.getJob().getLocation();
     List<String> addressLines = location.getAddressDetail().getLines().getAddressLine();
 
-        addAddressLines(addressLines, ingest.getAddress().getLine1());
-        addAddressLines(addressLines, ingest.getAddress().getLine2());
-        addAddressLines(addressLines, ingest.getAddress().getLine3());
-        addAddressLines(addressLines, ingest.getAddress().getLine4());
-        addAddressLines(addressLines, ingest.getAddress().getTownName());
+    job.setAdditionalProperties(new AdditionalPropertyCollectionType());
+
+    addAddressLines(addressLines, ingest.getAddress().getLine1());
+    addAddressLines(addressLines, ingest.getAddress().getLine2());
+    addAddressLines(addressLines, ingest.getAddress().getLine3());
+    addAddressLines(addressLines, ingest.getAddress().getLine4());
+    addAddressLines(addressLines, ingest.getAddress().getTownName());
     checkNumberOfAddressLines(addressLines);
 
-        location.getAddressDetail().setPostCode(ingest.getAddress().getPostCode());
-    //location.setReference(ingest.getSerNo());
+    location.getAddressDetail().setPostCode(ingest.getAddress().getPostCode());
 
-        request.getJob().getContact().setName(ingest.getAddress().getPostCode());
-    request.getJob().getSkills().getSkill().add(JOB_SKILL);
-    request.getJob().setWorkType(ingest.getSurveyType());
-    request.getJob().getWorld().setReference(JOB_WORLD);
-
-    //    GregorianCalendar dueDateCalendar = GregorianCalendar
-    //            .from(ingest.getDueDate().atTime(23, 59, 59).atZone(ZoneId.of("UTC")));
-    //    request.getJob().setDueDate(datatypeFactory.newXMLGregorianCalendar(dueDateCalendar));
-    request.getJob().getAllocatedTo().setUsername(username);
+    GregorianCalendar dueDateCalendar = GregorianCalendar
+        .from(ingest.getDueDate().atTime(23, 59, 59).atZone(ZoneId.of("UTC")));
+    try {
+      request.getJob().setDueDate(DatatypeFactory.newInstance().newXMLGregorianCalendar(dueDateCalendar));
+    } catch (DatatypeConfigurationException e) {
+      e.printStackTrace();
+      //TODO: Handle exception properly
+    }
 
     request.getJob().setDuration(1);
     request.getJob().setVisitComplete(false);
@@ -126,7 +133,7 @@ public class TMJobConverterServiceImpl implements TMJobConverterService {
     jobIdentityType.setReference(jobIdentity);
     deleteJobRequest.setIdentity(jobIdentityType);
     deleteJobRequest.setDeletionReason(deletionReason);
-    auditType.setUsername(username);
+    auditType.setUsername(TMAdminUsername);
     deleteJobRequest.setDeletedBy(auditType);
 
     message.setSendMessageRequestInfo(makeSendMessageRequestInfo(jobIdentity));
