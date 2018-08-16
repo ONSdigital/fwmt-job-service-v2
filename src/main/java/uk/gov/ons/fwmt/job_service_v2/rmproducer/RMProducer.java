@@ -27,7 +27,7 @@ public class RMProducer {
     try {
       final String dummyResponseStr = objectMapper.writeValueAsString(dummyTMResponse);
       log.info("Message sent to queue :{}",dummyResponseStr);
-      this.template.convertAndSend(RM_ADAPTER_QUEUE, dummyResponseStr);
+      template.convertAndSend(RM_ADAPTER_QUEUE, dummyResponseStr);
     } catch (JsonProcessingException e) {
       e.printStackTrace();
     }
