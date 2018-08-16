@@ -23,6 +23,7 @@ public class MessageParserTest {
 
     @Mock
     private TMJobConverterService tmJobConverterService;
+
     @Mock
     private TMService tmService;
 
