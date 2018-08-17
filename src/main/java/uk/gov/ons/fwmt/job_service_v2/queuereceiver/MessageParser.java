@@ -4,9 +4,7 @@ import com.consiliumtechnologies.schemas.services.mobile._2009._03.messaging.Sen
 import com.consiliumtechnologies.schemas.services.mobile._2009._03.messaging.SendDeleteJobRequestMessage;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -16,8 +14,6 @@ import uk.gov.ons.fwmt.job_service_v2.service.tm.TMJobConverterService;
 import uk.gov.ons.fwmt.job_service_v2.service.tm.TMService;
 
 import java.io.IOException;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 
 @Slf4j
 @Component
@@ -43,13 +39,14 @@ public class MessageParser {
       FWMTCreateJobRequest fwmtCreateJobRequest = convertMessageToDTO(FWMTCreateJobRequest.class, message);
       SendCreateJobRequestMessage createRequest = tmJobConverterService.createJob(fwmtCreateJobRequest, "");
       tmService.send(createRequest);
-    }
-    if (message.contains("Cancel")) {
+    } else if (message.contains("Cancel")) {
       log.info("cancel");
       FWMTCancelJobRequest fwmtCancelJobRequest = convertMessageToDTO(FWMTCancelJobRequest.class, message);
       SendDeleteJobRequestMessage deleteRequest = tmJobConverterService
           .deleteJob(fwmtCancelJobRequest.getJobIdentity(), fwmtCancelJobRequest.getReason());
       tmService.send(deleteRequest);
+    } else {
+      log.error("Message can be processed due to unknown type");
     }
   }
 

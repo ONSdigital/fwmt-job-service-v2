@@ -60,7 +60,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.stereotype.Service;
 import org.springframework.ws.client.core.support.WebServiceGatewaySupport;
-import org.springframework.ws.client.support.interceptor.ClientInterceptor;
 import org.springframework.ws.soap.client.core.SoapActionCallback;
 import org.springframework.ws.transport.http.HttpComponentsMessageSender;
 import uk.gov.ons.fwmt.job_service_v2.interceptor.MyClientInterceptor;
@@ -121,9 +120,9 @@ public class TMServiceImpl extends WebServiceGatewaySupport implements TMService
     messageActionMap.put(ResetMessageRequest.class, "Reset");
   }
 
-  @Autowired MyClientInterceptor myClientInterceptor;
   private final String messageQueueUrl;
   private final String namespace;
+  @Autowired MyClientInterceptor myClientInterceptor;
   ObjectFactory objectFactory;
 
   @Autowired
@@ -147,8 +146,8 @@ public class TMServiceImpl extends WebServiceGatewaySupport implements TMService
     messageSender.afterPropertiesSet();
     this.setMessageSender(messageSender);
 
-   // ClientInterceptor[] interceptors = {myClientInterceptor};
-  // this.setInterceptors(interceptors);
+    // ClientInterceptor[] interceptors = {myClientInterceptor};
+    // this.setInterceptors(interceptors);
 
     this.objectFactory = new ObjectFactory();
   }
