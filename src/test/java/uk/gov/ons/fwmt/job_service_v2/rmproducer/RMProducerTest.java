@@ -27,7 +27,6 @@ public class RMProducerTest {
   @Mock
   ObjectMapper objectMapper;
 
-
   @Test
   public void send() throws JsonProcessingException {
     //Given
@@ -40,6 +39,6 @@ public class RMProducerTest {
 
     //Then
     verify(objectMapper).writeValueAsString(eq(dummyTMResponse));
-    verify(template).convertAndSend(RM_ADAPTER_QUEUE,"dummyResponseStr");
+    verify(template).convertAndSend(RM_ADAPTER_QUEUE, "dummyResponseStr");
   }
 }
