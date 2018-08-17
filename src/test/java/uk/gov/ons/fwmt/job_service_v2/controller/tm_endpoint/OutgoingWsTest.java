@@ -5,24 +5,35 @@ import com.consiliumtechnologies.schemas.mobile._2009._03.commonmessages.SubmitD
 import com.consiliumtechnologies.schemas.mobile._2009._03.visitsmessages.CompleteVisitRequest;
 import com.consiliumtechnologies.schemas.mobile._2009._03.visitsmessages.RequestVisitRequest;
 import com.consiliumtechnologies.schemas.mobile._2009._03.visitsmessages.UpdateVisitStatusRequest;
+import com.consiliumtechnologies.schemas.mobile._2009._03.visitstypes.VisitIdentityType;
 import com.consiliumtechnologies.schemas.mobile._2009._07.formsmessages.SubmitFormResultRequest;
 import com.consiliumtechnologies.schemas.mobile._2009._09.compositemessages.CompositeVisitRequest;
+import com.consiliumtechnologies.schemas.mobile._2009._09.compositemessages.ObjectFactory;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import uk.gov.ons.fwmt.job_service_v2.service.rm.RMJobConverterService;
 
 import javax.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+@RunWith(MockitoJUnitRunner.class)
 public class OutgoingWsTest {
 
-  OutgoingWs outgoingWs = new OutgoingWs();
+  @InjectMocks
+  OutgoingWs outgoingWs;
 
   @Mock
   private RMJobConverterService rmJobConverterService;
@@ -87,16 +98,21 @@ public class OutgoingWsTest {
   @Test
   public void sendCompositeVisitRequestOutput() throws Exception {
     //Given
+    ObjectFactory factory = new ObjectFactory();
+
+    CompositeVisitRequest compositeVisitRequest = factory.createCompositeVisitRequest();
+    VisitIdentityType visitIdentityType = new VisitIdentityType();
+    visitIdentityType.setGuid("testGuid");
+    compositeVisitRequest.setIdentity(visitIdentityType);
+    JAXBElement<CompositeVisitRequest> compositeVisitRequestJAXBElement = factory.createCompositeVisitRequest(compositeVisitRequest);
 
     //When
-//    JAXBElement<CompositeVisitRequest> result = outgoingWs.sendCompositeVisitRequestOutput(
-//        getElement(CompositeVisitRequest.class));
-//    when(rmJobConverterService.transformRequest(eq(getElement(CompositeVisitRequest.class)))).thenReturn(null);
-//
-//
-//    //Then
-//    assertNotNull(result);
-//    assertNull(result.getValue());
+    JAXBElement<CompositeVisitRequest> result = outgoingWs.sendCompositeVisitRequestOutput(compositeVisitRequestJAXBElement);
+
+    //Then
+    verify(rmJobConverterService).transformRequest(compositeVisitRequestJAXBElement);
+    assertNotNull(result);
+    assertNull(result.getValue());
   }
 
   @Test
