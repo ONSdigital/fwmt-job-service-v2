@@ -15,7 +15,6 @@ import uk.gov.ons.fwmt.fwmtgatewaycommon.FWMTCreateJobRequest;
 import uk.gov.ons.fwmt.job_service_v2.service.tm.TMJobConverterService;
 import uk.gov.ons.fwmt.job_service_v2.service.tm.TMService;
 
-
 import java.io.IOException;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -27,7 +26,7 @@ import static org.mockito.Mockito.when;
 public class MessageParserTest {
 
     @InjectMocks
-    MessageParser messageParser = new MessageParser();
+    MessageParser messageParser;
 
     @Mock
     private TMJobConverterService tmJobConverterService;

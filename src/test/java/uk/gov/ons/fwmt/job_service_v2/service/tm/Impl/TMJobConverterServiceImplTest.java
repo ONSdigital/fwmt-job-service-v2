@@ -4,29 +4,16 @@ import com.consiliumtechnologies.schemas.services.mobile._2009._03.messaging.Sen
 import com.consiliumtechnologies.schemas.services.mobile._2009._03.messaging.SendDeleteJobRequestMessage;
 import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.Address;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.FWMTCreateJobRequest;
 
-
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.contains;
-import static org.mockito.Mockito.times;
 
 public class TMJobConverterServiceImplTest {
 
@@ -64,13 +51,10 @@ public class TMJobConverterServiceImplTest {
 
         assertEquals(request.getSendMessageRequestInfo().getQueueName(),"\\OPTIMISE\\INPUT");
         assertEquals(request.getSendMessageRequestInfo().getKey(),"1234");
-
-
     }
 
     @Test
     public void addAddressLinesTest(){
-
         List<String> addressLines = new ArrayList<String>();
         String addressLine1 = "number";
         String addressLine2 = "street";
@@ -83,7 +67,6 @@ public class TMJobConverterServiceImplTest {
         tmJobConverterService.addAddressLines(addressLines,addressLine4);
 
         assertEquals(4, addressLines.size());
-
     }
 
     @Test
@@ -117,7 +100,6 @@ public class TMJobConverterServiceImplTest {
 
     @Test
     public void deleteJobTest(){
-
         SendDeleteJobRequestMessage request = tmJobConverterService.deleteJob("1234", "wrong address");
 
         assertEquals(request.getDeleteJobRequest().getDeletionReason(),"wrong address");
