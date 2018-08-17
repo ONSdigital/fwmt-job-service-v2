@@ -7,7 +7,6 @@ import com.consiliumtechnologies.schemas.services.mobile._2009._03.messaging.Que
 import com.consiliumtechnologies.schemas.services.mobile._2009._03.messaging.SendAddJobTasksRequestMessage;
 import com.consiliumtechnologies.schemas.services.mobile._2009._03.messaging.SendCreateJobRequestMessageResponse;
 import com.consiliumtechnologies.schemas.services.mobile._2009._03.messaging.SendMessageRequest;
-import com.sun.xml.internal.bind.v2.TODO;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
