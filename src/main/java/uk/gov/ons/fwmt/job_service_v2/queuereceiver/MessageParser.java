@@ -4,20 +4,16 @@ import com.consiliumtechnologies.schemas.services.mobile._2009._03.messaging.Sen
 import com.consiliumtechnologies.schemas.services.mobile._2009._03.messaging.SendDeleteJobRequestMessage;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import uk.gov.ons.fwmt.fwmtgatewaycommon.FWMTCancelJobRequest;
-import uk.gov.ons.fwmt.fwmtgatewaycommon.FWMTCreateJobRequest;
+import uk.gov.ons.fwmt.fwmtgatewaycommon.data.FWMTCancelJobRequest;
+import uk.gov.ons.fwmt.fwmtgatewaycommon.data.FWMTCreateJobRequest;
 import uk.gov.ons.fwmt.job_service_v2.service.tm.TMJobConverterService;
 import uk.gov.ons.fwmt.job_service_v2.service.tm.TMService;
 
 import java.io.IOException;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 
 @Slf4j
 @Component
