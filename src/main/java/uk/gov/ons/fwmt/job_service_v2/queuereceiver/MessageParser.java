@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.FWMTCancelJobRequest;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.FWMTCreateJobRequest;
@@ -23,6 +24,7 @@ public class MessageParser {
   private TMJobConverterService tmJobConverterService;
 
   @Autowired
+  @Qualifier("tmServiceImpl")
   private TMService tmService;
 
   @Autowired
