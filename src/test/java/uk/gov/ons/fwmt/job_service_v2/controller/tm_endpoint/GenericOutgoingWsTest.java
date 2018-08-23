@@ -19,7 +19,8 @@ public class GenericOutgoingWsTest {
 
     //When
     QName qname = new QName("request");
-    JAXBElement<WebServiceAdapterOutputRequest> jaxbElement = new JAXBElement<WebServiceAdapterOutputRequest>(qname, WebServiceAdapterOutputRequest.class, new WebServiceAdapterOutputRequest());
+    JAXBElement<WebServiceAdapterOutputRequest> jaxbElement = new JAXBElement<WebServiceAdapterOutputRequest>(qname,
+        WebServiceAdapterOutputRequest.class, new WebServiceAdapterOutputRequest());
     JAXBElement<SendMessageResponse> result = genericOutgoingWs.request(jaxbElement);
 
     //Then

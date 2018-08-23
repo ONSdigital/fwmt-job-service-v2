@@ -26,6 +26,8 @@ import static org.mockito.Mockito.when;
 
 public class TMServiceImplTest {
 
+  @Rule
+  public ExpectedException expectedException = ExpectedException.none();
   @InjectMocks
   private TMServiceImpl tmServiceImpl;
   @Mock
@@ -34,9 +36,6 @@ public class TMServiceImplTest {
   private WebServiceTemplate webServiceTemplate;
   @Mock
   private JAXBElement<Object> jaxbElement;
-
-  @Rule
-  public ExpectedException expectedException = ExpectedException.none();
 
   @Before
   public void setUp() throws Exception {
@@ -162,10 +161,10 @@ public class TMServiceImplTest {
     when(jaxbElement.getValue()).thenReturn(new Object());
 
     /*
-    * Add common exception to common gateway
-    * */
-//    expectedException.expect(FWMTCommonException.class);
-//    expectedException.expectMessage(ExceptionCode.TM_MALFUNCTION.getCode());
+     * Add common exception to common gateway
+     * */
+    //    expectedException.expect(FWMTCommonException.class);
+    //    expectedException.expectMessage(ExceptionCode.TM_MALFUNCTION.getCode());
 
     //When
     tmServiceImpl.send(queryMessagesRequest);

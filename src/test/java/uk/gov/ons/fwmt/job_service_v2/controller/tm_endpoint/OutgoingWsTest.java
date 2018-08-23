@@ -14,20 +14,14 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.annotation.Autowired;
 import uk.gov.ons.fwmt.job_service_v2.service.rm.RMJobConverterService;
 
 import javax.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class OutgoingWsTest {
@@ -104,10 +98,12 @@ public class OutgoingWsTest {
     VisitIdentityType visitIdentityType = new VisitIdentityType();
     visitIdentityType.setGuid("testGuid");
     compositeVisitRequest.setIdentity(visitIdentityType);
-    JAXBElement<CompositeVisitRequest> compositeVisitRequestJAXBElement = factory.createCompositeVisitRequest(compositeVisitRequest);
+    JAXBElement<CompositeVisitRequest> compositeVisitRequestJAXBElement = factory
+        .createCompositeVisitRequest(compositeVisitRequest);
 
     //When
-    JAXBElement<CompositeVisitRequest> result = outgoingWs.sendCompositeVisitRequestOutput(compositeVisitRequestJAXBElement);
+    JAXBElement<CompositeVisitRequest> result = outgoingWs
+        .sendCompositeVisitRequestOutput(compositeVisitRequestJAXBElement);
 
     //Then
     verify(rmJobConverterService).transformRequest(compositeVisitRequestJAXBElement);
