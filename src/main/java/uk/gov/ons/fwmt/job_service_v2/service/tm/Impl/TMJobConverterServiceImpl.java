@@ -9,8 +9,6 @@ import com.consiliumtechnologies.schemas.mobile._2015._05.optimisetypes.ContactI
 import com.consiliumtechnologies.schemas.mobile._2015._05.optimisetypes.JobIdentityType;
 import com.consiliumtechnologies.schemas.mobile._2015._05.optimisetypes.JobType;
 import com.consiliumtechnologies.schemas.mobile._2015._05.optimisetypes.LocationType;
-import com.consiliumtechnologies.schemas.mobile._2015._05.optimisetypes.NameValueAttributeCollectionType;
-import com.consiliumtechnologies.schemas.mobile._2015._05.optimisetypes.ResourceIdentityType;
 import com.consiliumtechnologies.schemas.mobile._2015._05.optimisetypes.SkillCollectionType;
 import com.consiliumtechnologies.schemas.mobile._2015._05.optimisetypes.WorldIdentityType;
 import com.consiliumtechnologies.schemas.services.mobile._2009._03.messaging.SendCreateJobRequestMessage;
@@ -37,7 +35,7 @@ public class TMJobConverterServiceImpl implements TMJobConverterService {
   protected static final String JOB_WORK_TYPE = "Household";
   protected static final String JOB_WORLD = "MOD World";
   @Value("${totalmobile.username}")
-  private  String TMAdminUsername;
+  private String TMAdminUsername;
 
   protected CreateJobRequest createJobRequestFromIngest(FWMTCreateJobRequest ingest, String username) {
     CreateJobRequest request = new CreateJobRequest();

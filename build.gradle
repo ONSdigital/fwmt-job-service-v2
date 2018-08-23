@@ -42,8 +42,8 @@ jar {
 
 repositories {
     mavenCentral()
-    maven { url "http://artifactory-sdc.onsdigital.uk/artifactory/libs-snapshot" }
-    maven { url "http://artifactory-sdc.onsdigital.uk/artifactory/libs-release" }
+    maven { url "http://artifactory-sdc.onsdigital.uk/artifactory/libs-snapshot-local" }
+    maven { url "http://artifactory-sdc.onsdigital.uk/artifactory/libs-release-local" }
     maven { url "https://oss.sonatype.org/content/repositories/libs-snapshot" }
     maven { url "http://repo.maven.apache.org/maven2" }
     mavenLocal()

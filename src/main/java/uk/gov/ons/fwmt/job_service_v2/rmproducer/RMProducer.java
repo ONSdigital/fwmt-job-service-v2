@@ -14,11 +14,9 @@ import uk.gov.ons.fwmt.fwmtgatewaycommon.data.DummyTMResponse;
 public class RMProducer {
 
   @Autowired
-  private RabbitTemplate template;
-
-  @Autowired
   ObjectMapper objectMapper;
-
+  @Autowired
+  private RabbitTemplate template;
 
   public void send(DummyTMResponse dummyTMResponse) {
     try {

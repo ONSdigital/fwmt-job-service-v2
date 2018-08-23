@@ -18,10 +18,14 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class RMProducerTest {
 
-  @InjectMocks RMProducer rmProducer;
-  @Mock RabbitTemplate template;
-  @Mock ObjectMapper objectMapper;
+  @InjectMocks
+  RMProducer rmProducer;
 
+  @Mock
+  RabbitTemplate template;
+
+  @Mock
+  ObjectMapper objectMapper;
 
   @Test
   public void send() throws JsonProcessingException {
