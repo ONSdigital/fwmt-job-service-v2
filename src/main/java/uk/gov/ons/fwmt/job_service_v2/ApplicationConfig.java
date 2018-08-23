@@ -41,6 +41,11 @@ public class ApplicationConfig {
   }
 
   @Bean
+  Queue jobsvcQueue() {
+    return new Queue(QueueConfig.ADAPTER_TO_JOBSVC_QUEUE, false);
+  }
+
+  @Bean
   TopicExchange adapterExchange() {
     return new TopicExchange(QueueConfig.RM_JOB_SVC_EXCHANGE);
   }
@@ -48,6 +53,11 @@ public class ApplicationConfig {
   @Bean
   Binding adapterBinding(@Qualifier("adapterQueue") Queue queue, TopicExchange exchange) {
     return BindingBuilder.bind(queue).to(exchange).with(QueueConfig.JOB_SVC_RESPONSE_ROUTING_KEY);
+  }
+
+  @Bean
+  Binding jobsvcBinding(@Qualifier("jobsvcQueue") Queue queue, TopicExchange exchange) {
+    return BindingBuilder.bind(queue).to(exchange).with(QueueConfig.JOB_SVC_REQUEST_ROUTING_KEY);
   }
 
   @Bean
