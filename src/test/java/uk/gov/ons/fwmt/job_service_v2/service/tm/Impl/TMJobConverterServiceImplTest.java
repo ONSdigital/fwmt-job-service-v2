@@ -2,10 +2,9 @@ package uk.gov.ons.fwmt.job_service_v2.service.tm.Impl;
 
 import com.consiliumtechnologies.schemas.services.mobile._2009._03.messaging.SendCreateJobRequestMessage;
 import com.consiliumtechnologies.schemas.services.mobile._2009._03.messaging.SendDeleteJobRequestMessage;
-import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
 import org.junit.Test;
-import uk.gov.ons.fwmt.fwmtgatewaycommon.Address;
-import uk.gov.ons.fwmt.fwmtgatewaycommon.FWMTCreateJobRequest;
+import uk.gov.ons.fwmt.fwmtgatewaycommon.data.Address;
+import uk.gov.ons.fwmt.fwmtgatewaycommon.data.FWMTCreateJobRequest;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
