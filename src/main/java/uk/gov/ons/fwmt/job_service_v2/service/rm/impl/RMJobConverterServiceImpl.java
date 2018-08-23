@@ -4,7 +4,7 @@ import com.consiliumtechnologies.schemas.mobile._2009._09.compositemessages.Comp
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import uk.gov.ons.fwmt.fwmtgatewaycommon.DummyTMResponse;
+import uk.gov.ons.fwmt.fwmtgatewaycommon.data.DummyTMResponse;
 import uk.gov.ons.fwmt.job_service_v2.rmproducer.RMProducer;
 import uk.gov.ons.fwmt.job_service_v2.service.rm.RMJobConverterService;
 
