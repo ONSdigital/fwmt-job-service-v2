@@ -56,7 +56,7 @@ public class JobServiceV2Tests {
     testReceiver.init();
 
     webServiceTemplate
-        .marshalSendAndReceive("http://localhost:9999/jobs/ws/OutgoingWs", compositeVisitRequestJAXBElement,
+        .marshalSendAndReceive("http://localhost:9999/jobs/ws/OutgoingWs/", compositeVisitRequestJAXBElement,
             new SoapActionCallback(
                 ""));
 
