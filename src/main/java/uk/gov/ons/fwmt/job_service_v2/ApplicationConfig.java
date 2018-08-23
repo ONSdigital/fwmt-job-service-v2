@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import uk.gov.ons.fwmt.fwmtgatewaycommon.config.QueueConfig;
 import uk.gov.ons.fwmt.job_service_v2.queuereceiver.MessageParser;
 
 /**
@@ -28,9 +29,6 @@ import uk.gov.ons.fwmt.job_service_v2.queuereceiver.MessageParser;
 @SpringBootApplication
 public class ApplicationConfig {
 
-  public static final String RM_ADAPTER_QUEUE = "jobsvc-adapter";
-  private static final String TOPIC_EXCHANGE_NAME = "rm-jobsvc-exchange";
-  private static final String ADAPTER_QUEUE_NAME = "adapter-jobSvc";
 
   public static void main(String[] args) {
     SpringApplication.run(ApplicationConfig.class, args);
@@ -39,17 +37,17 @@ public class ApplicationConfig {
 
   @Bean
   Queue adapterQueue() {
-    return new Queue(ADAPTER_QUEUE_NAME, false);
+    return new Queue(QueueConfig.ADAPTER_TO_RM_QUEUE, false);
   }
 
   @Bean
   TopicExchange adapterExchange() {
-    return new TopicExchange(TOPIC_EXCHANGE_NAME);
+    return new TopicExchange(QueueConfig.RM_JOB_SVC_EXCHANGE);
   }
 
   @Bean
   Binding adapterBinding(@Qualifier("adapterQueue") Queue queue, TopicExchange exchange) {
-    return BindingBuilder.bind(queue).to(exchange).with("job.svc.job.request.#");
+    return BindingBuilder.bind(queue).to(exchange).with(QueueConfig.JOB_SVC_RESPONSE_ROUTING_KEY);
   }
 
   @Bean
@@ -57,7 +55,7 @@ public class ApplicationConfig {
       MessageListenerAdapter listenerAdapter) {
     SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
     container.setConnectionFactory(connectionFactory);
-    container.setQueueNames(ADAPTER_QUEUE_NAME);
+    container.setQueueNames(QueueConfig.ADAPTER_TO_JOBSVC_QUEUE);
     container.setMessageListener(listenerAdapter);
     return container;
   }

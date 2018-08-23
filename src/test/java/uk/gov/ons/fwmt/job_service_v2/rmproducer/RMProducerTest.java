@@ -6,14 +6,14 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import uk.gov.ons.fwmt.fwmtgatewaycommon.config.QueueConfig;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.data.DummyTMResponse;
 
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static uk.gov.ons.fwmt.job_service_v2.ApplicationConfig.RM_ADAPTER_QUEUE;
 
 @RunWith(MockitoJUnitRunner.class)
 public class RMProducerTest {
@@ -39,6 +39,7 @@ public class RMProducerTest {
 
     //Then
     verify(objectMapper).writeValueAsString(eq(dummyTMResponse));
-    verify(template).convertAndSend(RM_ADAPTER_QUEUE, "dummyResponseStr");
+    verify(template).convertAndSend(QueueConfig.JOBSVC_TO_ADAPTER_QUEUE,"dummyResponseStr");
+
   }
 }
