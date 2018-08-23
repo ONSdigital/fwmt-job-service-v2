@@ -2,10 +2,10 @@ package uk.gov.ons.fwmt.job_service_v2.service.tm.Impl;
 
 import com.consiliumtechnologies.schemas.services.mobile._2009._03.messaging.SendCreateJobRequestMessage;
 import com.consiliumtechnologies.schemas.services.mobile._2009._03.messaging.SendDeleteJobRequestMessage;
+import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
 import org.junit.Test;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.data.Address;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.data.FWMTCreateJobRequest;
-import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -52,7 +52,7 @@ public class TMJobConverterServiceImplTest {
 
     @Test
     public void addAddressLinesTest() {
-        List<String> addressLines = new ArrayList<String>();
+      List<String> addressLines = new ArrayList<>();
         String addressLine1 = "number";
         String addressLine2 = "street";
         String addressLine3 = "town";

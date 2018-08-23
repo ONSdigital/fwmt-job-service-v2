@@ -75,7 +75,7 @@ import java.util.Map;
  * This interaction largely consists of sending messages in SOAP format
  */
 @Slf4j
-@Service
+@Service("tmServiceImpl")
 public class TMServiceImpl extends WebServiceGatewaySupport implements TMService {
   // A lookup detailing the instances where the message name does not translate easily into a SOAP action
   // Normally, we assume that the SOAP action is equal to the class name with the word 'Response' at the end removed
