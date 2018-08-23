@@ -87,13 +87,6 @@ public class RMIntergrationTest {
         rabbitTemplate.convertAndSend(exchange.getName(), "job.svc.job.request.cancel", json);
     }
 
-
-    protected String convertToJSON(Object dto) throws JsonProcessingException {
-        String JSONJobRequest = objectMapper.writeValueAsString(dto);
-        log.info("CreateJobRequest: " + JSONJobRequest);
-        return JSONJobRequest;
-    }
-
     @PostConstruct
     public void postConstruct() {
         url = "http://localhost:" + Integer.toString(port);
@@ -101,7 +94,7 @@ public class RMIntergrationTest {
     }
 
     @Test
-    public void receiveRMCreateMessage() throws InstantiationException, IllegalAccessException {
+    public void receiveRMCreateMessage() {
 
         RestTemplate restTemplate = new RestTemplate();
 
@@ -111,7 +104,7 @@ public class RMIntergrationTest {
 
         String[] messages = restTemplate.getForObject(mockUrl + "/logger/allMessages", String[].class);
 
-        assertEquals(3, messages.length);
+        assertEquals(1, messages.length);
 
         // first line, auth="1234", quota="100", id="tla_1-REISS1-001-100"
         // allocation
@@ -127,7 +120,7 @@ public class RMIntergrationTest {
 
         RestTemplate restTemplate = new RestTemplate();
 
-        sendCreateMessage();
+        SendCancelMessage();
 
         restTemplate.getForObject(mockUrl + "/logger/allMessages", String[].class);
 
@@ -137,14 +130,5 @@ public class RMIntergrationTest {
 
     }
 
-    @Test
-    public void sendTMCreateMessage() {
-
-    }
-
-    @Test
-    public void sendTMCancelMessage() {
-
-    }
 
 }
