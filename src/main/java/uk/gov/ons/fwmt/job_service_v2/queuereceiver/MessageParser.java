@@ -39,13 +39,14 @@ public class MessageParser {
       FWMTCreateJobRequest fwmtCreateJobRequest = convertMessageToDTO(FWMTCreateJobRequest.class, message);
       SendCreateJobRequestMessage createRequest = tmJobConverterService.createJob(fwmtCreateJobRequest, "");
       tmService.send(createRequest);
-    }
-    if (message.contains("Cancel")) {
+    } else if (message.contains("Cancel")) {
       log.info("cancel");
       FWMTCancelJobRequest fwmtCancelJobRequest = convertMessageToDTO(FWMTCancelJobRequest.class, message);
       SendDeleteJobRequestMessage deleteRequest = tmJobConverterService
           .deleteJob(fwmtCancelJobRequest.getJobIdentity(), fwmtCancelJobRequest.getReason());
       tmService.send(deleteRequest);
+    } else {
+      log.error("Message can be processed due to unknown type");
     }
   }
 

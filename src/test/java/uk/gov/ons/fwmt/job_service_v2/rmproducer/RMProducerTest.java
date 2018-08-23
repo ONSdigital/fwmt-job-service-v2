@@ -7,6 +7,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.config.QueueConfig;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.data.DummyTMResponse;
@@ -18,10 +19,14 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class RMProducerTest {
 
-  @InjectMocks RMProducer rmProducer;
-  @Mock RabbitTemplate template;
-  @Mock ObjectMapper objectMapper;
+  @InjectMocks
+  RMProducer rmProducer;
 
+  @Mock
+  RabbitTemplate template;
+
+  @Mock
+  ObjectMapper objectMapper;
 
   @Test
   public void send() throws JsonProcessingException {

@@ -12,6 +12,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.data.DummyTMResponse;
+
 import uk.gov.ons.fwmt.job_service_v2.rmproducer.RMProducer;
 import uk.gov.ons.fwmt.job_service_v2.service.rm.impl.RMJobConverterServiceImpl;
 
@@ -22,8 +23,12 @@ import static org.junit.Assert.assertEquals;
 @RunWith(MockitoJUnitRunner.class)
 public class RMJobConverterServiceImplTest {
 
-  @InjectMocks RMJobConverterServiceImpl rmJobConverterService;
-  @Mock RMProducer rmProducer;
+  @InjectMocks
+  RMJobConverterServiceImpl rmJobConverterService;
+
+  @Mock
+  RMProducer rmProducer;
+
   @Captor
   ArgumentCaptor argCaptor;
 
