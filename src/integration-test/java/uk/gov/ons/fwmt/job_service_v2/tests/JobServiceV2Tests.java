@@ -13,8 +13,8 @@ import org.springframework.context.annotation.Import;
 import org.springframework.stereotype.Component;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.ws.client.core.WebServiceTemplate;
-import org.springframework.ws.soap.client.core.SoapActionCallback;
 import uk.gov.ons.fwmt.job_service_v2.IntegrationTestConfig;
+import uk.gov.ons.fwmt.job_service_v2.controller.tm_endpoint.OutgoingWs;
 import uk.gov.ons.fwmt.job_service_v2.helper.TestReceiver;
 
 import javax.xml.bind.JAXBElement;
@@ -28,18 +28,11 @@ import static org.junit.Assert.assertEquals;
 @Import({IntegrationTestConfig.class, TestReceiver.class})
 public class JobServiceV2Tests {
 
-  private final String TM_MESSAGE_JSON = "json";
-
-  private final String TM_OUTGOING_XML = "XML";
-
   @Autowired
-  @Qualifier("testWSTenplate")
+  @Qualifier("testWSTemplate")
   WebServiceTemplate webServiceTemplate;
-  //
-  //  @Autowired
-  //  @Qualifier("testTmService")
-  //  TMService tmService;
 
+  @Autowired OutgoingWs outgoingWs;
   @Test
   public void testPathFromTMToAdapterViaJobSvc() throws Exception {
 
@@ -55,13 +48,13 @@ public class JobServiceV2Tests {
     TestReceiver testReceiver = new TestReceiver();
     testReceiver.init();
 
-    webServiceTemplate
-        .marshalSendAndReceive("http://localhost:9999/jobs/ws/OutgoingWs/", compositeVisitRequestJAXBElement,
-            new SoapActionCallback(
-                ""));
+    outgoingWs.sendCompositeVisitRequestOutput(compositeVisitRequestJAXBElement);
+    //    webServiceTemplate
+    //        .marshalSendAndReceive("http://localhost:9999/jobs/ws", compositeVisitRequestJAXBElement);
 
     Thread.sleep(2000);
-    assertEquals(1, TestReceiver.counter);
-    assertEquals("{\"identity\":\"test\"}", TestReceiver.result);
+    assertEquals("{\"identity\":\"testGuid\"}", testReceiver.result);
+    assertEquals(1, testReceiver.counter);
+
   }
 }

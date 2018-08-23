@@ -13,7 +13,7 @@ import org.springframework.ws.client.core.WebServiceTemplate;
 import org.springframework.ws.transport.http.HttpComponentsMessageSender;
 import uk.gov.ons.fwmt.job_service_v2.helper.TestReceiver;
 
-import static uk.gov.ons.fwmt.job_service_v2.ApplicationConfig.RM_ADAPTER_QUEUE;
+import static uk.gov.ons.fwmt.fwmtgatewaycommon.config.QueueConfig.JOBSVC_TO_ADAPTER_QUEUE;
 
 @Configuration
 public class IntegrationTestConfig {
@@ -28,7 +28,7 @@ public class IntegrationTestConfig {
       @Qualifier("testListenerAdapter") MessageListenerAdapter listenerAdapter) {
     SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
     container.setConnectionFactory(connectionFactory);
-    container.setQueueNames(RM_ADAPTER_QUEUE);
+    container.setQueueNames(JOBSVC_TO_ADAPTER_QUEUE);
     container.setMessageListener(listenerAdapter);
     return container;
   }
@@ -38,7 +38,7 @@ public class IntegrationTestConfig {
     return new MessageListenerAdapter(receiver, "receiveMessage");
   }
 
-  @Bean("testWSTenplate")
+  @Bean("testWSTemplate")
   public WebServiceTemplate webServiceTemplate() throws Exception {
     WebServiceTemplate webServiceTemplate = new WebServiceTemplate();
     Jaxb2Marshaller marshaller = new Jaxb2Marshaller();
@@ -51,7 +51,6 @@ public class IntegrationTestConfig {
     webServiceTemplate.setMessageSender(messageSender);
     return webServiceTemplate;
   }
-
 }
 
 

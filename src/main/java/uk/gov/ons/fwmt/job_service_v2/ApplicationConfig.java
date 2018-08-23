@@ -37,7 +37,7 @@ public class ApplicationConfig {
 
   @Bean
   Queue adapterQueue() {
-    return new Queue(QueueConfig.ADAPTER_TO_RM_QUEUE, false);
+    return new Queue(QueueConfig.JOBSVC_TO_ADAPTER_QUEUE, false);
   }
 
   @Bean
