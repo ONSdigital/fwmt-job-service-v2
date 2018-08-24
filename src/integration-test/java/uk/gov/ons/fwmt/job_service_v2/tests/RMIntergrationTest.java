@@ -19,6 +19,8 @@ import uk.gov.ons.fwmt.job_service_v2.helper.TestReceiver;
 
 import javax.annotation.PostConstruct;
 
+import static org.junit.Assert.assertEquals;
+
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @Component
@@ -32,17 +34,11 @@ public class RMIntergrationTest {
   @Value("${mock.port}")
   private int mockPort;
 
-  //    @Autowired
-  //    private TaskExecutor taskExecutor;
-  //
   private String url;
   private String mockUrl;
 
   @Autowired
   private RabbitTemplate rabbitTemplate;
-
-  //    @Autowired
-  //    private ObjectMapper objectMapper;
 
   private void sendCreateMessage() {
 
@@ -67,16 +63,16 @@ public class RMIntergrationTest {
     rabbitTemplate.convertAndSend(QueueConfig.RM_JOB_SVC_EXCHANGE, QueueConfig.JOB_SVC_REQUEST_ROUTING_KEY, json);
     log.info("Message send to queue", json);
   }
-  //
-  //    private void SendCancelMessage() {
-  //
-  //        JSONObject json = new JSONObject();
-  //        json.put("actionType","Cancel");
-  //        json.put("jobIdentity","1234");
-  //        json.put("reason","wrong address");
-  //
-  //        rabbitTemplate.convertAndSend(exchange.getName(), "job.svc.job.request.cancel", json);
-  //    }
+
+  private void SendCancelMessage() {
+
+      JSONObject json = new JSONObject();
+      json.put("actionType","Cancel");
+      json.put("jobIdentity","1234");
+      json.put("reason","wrong address");
+
+      rabbitTemplate.convertAndSend(QueueConfig.RM_JOB_SVC_EXCHANGE, QueueConfig.JOB_SVC_REQUEST_ROUTING_KEY, json);
+  }
 
   @PostConstruct
   public void postConstruct() {
@@ -88,28 +84,28 @@ public class RMIntergrationTest {
   public void receiveRMCreateMessage() {
     RestTemplate restTemplate = new RestTemplate();
 
-    //sendCreateMessage();
+    sendCreateMessage();
 
     restTemplate.getForObject(mockUrl + "/logger/allMessages", String[].class);
-    //
-    //        String[] messages = restTemplate.getForObject(mockUrl + "/logger/allMessages", String[].class);
-    //
-    //        assertEquals(1, messages.length);
+
+    String[] messages = restTemplate.getForObject(mockUrl + "/logger/allMessages", String[].class);
+
+    assertEquals(1, messages.length);
 
   }
 
   @Test
   public void receiveRMCancelMessage() {
-    //
-    //        RestTemplate restTemplate = new RestTemplate();
-    //
-    //        SendCancelMessage();
-    //
-    //        restTemplate.getForObject(mockUrl + "/logger/allMessages", String[].class);
-    //
-    //        String[] messages = restTemplate.getForObject(mockUrl + "/logger/allMessages", String[].class);
-    //
-    //        assertEquals(3, messages.length);
+
+  RestTemplate restTemplate = new RestTemplate();
+
+  SendCancelMessage();
+
+  restTemplate.getForObject(mockUrl + "/logger/allMessages", String[].class);
+
+  String[] messages = restTemplate.getForObject(mockUrl + "/logger/allMessages", String[].class);
+
+  assertEquals(3, messages.length);
 
   }
 
