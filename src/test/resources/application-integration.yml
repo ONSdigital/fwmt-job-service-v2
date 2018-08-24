@@ -9,6 +9,9 @@ info:
 server:
   port: 9091
 
+mock:
+  port: 9999
+
 project:
   basedir: ${basedir}
 
@@ -38,7 +41,7 @@ security.user:
 totalmobile:
   username: "user"
   password: "password"
-  url: "http://localhost:9099/tm/Mock"
+  url: "http://localhost:9999/tm/Mock"
   message-queue-path: "/Services/TM/v20/Messaging/MessageQueueWs.asmx"
   message-queue-wsdl-path: "src/main/resources/wsdl/Messaging_MessageQueueWs.wsdl"
   message-queue-namespace: "http://schemas.consiliumtechnologies.com/wsdl/mobile/2009/03/messaging/"
@@ -72,4 +75,3 @@ service:
         find:
           path: "/fieldPeriods/{fieldPeriod}"
 
-mock.port: 9099

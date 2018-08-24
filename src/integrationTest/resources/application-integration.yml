@@ -1,33 +1,23 @@
 info:
-  name: @project.artifactId@
-  version: @project.version@
-  origin: @scm.url@
-  commit: @buildNumber@
-  branch: @scmBranch@
-  built: @timestamp@
+#  name: @project.artifactId@
+#  version: @project.version@
+#  origin: @scm.url@
+#  commit: @buildNumber@
+#  branch: @scmBranch@
+#  built: @timestamp@
 
 server:
-  contextPath: /jobs
-  port: 9099
+  port: 9091
 
 mock:
-  port: 9999
+  port: 9099
 
-spring:
-  application:
-    name: fwmt-job-service
-  http.multipart:
-    max-file-size: 12800MB
-    max-request-size: 12800MB
-  jackson:
-    serialization:
-      WRITE_DATES_AS_TIMESTAMPS: false
-  rabbitmq:
-    username: guest
-    password: guest
-    host: localhost
-    port: 5672
-    virtualhost: /
+project:
+  basedir: ${basedir}
+
+spring.http.multipart:
+  max-file-size: 12800MB
+  max-request-size: 12800MB
 
 management.endpoint.health.show-details: always
 
@@ -45,16 +35,16 @@ logging:
     file:    "%d{yyyy-MMM-dd HH:mm:ss.SSS} %-5level [%thread] [%X{CID}] [%X{FILENAME}] %logger{1}::%M - %msg%n"
 
 security.user:
-  name: "user"
-  password: "password"
+  name: user
+  password: password
 
 totalmobile:
-  username: ""
-  password: ""
-  url: ""
+  username: "user"
+  password: "password"
+  url: "http://localhost:9099/tm/Mock"
   message-queue-path: "/Services/TM/v20/Messaging/MessageQueueWs.asmx"
   message-queue-wsdl-path: "src/main/resources/wsdl/Messaging_MessageQueueWs.wsdl"
-  message-queue-namespace: "http://schemas.consiliumtechnologies.com/wsdl/mobile/2007/07/messaging/"
+  message-queue-namespace: "http://schemas.consiliumtechnologies.com/wsdl/mobile/2009/03/messaging/"
   message-queue-package: "com.consiliumtechnologies.schemas.services.mobile._2009._03.messaging"
   outgoing-ws-namespace: "http://schemas.consiliumtechnologies.com/services/mobile/2009/03/messaging"
   web:
@@ -65,7 +55,7 @@ service:
   resource:
     username: "user"
     password: "password"
-    baseUrl: "http://localhost:9093/resources"
+    baseUrl: "http://localhost:9099/resources"
     operation:
       users:
         find:
@@ -84,3 +74,4 @@ service:
       fieldPeriods:
         find:
           path: "/fieldPeriods/{fieldPeriod}"
+
