@@ -52,7 +52,7 @@ public class TMJobConverterServiceImplTest {
 
   @Test
   public void addAddressLinesTest() {
-    List<String> addressLines = new ArrayList<String>();
+    List<String> addressLines = new ArrayList<>();
     String addressLine1 = "number";
     String addressLine2 = "street";
     String addressLine3 = "town";

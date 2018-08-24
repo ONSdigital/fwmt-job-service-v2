@@ -6,9 +6,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import uk.gov.ons.fwmt.fwmtgatewaycommon.config.QueueConfig;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.data.DummyTMResponse;
-
-import static uk.gov.ons.fwmt.job_service_v2.ApplicationConfig.RM_ADAPTER_QUEUE;
 
 @Slf4j
 @Component
@@ -22,8 +21,8 @@ public class RMProducer {
   public void send(DummyTMResponse dummyTMResponse) {
     try {
       final String dummyResponseStr = objectMapper.writeValueAsString(dummyTMResponse);
-      log.info("Message sent to queue :{}", dummyResponseStr);
-      template.convertAndSend(RM_ADAPTER_QUEUE, dummyResponseStr);
+      log.info("Message sent to queue :{}",dummyResponseStr);
+      template.convertAndSend(QueueConfig.JOBSVC_TO_ADAPTER_QUEUE, dummyResponseStr);
     } catch (JsonProcessingException e) {
       e.printStackTrace();
     }
