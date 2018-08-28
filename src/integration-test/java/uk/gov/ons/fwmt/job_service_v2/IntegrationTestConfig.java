@@ -1,5 +1,8 @@
 package uk.gov.ons.fwmt.job_service_v2;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
@@ -29,7 +32,7 @@ public class IntegrationTestConfig {
       @Qualifier("testListenerAdapter") MessageListenerAdapter listenerAdapter) {
     SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
     container.setConnectionFactory(connectionFactory);
-    container.setQueueNames(JOBSVC_TO_ADAPTER_QUEUE, ADAPTER_TO_JOBSVC_QUEUE);
+    container.setQueueNames(JOBSVC_TO_ADAPTER_QUEUE);
     container.setMessageListener(listenerAdapter);
     return container;
   }
@@ -51,6 +54,15 @@ public class IntegrationTestConfig {
     messageSender.afterPropertiesSet();
     webServiceTemplate.setMessageSender(messageSender);
     return webServiceTemplate;
+  }
+
+
+  @Bean
+  public ObjectMapper objectMapper() {
+    ObjectMapper mapper = new ObjectMapper();
+    mapper.registerModule(new JavaTimeModule());
+    mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    return  mapper;
   }
 }
 

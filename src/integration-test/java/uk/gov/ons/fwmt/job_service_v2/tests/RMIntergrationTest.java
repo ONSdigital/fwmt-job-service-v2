@@ -1,5 +1,7 @@
 package uk.gov.ons.fwmt.job_service_v2.tests;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
 import org.junit.Test;
@@ -14,10 +16,18 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.config.QueueConfig;
+import uk.gov.ons.fwmt.fwmtgatewaycommon.data.Address;
+import uk.gov.ons.fwmt.fwmtgatewaycommon.data.FWMTCancelJobRequest;
+import uk.gov.ons.fwmt.fwmtgatewaycommon.data.FWMTCreateJobRequest;
+import uk.gov.ons.fwmt.fwmtgatewaycommon.data.MockMessage;
 import uk.gov.ons.fwmt.job_service_v2.IntegrationTestConfig;
 import uk.gov.ons.fwmt.job_service_v2.helper.TestReceiver;
 
 import javax.annotation.PostConstruct;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 import static org.junit.Assert.assertEquals;
 
@@ -34,78 +44,94 @@ public class RMIntergrationTest {
   @Value("${mock.port}")
   private int mockPort;
 
-  private String url;
-  private String mockUrl;
+  private String mockUrl = "http://localhost:9099";
 
   @Autowired
   private RabbitTemplate rabbitTemplate;
 
+  @Autowired
+  private ObjectMapper objectMapper;
+
   private void sendCreateMessage() {
 
-    JSONObject json = new JSONObject();
-    JSONObject address = new JSONObject();
-    json.put("actionType", "Create");
-    json.put("jobIdentity", "1234");
-    json.put("surveyType", "HH");
-    json.put("preallocatedJob", "true");
-    json.put("mandatoryResourceAuthNo", "1234");
-    json.put("dueDate", "20180216");
-    address.put("line1", "886");
-    address.put("line2", "Prairie Rose");
-    address.put("line3", "Trail");
-    address.put("line4", "RU");
-    address.put("townName", "Borodinskiy");
-    address.put("postCode", "188961");
-    address.put("latitude", "61.7921776");
-    address.put("longitude", "34.3739957");
-    json.put("address", address);
+    FWMTCreateJobRequest fwmtCreateJobRequest = new FWMTCreateJobRequest();
+    Address address = new Address();
+    address.setLatitude(BigDecimal.valueOf(61.7921776));
+    address.setLongitude(BigDecimal.valueOf(34.3739957));
+    address.setLine1("886");
+    address.setLine2("Prairie Rose");
+    address.setLine3("Trail");
+    address.setLine4("RU");
+    address.setPostCode("188961");
+    address.setTownName("Borodinskiy");
 
-    rabbitTemplate.convertAndSend(QueueConfig.RM_JOB_SVC_EXCHANGE, QueueConfig.JOB_SVC_REQUEST_ROUTING_KEY, json);
-    log.info("Message send to queue", json);
+    fwmtCreateJobRequest.setJobIdentity("1234");
+    fwmtCreateJobRequest.setSurveyType("HH");
+    fwmtCreateJobRequest.setDueDate(LocalDate.parse("20180216", DateTimeFormatter.BASIC_ISO_DATE));
+    fwmtCreateJobRequest.setAddress(address);
+    fwmtCreateJobRequest.setActionType("Create");
+
+    String JSONJobRequest = null;
+    try {
+      JSONJobRequest = objectMapper.writeValueAsString(fwmtCreateJobRequest);
+    } catch (JsonProcessingException e) {
+      e.printStackTrace();
+    }
+
+    log.info("Message send to queue"+ JSONJobRequest);
+    rabbitTemplate.convertAndSend(QueueConfig.RM_JOB_SVC_EXCHANGE, QueueConfig.JOB_SVC_REQUEST_ROUTING_KEY, JSONJobRequest);
+
   }
 
   private void SendCancelMessage() {
 
-      JSONObject json = new JSONObject();
-      json.put("actionType","Cancel");
-      json.put("jobIdentity","1234");
-      json.put("reason","wrong address");
+    FWMTCancelJobRequest fwmtCancelJobRequest = new FWMTCancelJobRequest();
+    fwmtCancelJobRequest.setActionType("Cancel");
+    fwmtCancelJobRequest.setJobIdentity("1234");
+    fwmtCancelJobRequest.setReason("wrong address");
 
-      rabbitTemplate.convertAndSend(QueueConfig.RM_JOB_SVC_EXCHANGE, QueueConfig.JOB_SVC_REQUEST_ROUTING_KEY, json);
-  }
+    String JSONJobRequest = null;
+    try {
+      JSONJobRequest = objectMapper.writeValueAsString(fwmtCancelJobRequest);
+    } catch (JsonProcessingException e) {
+      e.printStackTrace();
+    }
 
-  @PostConstruct
-  public void postConstruct() {
-    url = "http://localhost:" + Integer.toString(port) + "/tm/Mock";
-    mockUrl = "http://localhost:" + Integer.toString(mockPort);
+    rabbitTemplate.convertAndSend(QueueConfig.RM_JOB_SVC_EXCHANGE, QueueConfig.JOB_SVC_REQUEST_ROUTING_KEY, JSONJobRequest);
+
   }
 
   @Test
-  public void receiveRMCreateMessage() {
+  public void receiveRMCreateMessage() throws InterruptedException {
+
     RestTemplate restTemplate = new RestTemplate();
+
+    restTemplate.getForObject(mockUrl + "/logger/reset", Void.class);
 
     sendCreateMessage();
 
-    restTemplate.getForObject(mockUrl + "/logger/allMessages", String[].class);
+    Thread.sleep(7000);
 
-    String[] messages = restTemplate.getForObject(mockUrl + "/logger/allMessages", String[].class);
+    MockMessage[] messages = restTemplate.getForObject(mockUrl + "/logger/allMessages", MockMessage[].class);
 
     assertEquals(1, messages.length);
 
   }
 
   @Test
-  public void receiveRMCancelMessage() {
+  public void receiveRMCancelMessage() throws InterruptedException {
 
   RestTemplate restTemplate = new RestTemplate();
 
+  restTemplate.getForObject(mockUrl + "/logger/reset", Void.class);
+
   SendCancelMessage();
 
-  restTemplate.getForObject(mockUrl + "/logger/allMessages", String[].class);
+  Thread.sleep(7000);
 
-  String[] messages = restTemplate.getForObject(mockUrl + "/logger/allMessages", String[].class);
+  MockMessage[] messages = restTemplate.getForObject(mockUrl + "/logger/allMessages", MockMessage[].class);
 
-  assertEquals(3, messages.length);
+  assertEquals(1, messages.length);
 
   }
 
