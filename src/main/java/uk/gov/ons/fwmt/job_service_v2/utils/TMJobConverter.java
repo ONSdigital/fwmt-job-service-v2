@@ -1,4 +1,4 @@
-package uk.gov.ons.fwmt.job_service_v2.service.tm.Impl;
+package uk.gov.ons.fwmt.job_service_v2.utils;
 
 import com.consiliumtechnologies.schemas.mobile._2009._03.visitstypes.AdditionalPropertyCollectionType;
 import com.consiliumtechnologies.schemas.mobile._2015._05.optimisemessages.CreateJobRequest;
@@ -16,10 +16,7 @@ import com.consiliumtechnologies.schemas.services.mobile._2009._03.messaging.Sen
 import com.consiliumtechnologies.schemas.services.mobile._2009._03.messaging.SendMessageRequestInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.data.FWMTCreateJobRequest;
-import uk.gov.ons.fwmt.job_service_v2.service.tm.TMJobConverterService;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
@@ -28,16 +25,42 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 @Slf4j
-@Service
-public class TMJobConverterServiceImpl implements TMJobConverterService {
+public final class TMJobConverter {
   protected static final String JOB_QUEUE = "\\OPTIMISE\\INPUT";
   protected static final String JOB_SKILL = "Demo";
   protected static final String JOB_WORK_TYPE = "Household";
   protected static final String JOB_WORLD = "MOD World";
-  @Value("${totalmobile.username}")
-  private String TMAdminUsername;
 
-  protected CreateJobRequest createJobRequestFromIngest(FWMTCreateJobRequest ingest, String username) {
+  public static  SendCreateJobRequestMessage createJob(FWMTCreateJobRequest ingest, String username) throws DatatypeConfigurationException {
+
+    CreateJobRequest request = createJobRequestFromIngest(ingest, username);
+
+    SendCreateJobRequestMessage message = new SendCreateJobRequestMessage();
+    message.setSendMessageRequestInfo(makeSendMessageRequestInfo(ingest.getJobIdentity()));
+    message.setCreateJobRequest(request);
+
+    return message;
+  }
+
+  public static  SendDeleteJobRequestMessage deleteJob(String jobIdentity, String deletionReason, String TMAdminUsername) {
+    SendDeleteJobRequestMessage message = new SendDeleteJobRequestMessage();
+    DeleteJobRequest deleteJobRequest = new DeleteJobRequest();
+    JobIdentityType jobIdentityType = new JobIdentityType();
+    AuditType auditType = new AuditType();
+
+    jobIdentityType.setReference(jobIdentity);
+    deleteJobRequest.setIdentity(jobIdentityType);
+    deleteJobRequest.setDeletionReason(deletionReason);
+    auditType.setUsername(TMAdminUsername);
+    deleteJobRequest.setDeletedBy(auditType);
+
+    message.setSendMessageRequestInfo(makeSendMessageRequestInfo(jobIdentity));
+    message.setDeleteJobRequest(deleteJobRequest);
+
+    return message;
+  }
+
+  protected static CreateJobRequest createJobRequestFromIngest(FWMTCreateJobRequest ingest, String username) throws DatatypeConfigurationException {
     CreateJobRequest request = new CreateJobRequest();
     JobType job = new JobType();
     request.setJob(job);
@@ -45,8 +68,6 @@ public class TMJobConverterServiceImpl implements TMJobConverterService {
     job.setSkills(new SkillCollectionType());
     job.setContact(new ContactInfoType());
     job.setWorld(new WorldIdentityType());
-
-    job.setDescription("TEST MESSAGE");
 
     request.getJob().getIdentity().setReference(ingest.getJobIdentity());
     request.getJob().getContact().setName(ingest.getAddress().getPostCode());
@@ -73,12 +94,8 @@ public class TMJobConverterServiceImpl implements TMJobConverterService {
 
     GregorianCalendar dueDateCalendar = GregorianCalendar
         .from(ingest.getDueDate().atTime(23, 59, 59).atZone(ZoneId.of("UTC")));
-    try {
-      request.getJob().setDueDate(DatatypeFactory.newInstance().newXMLGregorianCalendar(dueDateCalendar));
-    } catch (DatatypeConfigurationException e) {
-      e.printStackTrace();
-      //TODO: Handle exception properly
-    }
+
+    request.getJob().setDueDate(DatatypeFactory.newInstance().newXMLGregorianCalendar(dueDateCalendar));
 
     request.getJob().setDuration(1);
     request.getJob().setVisitComplete(false);
@@ -89,13 +106,13 @@ public class TMJobConverterServiceImpl implements TMJobConverterService {
     return request;
   }
 
-  protected void addAddressLines(List<String> addressLines, String addressLine) {
+  protected static void addAddressLines(List<String> addressLines, String addressLine) {
     if (StringUtils.isNotBlank((addressLine))) {
       addressLines.add(addressLine);
     }
   }
 
-  protected void checkNumberOfAddressLines(List<String> addressLines) {
+  protected static void checkNumberOfAddressLines(List<String> addressLines) {
     if (addressLines.size() == 6) {
       String addressConcat = addressLines.get(2) + " " + addressLines.get(3);
       addressLines.set(2, addressConcat);
@@ -103,41 +120,11 @@ public class TMJobConverterServiceImpl implements TMJobConverterService {
     }
   }
 
-  protected SendMessageRequestInfo makeSendMessageRequestInfo(String key) {
+  protected static SendMessageRequestInfo makeSendMessageRequestInfo(String key) {
     SendMessageRequestInfo info = new SendMessageRequestInfo();
     info.setQueueName(JOB_QUEUE);
     info.setKey(key);
     return info;
-  }
-
-  public SendCreateJobRequestMessage createJob(FWMTCreateJobRequest ingest, String username) {
-
-    CreateJobRequest request = createJobRequestFromIngest(ingest, username);
-
-    SendCreateJobRequestMessage message = new SendCreateJobRequestMessage();
-    message.setSendMessageRequestInfo(makeSendMessageRequestInfo(ingest.getJobIdentity()));
-    message.setCreateJobRequest(request);
-
-    return message;
-  }
-
-  @Override
-  public SendDeleteJobRequestMessage deleteJob(String jobIdentity, String deletionReason) {
-    SendDeleteJobRequestMessage message = new SendDeleteJobRequestMessage();
-    DeleteJobRequest deleteJobRequest = new DeleteJobRequest();
-    JobIdentityType jobIdentityType = new JobIdentityType();
-    AuditType auditType = new AuditType();
-
-    jobIdentityType.setReference(jobIdentity);
-    deleteJobRequest.setIdentity(jobIdentityType);
-    deleteJobRequest.setDeletionReason(deletionReason);
-    auditType.setUsername(TMAdminUsername);
-    deleteJobRequest.setDeletedBy(auditType);
-
-    message.setSendMessageRequestInfo(makeSendMessageRequestInfo(jobIdentity));
-    message.setDeleteJobRequest(deleteJobRequest);
-
-    return message;
   }
 }
 

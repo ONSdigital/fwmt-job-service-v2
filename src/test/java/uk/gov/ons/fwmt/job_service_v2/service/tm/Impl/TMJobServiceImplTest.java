@@ -24,12 +24,12 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-public class TMServiceImplTest {
+public class TMJobServiceImplTest {
 
   @Rule
   public ExpectedException expectedException = ExpectedException.none();
   @InjectMocks
-  private TMServiceImpl tmServiceImpl;
+  private TMJobServiceImpl tmServiceImpl;
   @Mock
   private ObjectFactory objectFactory;
   @Mock
@@ -39,7 +39,7 @@ public class TMServiceImplTest {
 
   @Before
   public void setUp() throws Exception {
-    tmServiceImpl = new TMServiceImpl("https://ons.totalmobile.co.uk",
+    tmServiceImpl = new TMJobServiceImpl("https://ons.totalmobile.co.uk",
         "messageQueuePath",
         "messageQueuePackage",
         "expectedNamespace",

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -41,10 +42,11 @@ public class RMIntergrationTest {
 
   @Value("${server.port}")
   private int port;
+
   @Value("${mock.port}")
   private int mockPort;
 
-  private String mockUrl = "http://localhost:9099";
+  private static final String MOCK_URL = "http://localhost:9099";
 
   @Autowired
   private RabbitTemplate rabbitTemplate;
@@ -52,8 +54,30 @@ public class RMIntergrationTest {
   @Autowired
   private ObjectMapper objectMapper;
 
-  private void sendCreateMessage() {
+  private RestTemplate restTemplate = new RestTemplate();
 
+  @Before
+  public void testSetup() {
+    restTemplate.getForObject(MOCK_URL + "/logger/reset", Void.class);
+  }
+
+  @Test
+  public void receiveRMCreateMessage_checkTMReceivedMessage() throws InterruptedException, JsonProcessingException {
+    sendCreateMessage();
+    Thread.sleep(7000);
+    MockMessage[] messages = restTemplate.getForObject(MOCK_URL + "/logger/allMessages", MockMessage[].class);
+    assertEquals(1, messages.length);
+  }
+
+  @Test
+  public void receiveRMCancelMessage_checkTMReceivedMessage() throws InterruptedException, JsonProcessingException {
+    sendCancelMessage();
+    Thread.sleep(7000);
+    MockMessage[] messages = restTemplate.getForObject(MOCK_URL + "/logger/allMessages", MockMessage[].class);
+    assertEquals(1, messages.length);
+  }
+
+  private void sendCreateMessage() throws JsonProcessingException {
     FWMTCreateJobRequest fwmtCreateJobRequest = new FWMTCreateJobRequest();
     Address address = new Address();
     address.setLatitude(BigDecimal.valueOf(61.7921776));
@@ -72,67 +96,23 @@ public class RMIntergrationTest {
     fwmtCreateJobRequest.setActionType("Create");
 
     String JSONJobRequest = null;
-    try {
-      JSONJobRequest = objectMapper.writeValueAsString(fwmtCreateJobRequest);
-    } catch (JsonProcessingException e) {
-      e.printStackTrace();
-    }
+
+    JSONJobRequest = objectMapper.writeValueAsString(fwmtCreateJobRequest);
 
     log.info("Message send to queue"+ JSONJobRequest);
     rabbitTemplate.convertAndSend(QueueConfig.RM_JOB_SVC_EXCHANGE, QueueConfig.JOB_SVC_REQUEST_ROUTING_KEY, JSONJobRequest);
-
   }
 
-  private void SendCancelMessage() {
-
+  private void sendCancelMessage() throws JsonProcessingException {
     FWMTCancelJobRequest fwmtCancelJobRequest = new FWMTCancelJobRequest();
     fwmtCancelJobRequest.setActionType("Cancel");
     fwmtCancelJobRequest.setJobIdentity("1234");
     fwmtCancelJobRequest.setReason("wrong address");
 
     String JSONJobRequest = null;
-    try {
-      JSONJobRequest = objectMapper.writeValueAsString(fwmtCancelJobRequest);
-    } catch (JsonProcessingException e) {
-      e.printStackTrace();
-    }
+    JSONJobRequest = objectMapper.writeValueAsString(fwmtCancelJobRequest);
 
     rabbitTemplate.convertAndSend(QueueConfig.RM_JOB_SVC_EXCHANGE, QueueConfig.JOB_SVC_REQUEST_ROUTING_KEY, JSONJobRequest);
 
   }
-
-  @Test
-  public void receiveRMCreateMessage() throws InterruptedException {
-
-    RestTemplate restTemplate = new RestTemplate();
-
-    restTemplate.getForObject(mockUrl + "/logger/reset", Void.class);
-
-    sendCreateMessage();
-
-    Thread.sleep(7000);
-
-    MockMessage[] messages = restTemplate.getForObject(mockUrl + "/logger/allMessages", MockMessage[].class);
-
-    assertEquals(1, messages.length);
-
-  }
-
-  @Test
-  public void receiveRMCancelMessage() throws InterruptedException {
-
-  RestTemplate restTemplate = new RestTemplate();
-
-  restTemplate.getForObject(mockUrl + "/logger/reset", Void.class);
-
-  SendCancelMessage();
-
-  Thread.sleep(7000);
-
-  MockMessage[] messages = restTemplate.getForObject(mockUrl + "/logger/allMessages", MockMessage[].class);
-
-  assertEquals(1, messages.length);
-
-  }
-
 }

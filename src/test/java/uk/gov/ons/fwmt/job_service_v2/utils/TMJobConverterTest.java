@@ -1,4 +1,4 @@
-package uk.gov.ons.fwmt.job_service_v2.service.tm.Impl;
+package uk.gov.ons.fwmt.job_service_v2.utils;
 
 import com.consiliumtechnologies.schemas.services.mobile._2009._03.messaging.SendCreateJobRequestMessage;
 import com.consiliumtechnologies.schemas.services.mobile._2009._03.messaging.SendDeleteJobRequestMessage;
@@ -7,6 +7,7 @@ import org.junit.Test;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.data.Address;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.data.FWMTCreateJobRequest;
 
+import javax.xml.datatype.DatatypeConfigurationException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -14,12 +15,10 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
-public class TMJobConverterServiceImplTest {
-
-  TMJobConverterServiceImpl tmJobConverterService = new TMJobConverterServiceImpl();
+public class TMJobConverterTest {
 
   @Test
-  public void createJobTest() {
+  public void createJobTest() throws DatatypeConfigurationException {
     String user = "bob.smith";
     FWMTCreateJobRequest ingest = new FWMTCreateJobRequest();
     Address address = new Address();
@@ -39,7 +38,7 @@ public class TMJobConverterServiceImplTest {
     address.setLongitude(BigDecimal.valueOf(34.3739957));
     ingest.setAddress(address);
 
-    SendCreateJobRequestMessage request = tmJobConverterService.createJob(ingest, user);
+    SendCreateJobRequestMessage request = TMJobConverter.createJob(ingest, user);
 
     assertEquals(request.getCreateJobRequest().getJob().getIdentity().getReference(), "1234");
     assertEquals(request.getCreateJobRequest().getJob().getContact().getName(), "188961");
@@ -58,10 +57,10 @@ public class TMJobConverterServiceImplTest {
     String addressLine3 = "town";
     String addressLine4 = "city";
 
-    tmJobConverterService.addAddressLines(addressLines, addressLine1);
-    tmJobConverterService.addAddressLines(addressLines, addressLine2);
-    tmJobConverterService.addAddressLines(addressLines, addressLine3);
-    tmJobConverterService.addAddressLines(addressLines, addressLine4);
+    TMJobConverter.addAddressLines(addressLines, addressLine1);
+    TMJobConverter.addAddressLines(addressLines, addressLine2);
+    TMJobConverter.addAddressLines(addressLines, addressLine3);
+    TMJobConverter.addAddressLines(addressLines, addressLine4);
 
     assertEquals(4, addressLines.size());
   }
@@ -76,28 +75,23 @@ public class TMJobConverterServiceImplTest {
     String addressLine5 = "town";
     String addressLine6 = "city";
 
-    tmJobConverterService.addAddressLines(addressLines, addressLine1);
-    tmJobConverterService.addAddressLines(addressLines, addressLine2);
-    tmJobConverterService.addAddressLines(addressLines, addressLine3);
-    tmJobConverterService.addAddressLines(addressLines, addressLine4);
-    tmJobConverterService.addAddressLines(addressLines, addressLine5);
-    tmJobConverterService.addAddressLines(addressLines, addressLine6);
+    TMJobConverter.addAddressLines(addressLines, addressLine1);
+    TMJobConverter.addAddressLines(addressLines, addressLine2);
+    TMJobConverter.addAddressLines(addressLines, addressLine3);
+    TMJobConverter.addAddressLines(addressLines, addressLine4);
+    TMJobConverter.addAddressLines(addressLines, addressLine5);
+    TMJobConverter.addAddressLines(addressLines, addressLine6);
 
     assertEquals(6, addressLines.size());
 
-    tmJobConverterService.checkNumberOfAddressLines(addressLines);
+    TMJobConverter.checkNumberOfAddressLines(addressLines);
 
     assertEquals(5, addressLines.size());
   }
 
   @Test
-  public void createJobRequestFromIngestTest() {
-
-  }
-
-  @Test
   public void deleteJobTest() {
-    SendDeleteJobRequestMessage request = tmJobConverterService.deleteJob("1234", "wrong address");
+    SendDeleteJobRequestMessage request = TMJobConverter.deleteJob("1234", "wrong address","admin");
 
     assertEquals(request.getDeleteJobRequest().getDeletionReason(), "wrong address");
     assertEquals(request.getDeleteJobRequest().getIdentity().getReference(), "1234");
