@@ -46,7 +46,7 @@ public class RMIntegrationTest {
   @Value("${mock.port}")
   private int mockPort;
 
-  private static final String MOCK_URL = "http://localhost:9099";
+  private String mockUrl;
 
   @Autowired
   private RabbitTemplate rabbitTemplate;
@@ -56,18 +56,23 @@ public class RMIntegrationTest {
 
   private RestTemplate restTemplate = new RestTemplate();
 
+  @PostConstruct
+  public void postConstruct() {
+    mockUrl = "http://localhost:" + Integer.toString(mockPort);
+  }
+
   @Before
   public void testSetup() {
     log.debug("Mock port: " + Integer.toString(mockPort));
-    log.debug("Mock url: " + MOCK_URL);
-    restTemplate.getForObject(MOCK_URL + "/logger/reset", Void.class);
+    log.debug("Mock url: " + mockUrl);
+    restTemplate.getForObject(mockUrl + "/logger/reset", Void.class);
   }
 
   @Test
   public void receiveRMCreateMessage_checkTMReceivedMessage() throws InterruptedException, JsonProcessingException {
     sendCreateMessage();
     Thread.sleep(7000);
-    MockMessage[] messages = restTemplate.getForObject(MOCK_URL + "/logger/allMessages", MockMessage[].class);
+    MockMessage[] messages = restTemplate.getForObject(mockUrl + "/logger/allMessages", MockMessage[].class);
     assertEquals(1, messages.length);
   }
 
@@ -75,7 +80,7 @@ public class RMIntegrationTest {
   public void receiveRMCancelMessage_checkTMReceivedMessage() throws InterruptedException, JsonProcessingException {
     sendCancelMessage();
     Thread.sleep(7000);
-    MockMessage[] messages = restTemplate.getForObject(MOCK_URL + "/logger/allMessages", MockMessage[].class);
+    MockMessage[] messages = restTemplate.getForObject(mockUrl + "/logger/allMessages", MockMessage[].class);
     assertEquals(1, messages.length);
   }
 
