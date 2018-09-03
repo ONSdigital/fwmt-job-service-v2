@@ -38,7 +38,7 @@ import static org.junit.Assert.assertEquals;
 @Slf4j
 @ActiveProfiles("integration")
 @Import({IntegrationTestConfig.class, TestReceiver.class})
-public class RMIntergrationTest {
+public class RMIntegrationTest {
 
   @Value("${server.port}")
   private int port;
