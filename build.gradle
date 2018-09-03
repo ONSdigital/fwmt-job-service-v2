@@ -177,23 +177,22 @@ task integrationTest(type: Test) {
     outputs.upToDateWhen { false }
 }
 check.dependsOn integrationTest
-check.dependsOn jacocoTestReport
 integrationTest.mustRunAfter test
 
-//task runMocks(type: com.github.psxpaul.task.JavaExecFork) {
-//    String mockJarPath = configurations.integrationTestRuntime.find { it.name.startsWith("fwmt-service-mocks") }
-//    classpath = sourceSets.main.runtimeClasspath
-//    main = '-jar'
-//    args = [ mockJarPath ]
-//    jvmArgs = [ '-Xmx500m' ]
-//    workingDir = "$buildDir"
-//    standardOutput = "$buildDir/fwmt-service-mocks.log"
-//    errorOutput = "$buildDir/fwmt-service-mocks-errors.log"
-//    stopAfter = integrationTest
-//    waitForPort = 9099
-//    waitForOutput = 'Started Application'
-//}
-//integrationTest.dependsOn runMocks
+task runMocks(type: com.github.psxpaul.task.JavaExecFork) {
+    String mockJarPath = configurations.integrationTestRuntime.find { it.name.startsWith("fwmt-service-mocks") }
+    classpath = sourceSets.main.runtimeClasspath
+    main = '-jar'
+    args = [ mockJarPath ]
+    jvmArgs = [ '-Xmx500m' ]
+    workingDir = "$buildDir"
+    standardOutput = "$buildDir/fwmt-service-mocks.log"
+    errorOutput = "$buildDir/fwmt-service-mocks-errors.log"
+    stopAfter = integrationTest
+    waitForPort = 9099
+    waitForOutput = 'Started Application'
+}
+integrationTest.dependsOn runMocks
 
 processResources {
     filter ReplaceTokens, tokens: [
