@@ -58,6 +58,8 @@ public class RMIntegrationTest {
 
   @Before
   public void testSetup() {
+    log.debug("Mock port: " + Integer.toString(mockPort));
+    log.debug("Mock url: " + MOCK_URL);
     restTemplate.getForObject(MOCK_URL + "/logger/reset", Void.class);
   }
 
