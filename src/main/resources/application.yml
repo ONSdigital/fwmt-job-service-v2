@@ -8,10 +8,10 @@ info:
 
 server:
   contextPath: /jobs
-  port: 9099
+  port: 9999
 
 mock:
-  port: 9999
+  port: 9099
 
 spring:
   application:
