@@ -17,7 +17,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.config.QueueConfig;
-import uk.gov.ons.fwmt.job_service_v2.queuereceiver.MessageParser;
+import uk.gov.ons.fwmt.job_service_v2.queuereceiver.JobServiceMessageReceiver;
 
 /**
  * Main entry point into the TM Gateway
@@ -28,7 +28,6 @@ import uk.gov.ons.fwmt.job_service_v2.queuereceiver.MessageParser;
 @Slf4j
 @SpringBootApplication
 public class ApplicationConfig {
-
 
   public static void main(String[] args) {
     SpringApplication.run(ApplicationConfig.class, args);
@@ -71,7 +70,7 @@ public class ApplicationConfig {
   }
 
   @Bean
-  MessageListenerAdapter listenerAdapter(MessageParser receiver) {
+  MessageListenerAdapter listenerAdapter(JobServiceMessageReceiver receiver) {
     return new MessageListenerAdapter(receiver, "receiveMessage");
   }
 }

@@ -1,52 +1,39 @@
 package uk.gov.ons.fwmt.job_service_v2.queuereceiver;
 
-import com.consiliumtechnologies.schemas.services.mobile._2009._03.messaging.SendCreateJobRequestMessage;
-import com.consiliumtechnologies.schemas.services.mobile._2009._03.messaging.SendDeleteJobRequestMessage;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.data.FWMTCancelJobRequest;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.data.FWMTCreateJobRequest;
-import uk.gov.ons.fwmt.job_service_v2.service.tm.TMJobConverterService;
-import uk.gov.ons.fwmt.job_service_v2.service.tm.TMService;
-
+import uk.gov.ons.fwmt.job_service_v2.service.tm.JobService;
+import javax.xml.datatype.DatatypeConfigurationException;
 import java.io.IOException;
 
 @Slf4j
 @Component
-public class MessageParser {
+public class JobServiceMessageReceiver {
 
   @Autowired
-  private TMJobConverterService tmJobConverterService;
-
-  @Autowired
-  @Qualifier("tmServiceImpl")
-  private TMService tmService;
+  private JobService jobService;
 
   @Autowired
   private ObjectMapper mapper;
 
-  public void receiveMessage(String message) throws IllegalAccessException, InstantiationException {
+  public void receiveMessage(String message) throws IllegalAccessException, InstantiationException, DatatypeConfigurationException {
     log.info("received a message: " + message);
-    convertMessageFromQueueToDTO(message);
+    processMessage(message);
   }
 
-  private void convertMessageFromQueueToDTO(String message) throws InstantiationException, IllegalAccessException {
+  private void processMessage(String message) throws InstantiationException, IllegalAccessException, DatatypeConfigurationException {
     if (message.contains("Create")) {
-      log.info("Create");
       FWMTCreateJobRequest fwmtCreateJobRequest = convertMessageToDTO(FWMTCreateJobRequest.class, message);
-      SendCreateJobRequestMessage createRequest = tmJobConverterService.createJob(fwmtCreateJobRequest, "");
-      tmService.send(createRequest);
+      jobService.createJob(fwmtCreateJobRequest);
     } else if (message.contains("Cancel")) {
-      log.info("cancel");
       FWMTCancelJobRequest fwmtCancelJobRequest = convertMessageToDTO(FWMTCancelJobRequest.class, message);
-      SendDeleteJobRequestMessage deleteRequest = tmJobConverterService
-          .deleteJob(fwmtCancelJobRequest.getJobIdentity(), fwmtCancelJobRequest.getReason());
-      tmService.send(deleteRequest);
+      jobService.cancelJob(fwmtCancelJobRequest);
     } else {
       log.error("Message can be processed due to unknown type");
     }

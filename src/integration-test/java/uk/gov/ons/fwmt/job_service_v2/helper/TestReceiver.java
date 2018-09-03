@@ -18,6 +18,7 @@ public class TestReceiver {
 
   private void receiveMessage(String message) {
     counter++;
+    System.out.println(message);
     result = message;
 
   }

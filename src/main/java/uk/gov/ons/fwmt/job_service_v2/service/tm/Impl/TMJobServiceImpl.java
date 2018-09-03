@@ -62,10 +62,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.ws.client.core.support.WebServiceGatewaySupport;
 import org.springframework.ws.soap.client.core.SoapActionCallback;
 import org.springframework.ws.transport.http.HttpComponentsMessageSender;
-import uk.gov.ons.fwmt.job_service_v2.interceptor.MyClientInterceptor;
-import uk.gov.ons.fwmt.job_service_v2.service.tm.TMService;
+import uk.gov.ons.fwmt.fwmtgatewaycommon.data.FWMTCancelJobRequest;
+import uk.gov.ons.fwmt.fwmtgatewaycommon.data.FWMTCreateJobRequest;
+import uk.gov.ons.fwmt.job_service_v2.service.tm.JobService;
+import uk.gov.ons.fwmt.job_service_v2.utils.TMJobConverter;
 
 import javax.xml.bind.JAXBElement;
+import javax.xml.datatype.DatatypeConfigurationException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -75,8 +78,12 @@ import java.util.Map;
  * This interaction largely consists of sending messages in SOAP format
  */
 @Slf4j
-@Service("tmServiceImpl")
-public class TMServiceImpl extends WebServiceGatewaySupport implements TMService {
+@Service
+public class TMJobServiceImpl extends WebServiceGatewaySupport implements JobService {
+
+  @Value("${totalmobile.username}")
+  private String tmAdminUsername;
+
   // A lookup detailing the instances where the message name does not translate easily into a SOAP action
   // Normally, we assume that the SOAP action is equal to the class name with the word 'Response' at the end removed
   private static final Map<Class<?>, String> messageActionMap;
@@ -122,17 +129,16 @@ public class TMServiceImpl extends WebServiceGatewaySupport implements TMService
 
   private final String messageQueueUrl;
   private final String namespace;
-  @Autowired MyClientInterceptor myClientInterceptor;
   ObjectFactory objectFactory;
 
   @Autowired
-  public TMServiceImpl(
-      @Value("${totalmobile.url}") String url,
-      @Value("${totalmobile.message-queue-path}") String messageQueuePath,
-      @Value("${totalmobile.message-queue-package}") String messageQueuePackage,
-      @Value("${totalmobile.message-queue-namespace}") String namespace,
-      @Value("${totalmobile.username}") String username,
-      @Value("${totalmobile.password}") String password) throws Exception {
+  public TMJobServiceImpl(
+          @Value("${totalmobile.url}") String url,
+          @Value("${totalmobile.message-queue-path}") String messageQueuePath,
+          @Value("${totalmobile.message-queue-package}") String messageQueuePackage,
+          @Value("${totalmobile.message-queue-namespace}") String namespace,
+          @Value("${totalmobile.username}") String username,
+          @Value("${totalmobile.password}") String password) throws Exception {
     this.messageQueueUrl = url + messageQueuePath;
     this.namespace = namespace;
 
@@ -146,11 +152,22 @@ public class TMServiceImpl extends WebServiceGatewaySupport implements TMService
     messageSender.afterPropertiesSet();
     this.setMessageSender(messageSender);
 
-    // ClientInterceptor[] interceptors = {myClientInterceptor};
-    // this.setInterceptors(interceptors);
-
     this.objectFactory = new ObjectFactory();
   }
+
+  @Override
+  public void createJob(FWMTCreateJobRequest jobRequest) throws DatatypeConfigurationException {
+    SendCreateJobRequestMessage createRequest = TMJobConverter.createJob(jobRequest, "");
+    send(createRequest);
+  }
+
+  @Override
+  public void cancelJob(FWMTCancelJobRequest cancelRequest) {
+    SendDeleteJobRequestMessage deleteRequest = TMJobConverter
+            .deleteJob(cancelRequest.getJobIdentity(), cancelRequest.getReason(), tmAdminUsername);
+    send(deleteRequest);
+  }
+
 
   /**
    * Translates a class name into the SOAP action expected by TotalMobile

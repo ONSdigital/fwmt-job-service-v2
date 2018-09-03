@@ -150,21 +150,7 @@ dependencies {
 
     integrationTestCompile 'org.assertj:assertj-core:3.0.0'
 
-    integrationTestRuntime group: 'uk.gov.ons.fwmt', name: 'fwmt-service-mocks', version: '1.0.0'
-}
-
-class RunAsyncTask extends DefaultTask {
-    @TaskAction
-    def startAsync() {
-        ExecutorService es = Executors.newSingleThreadExecutor()
-        es.submit({
-            project.javaexec {
-                classpath = project.sourceSets.main.runtimeClasspath
-                main = "Main"
-            }
-        } as Callable)
-
-    }
+    integrationTestRuntime group: 'uk.gov.ons.fwmt', name: 'fwmt-service-mocks', version: '1.0.1-SNAPSHOT'
 }
 
 task integrationTest(type: Test) {
@@ -177,7 +163,6 @@ task integrationTest(type: Test) {
     outputs.upToDateWhen { false }
 }
 check.dependsOn integrationTest
-check.dependsOn jacocoTestReport
 integrationTest.mustRunAfter test
 
 task runMocks(type: com.github.psxpaul.task.JavaExecFork) {

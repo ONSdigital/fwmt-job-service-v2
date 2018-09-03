@@ -49,6 +49,7 @@ public class JobServiceV2Tests {
     testReceiver.init();
 
     outgoingWs.sendCompositeVisitRequestOutput(compositeVisitRequestJAXBElement);
+    //TODO work out why this wont send request to our OutgoingWs
     //    webServiceTemplate
     //        .marshalSendAndReceive("http://localhost:9999/jobs/ws", compositeVisitRequestJAXBElement);
 
