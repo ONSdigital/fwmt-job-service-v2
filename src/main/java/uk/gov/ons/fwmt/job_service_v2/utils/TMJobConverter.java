@@ -106,13 +106,13 @@ public final class TMJobConverter {
     return request;
   }
 
-  protected static void addAddressLines(List<String> addressLines, String addressLine) {
+  public static void addAddressLines(List<String> addressLines, String addressLine) {
     if (StringUtils.isNotBlank((addressLine))) {
       addressLines.add(addressLine);
     }
   }
 
-  protected static void checkNumberOfAddressLines(List<String> addressLines) {
+  public static void checkNumberOfAddressLines(List<String> addressLines) {
     if (addressLines.size() == 6) {
       String addressConcat = addressLines.get(2) + " " + addressLines.get(3);
       addressLines.set(2, addressConcat);
