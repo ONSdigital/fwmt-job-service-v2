@@ -3,6 +3,7 @@ package uk.gov.ons.fwmt.job_service_v2.utils;
 import com.consiliumtechnologies.schemas.services.mobile._2009._03.messaging.SendCreateJobRequestMessage;
 import com.consiliumtechnologies.schemas.services.mobile._2009._03.messaging.SendDeleteJobRequestMessage;
 import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
+import org.junit.Before;
 import org.junit.Test;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.data.Address;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.data.FWMTCreateJobRequest;
@@ -16,6 +17,13 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 
 public class TMJobConverterTest {
+
+  TMJobConverter tmJobConverter;
+
+  @Before
+  public void setup() throws DatatypeConfigurationException {
+    tmJobConverter = new TMJobConverter();
+  }
 
   @Test
   public void createJobTest() throws DatatypeConfigurationException {
@@ -38,7 +46,7 @@ public class TMJobConverterTest {
     address.setLongitude(BigDecimal.valueOf(34.3739957));
     ingest.setAddress(address);
 
-    SendCreateJobRequestMessage request = TMJobConverter.createJob(ingest, user);
+    SendCreateJobRequestMessage request = tmJobConverter.createJob(ingest, user);
 
     assertEquals(request.getCreateJobRequest().getJob().getIdentity().getReference(), "1234");
     assertEquals(request.getCreateJobRequest().getJob().getContact().getName(), "188961");
@@ -91,7 +99,7 @@ public class TMJobConverterTest {
 
   @Test
   public void deleteJobTest() {
-    SendDeleteJobRequestMessage request = TMJobConverter.deleteJob("1234", "wrong address","admin");
+    SendDeleteJobRequestMessage request = tmJobConverter.deleteJob("1234", "wrong address","admin");
 
     assertEquals(request.getDeleteJobRequest().getDeletionReason(), "wrong address");
     assertEquals(request.getDeleteJobRequest().getIdentity().getReference(), "1234");

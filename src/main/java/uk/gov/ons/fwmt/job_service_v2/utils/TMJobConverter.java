@@ -1,6 +1,7 @@
 package uk.gov.ons.fwmt.job_service_v2.utils;
 
 import com.consiliumtechnologies.schemas.mobile._2009._03.visitstypes.AdditionalPropertyCollectionType;
+import com.consiliumtechnologies.schemas.mobile._2009._03.visitstypes.AdditionalPropertyType;
 import com.consiliumtechnologies.schemas.mobile._2015._05.optimisemessages.CreateJobRequest;
 import com.consiliumtechnologies.schemas.mobile._2015._05.optimisemessages.DeleteJobRequest;
 import com.consiliumtechnologies.schemas.mobile._2015._05.optimisetypes.AddressDetailType;
@@ -16,6 +17,7 @@ import com.consiliumtechnologies.schemas.services.mobile._2009._03.messaging.Sen
 import com.consiliumtechnologies.schemas.services.mobile._2009._03.messaging.SendMessageRequestInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import uk.gov.ons.fwmt.fwmtgatewaycommon.data.AdditionalProperty;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.data.FWMTCreateJobRequest;
 
 import javax.xml.datatype.DatatypeConfigurationException;
@@ -31,7 +33,13 @@ public final class TMJobConverter {
   protected static final String JOB_WORK_TYPE = "Household";
   protected static final String JOB_WORLD = "MOD World";
 
-  public static  SendCreateJobRequestMessage createJob(FWMTCreateJobRequest ingest, String username) throws DatatypeConfigurationException {
+  protected DatatypeFactory datatypeFactory;
+
+  public TMJobConverter() throws DatatypeConfigurationException {
+    datatypeFactory = DatatypeFactory.newInstance();
+  }
+
+  public SendCreateJobRequestMessage createJob(FWMTCreateJobRequest ingest, String username) {
 
     CreateJobRequest request = createJobRequestFromIngest(ingest, username);
 
@@ -42,7 +50,7 @@ public final class TMJobConverter {
     return message;
   }
 
-  public static  SendDeleteJobRequestMessage deleteJob(String jobIdentity, String deletionReason, String TMAdminUsername) {
+  public SendDeleteJobRequestMessage deleteJob(String jobIdentity, String deletionReason, String TMAdminUsername) {
     SendDeleteJobRequestMessage message = new SendDeleteJobRequestMessage();
     DeleteJobRequest deleteJobRequest = new DeleteJobRequest();
     JobIdentityType jobIdentityType = new JobIdentityType();
@@ -60,7 +68,7 @@ public final class TMJobConverter {
     return message;
   }
 
-  protected static CreateJobRequest createJobRequestFromIngest(FWMTCreateJobRequest ingest, String username) throws DatatypeConfigurationException {
+  protected CreateJobRequest createJobRequestFromIngest(FWMTCreateJobRequest ingest, String username) {
     CreateJobRequest request = new CreateJobRequest();
     JobType job = new JobType();
     request.setJob(job);
@@ -104,7 +112,7 @@ public final class TMJobConverter {
     GregorianCalendar dueDateCalendar = GregorianCalendar
         .from(ingest.getDueDate().atTime(23, 59, 59).atZone(ZoneId.of("UTC")));
 
-    request.getJob().setDueDate(DatatypeFactory.newInstance().newXMLGregorianCalendar(dueDateCalendar));
+    request.getJob().setDueDate(datatypeFactory.newXMLGregorianCalendar(dueDateCalendar));
 
     request.getJob().setDuration(1);
     request.getJob().setVisitComplete(false);

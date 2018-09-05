@@ -6,7 +6,7 @@ import uk.gov.ons.fwmt.fwmtgatewaycommon.data.FWMTCreateJobRequest;
 import javax.xml.datatype.DatatypeConfigurationException;
 
 public interface JobService {
-  void createJob(FWMTCreateJobRequest jobRequest) throws DatatypeConfigurationException;
+  void createJob(FWMTCreateJobRequest jobRequest);
 
   void cancelJob(FWMTCancelJobRequest cancelRequest);
 }

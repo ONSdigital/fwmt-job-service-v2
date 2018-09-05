@@ -84,6 +84,9 @@ public class TMJobServiceImpl extends WebServiceGatewaySupport implements JobSer
   @Value("${totalmobile.username}")
   private String tmAdminUsername;
 
+  @Autowired
+  private TMJobConverter tmJobConverter;
+
   // A lookup detailing the instances where the message name does not translate easily into a SOAP action
   // Normally, we assume that the SOAP action is equal to the class name with the word 'Response' at the end removed
   private static final Map<Class<?>, String> messageActionMap;
@@ -156,14 +159,14 @@ public class TMJobServiceImpl extends WebServiceGatewaySupport implements JobSer
   }
 
   @Override
-  public void createJob(FWMTCreateJobRequest jobRequest) throws DatatypeConfigurationException {
-    SendCreateJobRequestMessage createRequest = TMJobConverter.createJob(jobRequest, "");
+  public void createJob(FWMTCreateJobRequest jobRequest) {
+    SendCreateJobRequestMessage createRequest = tmJobConverter.createJob(jobRequest, "");
     send(createRequest);
   }
 
   @Override
   public void cancelJob(FWMTCancelJobRequest cancelRequest) {
-    SendDeleteJobRequestMessage deleteRequest = TMJobConverter
+    SendDeleteJobRequestMessage deleteRequest = tmJobConverter
             .deleteJob(cancelRequest.getJobIdentity(), cancelRequest.getReason(), tmAdminUsername);
     send(deleteRequest);
   }
