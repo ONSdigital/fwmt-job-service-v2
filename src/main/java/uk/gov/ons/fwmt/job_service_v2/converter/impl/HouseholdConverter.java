@@ -22,7 +22,7 @@ import java.util.List;
 import static uk.gov.ons.fwmt.job_service_v2.utils.TMJobConverter.addAddressLines;
 import static uk.gov.ons.fwmt.job_service_v2.utils.TMJobConverter.checkNumberOfAddressLines;
 
-@Component
+@Component("HH")
 public class HouseholdConverter implements TMConverter
 {
   @Override public CreateJobRequest convert(FWMTCreateJobRequest ingest) {
@@ -75,5 +75,9 @@ public class HouseholdConverter implements TMConverter
     request.setJob(job);
 
     return request;
+  }
+
+  @Override public String getType() {
+    return "HH";
   }
 }

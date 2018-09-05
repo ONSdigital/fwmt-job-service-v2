@@ -22,7 +22,7 @@ import java.util.List;
 import static uk.gov.ons.fwmt.job_service_v2.utils.TMJobConverter.addAddressLines;
 import static uk.gov.ons.fwmt.job_service_v2.utils.TMJobConverter.checkNumberOfAddressLines;
 
-@Component
+@Component("CCS")
 public class CcsConverter implements TMConverter
 {
   @Override public CreateJobRequest convert(FWMTCreateJobRequest ingest) {
@@ -67,5 +67,9 @@ public class CcsConverter implements TMConverter
     request.setJob(job);
 
     return request;
+  }
+
+  @Override public String getType() {
+    return "CCS";
   }
 }

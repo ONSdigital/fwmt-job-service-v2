@@ -17,6 +17,7 @@ import com.consiliumtechnologies.schemas.services.mobile._2009._03.messaging.Sen
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.data.FWMTCreateJobRequest;
+import uk.gov.ons.fwmt.job_service_v2.converter.TMConverter;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
@@ -31,9 +32,10 @@ public final class TMJobConverter {
   protected static final String JOB_WORK_TYPE = "Household";
   protected static final String JOB_WORLD = "MOD World";
 
-  public static  SendCreateJobRequestMessage createJob(FWMTCreateJobRequest ingest, String username) throws DatatypeConfigurationException {
+  public static  SendCreateJobRequestMessage createJob(FWMTCreateJobRequest ingest, String username,
+      TMConverter tmConverter) throws DatatypeConfigurationException {
 
-    CreateJobRequest request = createJobRequestFromIngest(ingest, username);
+    CreateJobRequest request = createJobRequestFromIngest(ingest, username, tmConverter);
 
     SendCreateJobRequestMessage message = new SendCreateJobRequestMessage();
     message.setSendMessageRequestInfo(makeSendMessageRequestInfo(ingest.getJobIdentity()));
@@ -60,50 +62,9 @@ public final class TMJobConverter {
     return message;
   }
 
-  protected static CreateJobRequest createJobRequestFromIngest(FWMTCreateJobRequest ingest, String username) throws DatatypeConfigurationException {
-    CreateJobRequest request = new CreateJobRequest();
-    JobType job = new JobType();
-    request.setJob(job);
-    job.setIdentity(new JobIdentityType());
-    job.setSkills(new SkillCollectionType());
-    job.setContact(new ContactInfoType());
-    job.setWorld(new WorldIdentityType());
-
-    request.getJob().getIdentity().setReference(ingest.getJobIdentity());
-    request.getJob().getContact().setName(ingest.getAddress().getPostCode());
-    request.getJob().getSkills().getSkill().add(JOB_SKILL);
-    request.getJob().setWorkType(JOB_WORK_TYPE);
-    request.getJob().getWorld().setReference(JOB_WORLD);
-
-    job.setLocation(new LocationType());
-    job.getLocation().setAddressDetail(new AddressDetailType());
-    job.getLocation().getAddressDetail().setLines(new AddressDetailType.Lines());
-    LocationType location = request.getJob().getLocation();
-    List<String> addressLines = location.getAddressDetail().getLines().getAddressLine();
-
-    job.setAdditionalProperties(new AdditionalPropertyCollectionType());
-
-    addAddressLines(addressLines, ingest.getAddress().getLine1());
-    addAddressLines(addressLines, ingest.getAddress().getLine2());
-    addAddressLines(addressLines, ingest.getAddress().getLine3());
-    addAddressLines(addressLines, ingest.getAddress().getLine4());
-    addAddressLines(addressLines, ingest.getAddress().getTownName());
-    checkNumberOfAddressLines(addressLines);
-
-    location.getAddressDetail().setPostCode(ingest.getAddress().getPostCode());
-
-    GregorianCalendar dueDateCalendar = GregorianCalendar
-        .from(ingest.getDueDate().atTime(23, 59, 59).atZone(ZoneId.of("UTC")));
-
-    request.getJob().setDueDate(DatatypeFactory.newInstance().newXMLGregorianCalendar(dueDateCalendar));
-
-    request.getJob().setDuration(1);
-    request.getJob().setVisitComplete(false);
-    request.getJob().setDispatched(false);
-    request.getJob().setAppointmentPending(false);
-    request.getJob().setEmergency(false);
-
-    return request;
+  protected static CreateJobRequest createJobRequestFromIngest(FWMTCreateJobRequest ingest, String username,
+      TMConverter tmConverter) throws DatatypeConfigurationException {
+    return tmConverter.convert(ingest);
   }
 
   public static void addAddressLines(List<String> addressLines, String addressLine) {
