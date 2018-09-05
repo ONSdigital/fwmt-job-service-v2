@@ -83,6 +83,15 @@ public final class TMJobConverter {
 
     job.setAdditionalProperties(new AdditionalPropertyCollectionType());
 
+    if (ingest.getAdditionalProperties() != null) {
+      for (AdditionalProperty property : ingest.getAdditionalProperties()) {
+        AdditionalPropertyType tmProperty = new AdditionalPropertyType();
+        tmProperty.setName(property.getName());
+        tmProperty.setValue(property.getValue());
+        job.getAdditionalProperties().getAdditionalProperty().add(tmProperty);
+      }
+    }
+
     addAddressLines(addressLines, ingest.getAddress().getLine1());
     addAddressLines(addressLines, ingest.getAddress().getLine2());
     addAddressLines(addressLines, ingest.getAddress().getLine3());
