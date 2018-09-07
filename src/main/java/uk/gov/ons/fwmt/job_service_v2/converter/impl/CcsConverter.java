@@ -7,6 +7,7 @@ import com.consiliumtechnologies.schemas.mobile._2015._05.optimisetypes.ContactI
 import com.consiliumtechnologies.schemas.mobile._2015._05.optimisetypes.JobIdentityType;
 import com.consiliumtechnologies.schemas.mobile._2015._05.optimisetypes.JobType;
 import com.consiliumtechnologies.schemas.mobile._2015._05.optimisetypes.LocationType;
+import com.consiliumtechnologies.schemas.mobile._2015._05.optimisetypes.ResourceIdentityType;
 import com.consiliumtechnologies.schemas.mobile._2015._05.optimisetypes.SkillCollectionType;
 import com.consiliumtechnologies.schemas.mobile._2015._05.optimisetypes.WorldIdentityType;
 import org.springframework.stereotype.Component;
@@ -19,6 +20,7 @@ import java.time.ZoneId;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import static uk.gov.ons.fwmt.job_service_v2.utils.TMJobConverter.addAdditionalProperty;
 import static uk.gov.ons.fwmt.job_service_v2.utils.TMJobConverter.addAddressLines;
 import static uk.gov.ons.fwmt.job_service_v2.utils.TMJobConverter.checkNumberOfAddressLines;
 
@@ -39,16 +41,23 @@ public class CcsConverter implements TMConverter
     job.getContact().setName(ingest.getAddress().getPostCode());
     job.getSkills().getSkill().add("CCS");
     job.setWorkType("CCS");
+
+
+    if (ingest.isPreallocatedJob()) {
+      job.getWorld().setReference("Default");
+      job.setAllocatedTo(new ResourceIdentityType());
+      job.getAllocatedTo().setUsername("test"); //todo add lookup for username
+    }
     job.getWorld().setReference("MOD World");
 
     job.setLocation(new LocationType());
     job.getLocation().setAddressDetail(new AddressDetailType());
     job.getLocation().getAddressDetail().setLines(new AddressDetailType.Lines());
-    LocationType location = request.getJob().getLocation();
 
     job.setAdditionalProperties(new AdditionalPropertyCollectionType());
+    addAdditionalProperty(job, "CCS_AddrPostcode", ingest.getAddress().getPostCode());
 
-    location.getAddressDetail().setPostCode(ingest.getAddress().getPostCode());
+    job.getLocation().getAddressDetail().setPostCode(ingest.getAddress().getPostCode());
 
     GregorianCalendar dueDateCalendar = GregorianCalendar
         .from(ingest.getDueDate().atTime(23, 59, 59).atZone(ZoneId.of("UTC")));

@@ -44,8 +44,7 @@ public class HouseholdConverter implements TMConverter
     job.setLocation(new LocationType());
     job.getLocation().setAddressDetail(new AddressDetailType());
     job.getLocation().getAddressDetail().setLines(new AddressDetailType.Lines());
-    LocationType location = request.getJob().getLocation();
-    List<String> addressLines = location.getAddressDetail().getLines().getAddressLine();
+    List<String> addressLines = job.getLocation().getAddressDetail().getLines().getAddressLine();
 
     job.setAdditionalProperties(new AdditionalPropertyCollectionType());
 
@@ -56,7 +55,7 @@ public class HouseholdConverter implements TMConverter
     addAddressLines(addressLines, ingest.getAddress().getTownName());
     checkNumberOfAddressLines(addressLines);
 
-    location.getAddressDetail().setPostCode(ingest.getAddress().getPostCode());
+    job.getLocation().getAddressDetail().setPostCode(ingest.getAddress().getPostCode());
 
     GregorianCalendar dueDateCalendar = GregorianCalendar
         .from(ingest.getDueDate().atTime(23, 59, 59).atZone(ZoneId.of("UTC")));

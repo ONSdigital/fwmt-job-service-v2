@@ -69,7 +69,6 @@ import uk.gov.ons.fwmt.job_service_v2.service.tm.JobService;
 import uk.gov.ons.fwmt.job_service_v2.utils.TMJobConverter;
 
 import javax.xml.bind.JAXBElement;
-import javax.xml.datatype.DatatypeConfigurationException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -160,9 +159,9 @@ public class TMJobServiceImpl extends WebServiceGatewaySupport implements JobSer
   }
 
   @Override
-  public void createJob(FWMTCreateJobRequest jobRequest) throws DatatypeConfigurationException {
+  public void createJob(FWMTCreateJobRequest jobRequest) {
     final TMConverter tmConverter = tmConvertors.get(jobRequest.getSurveyType());
-    SendCreateJobRequestMessage createRequest = TMJobConverter.createJob(jobRequest, "", tmConverter);
+    SendCreateJobRequestMessage createRequest = TMJobConverter.createJob(jobRequest, tmConverter);
     send(createRequest);
   }
 

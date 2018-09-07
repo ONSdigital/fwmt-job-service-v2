@@ -6,6 +6,8 @@ import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl
 import org.junit.Test;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.data.Address;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.data.FWMTCreateJobRequest;
+import uk.gov.ons.fwmt.job_service_v2.converter.impl.CcsConverter;
+import uk.gov.ons.fwmt.job_service_v2.converter.impl.HouseholdConverter;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import java.math.BigDecimal;
@@ -18,7 +20,7 @@ import static org.junit.Assert.assertEquals;
 public class TMJobConverterTest {
 
   @Test
-  public void createJobTest() throws DatatypeConfigurationException {
+  public void createHHJobTest() throws DatatypeConfigurationException {
     String user = "bob.smith";
     FWMTCreateJobRequest ingest = new FWMTCreateJobRequest();
     Address address = new Address();
@@ -38,12 +40,45 @@ public class TMJobConverterTest {
     address.setLongitude(BigDecimal.valueOf(34.3739957));
     ingest.setAddress(address);
 
-    SendCreateJobRequestMessage request = TMJobConverter.createJob(ingest, user);
+    SendCreateJobRequestMessage request = TMJobConverter.createJob(ingest, new HouseholdConverter());
 
     assertEquals(request.getCreateJobRequest().getJob().getIdentity().getReference(), "1234");
     assertEquals(request.getCreateJobRequest().getJob().getContact().getName(), "188961");
     assertEquals(request.getCreateJobRequest().getJob().getDueDate(),
         XMLGregorianCalendarImpl.parse("2018-08-16T23:59:59.000Z"));
+
+    assertEquals(request.getSendMessageRequestInfo().getQueueName(), "\\OPTIMISE\\INPUT");
+    assertEquals(request.getSendMessageRequestInfo().getKey(), "1234");
+  }
+
+  @Test
+  public void createCCSJobTest() throws DatatypeConfigurationException {
+    String user = "bob.smith";
+    FWMTCreateJobRequest ingest = new FWMTCreateJobRequest();
+    Address address = new Address();
+    ingest.setActionType("Create");
+    ingest.setJobIdentity("1234");
+    ingest.setSurveyType("CCS");
+    ingest.setPreallocatedJob(true);
+    ingest.setMandatoryResourceAuthNo("1234");
+    ingest.setDueDate(LocalDate.parse("2018-08-16"));
+    address.setLine1("886");
+    address.setLine2("Prairie Rose");
+    address.setLine3("Trail");
+    address.setLine4("RU");
+    address.setTownName("Borodinskiy");
+    address.setPostCode("188961");
+    address.setLatitude(BigDecimal.valueOf(61.7921776));
+    address.setLongitude(BigDecimal.valueOf(34.3739957));
+    ingest.setAddress(address);
+
+    SendCreateJobRequestMessage request = TMJobConverter.createJob(ingest, new CcsConverter());
+
+    assertEquals(request.getCreateJobRequest().getJob().getIdentity().getReference(), "1234");
+    assertEquals(request.getCreateJobRequest().getJob().getContact().getName(), "188961");
+    assertEquals(request.getCreateJobRequest().getJob().getDueDate(),
+        XMLGregorianCalendarImpl.parse("2018-08-16T23:59:59.000Z"));
+    assertEquals(request.getCreateJobRequest().getJob().getDescription(), "Census - 188961");
 
     assertEquals(request.getSendMessageRequestInfo().getQueueName(), "\\OPTIMISE\\INPUT");
     assertEquals(request.getSendMessageRequestInfo().getKey(), "1234");
