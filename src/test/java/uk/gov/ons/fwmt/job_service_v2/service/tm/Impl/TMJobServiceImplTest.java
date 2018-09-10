@@ -5,7 +5,6 @@ import com.consiliumtechnologies.schemas.services.mobile._2009._03.messaging.Obj
 import com.consiliumtechnologies.schemas.services.mobile._2009._03.messaging.QueryMessagesRequest;
 import com.consiliumtechnologies.schemas.services.mobile._2009._03.messaging.QueryMessagesResponse;
 import com.consiliumtechnologies.schemas.services.mobile._2009._03.messaging.SendAddJobTasksRequestMessage;
-import com.consiliumtechnologies.schemas.services.mobile._2009._03.messaging.SendCreateJobRequestMessage;
 import com.consiliumtechnologies.schemas.services.mobile._2009._03.messaging.SendCreateJobRequestMessageResponse;
 import com.consiliumtechnologies.schemas.services.mobile._2009._03.messaging.SendMessageRequest;
 import org.junit.Assert;
@@ -22,20 +21,15 @@ import uk.gov.ons.fwmt.fwmtgatewaycommon.data.Address;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.data.FWMTCreateJobRequest;
 import uk.gov.ons.fwmt.job_service_v2.converter.TMConverter;
 import uk.gov.ons.fwmt.job_service_v2.converter.impl.HouseholdConverter;
-import uk.gov.ons.fwmt.job_service_v2.utils.TMJobConverter;
 
 import javax.xml.bind.JAXBElement;
-
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
 public class TMJobServiceImplTest {
 

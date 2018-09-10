@@ -18,11 +18,8 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import java.time.ZoneId;
 import java.util.GregorianCalendar;
-import java.util.List;
 
 import static uk.gov.ons.fwmt.job_service_v2.utils.TMJobConverter.addAdditionalProperty;
-import static uk.gov.ons.fwmt.job_service_v2.utils.TMJobConverter.addAddressLines;
-import static uk.gov.ons.fwmt.job_service_v2.utils.TMJobConverter.checkNumberOfAddressLines;
 
 @Component("CCS")
 public class CcsConverter implements TMConverter
