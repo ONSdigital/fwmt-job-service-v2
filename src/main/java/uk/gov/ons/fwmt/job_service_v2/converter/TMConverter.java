@@ -6,5 +6,4 @@ import uk.gov.ons.fwmt.fwmtgatewaycommon.data.FWMTCreateJobRequest;
 public interface TMConverter {
   CreateJobRequest convert(FWMTCreateJobRequest ingest);
 
-  String getType();
 }

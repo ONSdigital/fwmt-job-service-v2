@@ -43,7 +43,7 @@ public class CcsConverter implements TMConverter
     if (ingest.isPreallocatedJob()) {
       job.getWorld().setReference("Default");
       job.setAllocatedTo(new ResourceIdentityType());
-      job.getAllocatedTo().setUsername("test"); //todo add lookup for username
+      job.getAllocatedTo().setUsername("test"); //lookup not defined yet
     }
     job.getWorld().setReference("MOD World");
 
@@ -75,7 +75,4 @@ public class CcsConverter implements TMConverter
     return request;
   }
 
-  @Override public String getType() {
-    return "CCS";
-  }
 }

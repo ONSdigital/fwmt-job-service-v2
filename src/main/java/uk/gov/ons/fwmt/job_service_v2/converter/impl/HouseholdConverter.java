@@ -76,7 +76,4 @@ public class HouseholdConverter implements TMConverter
     return request;
   }
 
-  @Override public String getType() {
-    return "HH";
-  }
 }
