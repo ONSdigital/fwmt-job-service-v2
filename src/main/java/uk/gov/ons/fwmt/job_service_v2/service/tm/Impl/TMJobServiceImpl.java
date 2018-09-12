@@ -65,7 +65,6 @@ import org.springframework.ws.transport.http.HttpComponentsMessageSender;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.data.FWMTCancelJobRequest;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.data.FWMTCreateJobRequest;
 import uk.gov.ons.fwmt.job_service_v2.converter.TMConverter;
-import uk.gov.ons.fwmt.job_service_v2.service.tm.JobService;
 import uk.gov.ons.fwmt.job_service_v2.utils.TMJobConverter;
 
 import javax.xml.bind.JAXBElement;
@@ -79,7 +78,7 @@ import java.util.Map;
  */
 @Slf4j
 @Service
-public class TMJobServiceImpl extends WebServiceGatewaySupport implements JobService {
+public class TMJobServiceImpl extends WebServiceGatewaySupport {
 
   @Value("${totalmobile.username}")
   private String tmAdminUsername;
@@ -158,14 +157,12 @@ public class TMJobServiceImpl extends WebServiceGatewaySupport implements JobSer
     this.objectFactory = new ObjectFactory();
   }
 
-  @Override
   public void createJob(FWMTCreateJobRequest jobRequest) {
     final TMConverter tmConverter = tmConvertors.get(jobRequest.getSurveyType());
     SendCreateJobRequestMessage createRequest = TMJobConverter.createJob(jobRequest, tmConverter);
     send(createRequest);
   }
 
-  @Override
   public void cancelJob(FWMTCancelJobRequest cancelRequest) {
     SendDeleteJobRequestMessage deleteRequest = TMJobConverter
             .deleteJob(cancelRequest.getJobIdentity(), cancelRequest.getReason(), tmAdminUsername);

@@ -8,7 +8,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
-import uk.gov.ons.fwmt.job_service_v2.service.tm.JobService;
+import uk.gov.ons.fwmt.job_service_v2.service.JobService;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import java.io.IOException;
