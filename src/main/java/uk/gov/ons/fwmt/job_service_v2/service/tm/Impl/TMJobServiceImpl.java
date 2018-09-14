@@ -64,11 +64,10 @@ import org.springframework.ws.soap.client.core.SoapActionCallback;
 import org.springframework.ws.transport.http.HttpComponentsMessageSender;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.data.FWMTCancelJobRequest;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.data.FWMTCreateJobRequest;
-import uk.gov.ons.fwmt.job_service_v2.service.tm.JobService;
+import uk.gov.ons.fwmt.job_service_v2.converter.TMConverter;
 import uk.gov.ons.fwmt.job_service_v2.utils.TMJobConverter;
 
 import javax.xml.bind.JAXBElement;
-import javax.xml.datatype.DatatypeConfigurationException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -79,10 +78,13 @@ import java.util.Map;
  */
 @Slf4j
 @Service
-public class TMJobServiceImpl extends WebServiceGatewaySupport implements JobService {
+public class TMJobServiceImpl extends WebServiceGatewaySupport {
 
   @Value("${totalmobile.username}")
   private String tmAdminUsername;
+
+  @Autowired
+  private Map<String, TMConverter> tmConvertors;
 
   // A lookup detailing the instances where the message name does not translate easily into a SOAP action
   // Normally, we assume that the SOAP action is equal to the class name with the word 'Response' at the end removed
@@ -155,13 +157,12 @@ public class TMJobServiceImpl extends WebServiceGatewaySupport implements JobSer
     this.objectFactory = new ObjectFactory();
   }
 
-  @Override
-  public void createJob(FWMTCreateJobRequest jobRequest) throws DatatypeConfigurationException {
-    SendCreateJobRequestMessage createRequest = TMJobConverter.createJob(jobRequest, "");
+  public void createJob(FWMTCreateJobRequest jobRequest) {
+    final TMConverter tmConverter = tmConvertors.get(jobRequest.getSurveyType());
+    SendCreateJobRequestMessage createRequest = TMJobConverter.createJob(jobRequest, tmConverter);
     send(createRequest);
   }
 
-  @Override
   public void cancelJob(FWMTCancelJobRequest cancelRequest) {
     SendDeleteJobRequestMessage deleteRequest = TMJobConverter
             .deleteJob(cancelRequest.getJobIdentity(), cancelRequest.getReason(), tmAdminUsername);

@@ -3,7 +3,6 @@ package uk.gov.ons.fwmt.job_service_v2.tests;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,7 +24,6 @@ import uk.gov.ons.fwmt.job_service_v2.IntegrationTestConfig;
 import uk.gov.ons.fwmt.job_service_v2.helper.TestReceiver;
 
 import javax.annotation.PostConstruct;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
