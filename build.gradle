@@ -1,11 +1,17 @@
 import org.apache.tools.ant.filters.ReplaceTokens
+import org.ajoberstar.grgit.*
 
 buildscript {
     repositories {
         mavenCentral()
+        jcenter()
+
     }
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:2.0.2.RELEASE")
+        classpath "org.jfrog.buildinfo:build-info-extractor-gradle:latest.release"
+        classpath 'org.ajoberstar:gradle-git:1.4.2'
+
     }
 }
 
@@ -16,13 +22,17 @@ plugins {
 apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'application'
+apply plugin: 'maven-publish'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'jacoco'
 apply plugin: "findbugs"
+apply plugin: 'com.jfrog.artifactory'
+apply plugin: 'org.ajoberstar.grgit'
 
 mainClassName = 'uk.gov.ons.fwmt.job_service_v2.ApplicationConfig'
 
 description = "fwmt-job-service"
+def repo = Grgit.open('.')
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -32,7 +42,12 @@ version = '1.0.0'
 jar {
     group = 'uk.gov.ons.fwmt'
     baseName = 'fwmt-job-service'
+    manifest {
+        attributes(["Git-Commit": repo.head().getAbbreviatedId(8),
+                    "Git-Branch": repo.branch.getCurrent().getName() ], "common")
+    }
     version = version
+    from sourceSets.main.output
 }
 
 repositories {
@@ -60,6 +75,32 @@ sourceSets {
         }
         resources.srcDir file('src/integration-test/resources')
     }
+}
+artifactory {
+    contextUrl = System.getenv('ARTIFACTORY_URL')
+    publish {
+        repository {
+            repoKey = 'libs-snapshot-local'
+            username = System.getenv('ARTIFACTORY_USERNAME')
+            password = System.getenv('ARTIFACTORY_PASSWORD')
+        }
+    }
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId = group
+            artifactId = 'fwmt-rm-adapter'
+            version = version
+
+            from components.java
+        }
+    }
+}
+
+artifactoryPublish {
+    publications ('maven')
 }
 
 task genJaxb {
