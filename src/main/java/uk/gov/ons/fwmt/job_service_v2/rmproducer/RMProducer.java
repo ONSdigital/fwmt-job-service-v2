@@ -5,11 +5,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Component;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.config.QueueConfig;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.data.DummyTMResponse;
-import uk.gov.ons.fwmt.fwmtgatewaycommon.exceptions.types.FWMTCommonException;
 
 @Slf4j
 @Component
@@ -20,7 +18,6 @@ public class RMProducer {
   @Autowired
   private RabbitTemplate template;
 
-  @Retryable(FWMTCommonException.class)
   public void send(DummyTMResponse dummyTMResponse) {
     try {
       final String dummyResponseStr = objectMapper.writeValueAsString(dummyTMResponse);

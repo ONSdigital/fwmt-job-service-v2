@@ -22,11 +22,8 @@ import org.springframework.retry.backoff.ExponentialBackOffPolicy;
 import org.springframework.retry.policy.SimpleRetryPolicy;
 import org.springframework.retry.support.RetryTemplate;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.config.QueueConfig;
-import uk.gov.ons.fwmt.fwmtgatewaycommon.exceptions.types.FWMTCommonException;
 import uk.gov.ons.fwmt.job_service_v2.queuereceiver.JobServiceMessageReceiver;
-
-import java.util.HashMap;
-import java.util.Map;
+import uk.gov.ons.fwmt.job_service_v2.retrysupport.DefaultListenerSupport;
 
 /**
  * Main entry point into the TM Gateway
@@ -86,20 +83,20 @@ public class ApplicationConfig {
   }
 
   @Bean
-  RetryTemplate retryTemplate() {
+  public RetryTemplate retryTemplate() {
     RetryTemplate retryTemplate = new RetryTemplate();
 
-    Map<Class<? extends Throwable>, Boolean> includeExceptions = new HashMap<>();
-    includeExceptions.put(FWMTCommonException.class, true);
     ExponentialBackOffPolicy backOffPolicy = new ExponentialBackOffPolicy();
     backOffPolicy.setInitialInterval(5000);
     backOffPolicy.setMultiplier(3.0);
     backOffPolicy.setMaxInterval(45000);
     retryTemplate.setBackOffPolicy(backOffPolicy);
 
-    SimpleRetryPolicy retryPolicy = new SimpleRetryPolicy(3, includeExceptions);
+    SimpleRetryPolicy retryPolicy = new SimpleRetryPolicy(3);
     retryPolicy.setMaxAttempts(3);
     retryTemplate.setRetryPolicy(retryPolicy);
+
+    retryTemplate.registerListener(new DefaultListenerSupport());
 
     return retryTemplate;
   }
