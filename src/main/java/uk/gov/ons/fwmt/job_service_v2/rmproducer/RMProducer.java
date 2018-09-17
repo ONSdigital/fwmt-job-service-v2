@@ -24,7 +24,7 @@ public class RMProducer {
       log.info("Message sent to queue :{}",dummyResponseStr);
       template.convertAndSend(QueueConfig.JOBSVC_TO_ADAPTER_QUEUE, dummyResponseStr);
     } catch (JsonProcessingException e) {
-      e.printStackTrace();
+      log.error("JSON Processing Exception", e);
     }
   }
 }

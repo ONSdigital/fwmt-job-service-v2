@@ -58,7 +58,10 @@ import org.apache.http.auth.UsernamePasswordCredentials;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
+import org.springframework.ws.WebServiceException;
 import org.springframework.ws.client.core.support.WebServiceGatewaySupport;
 import org.springframework.ws.soap.client.core.SoapActionCallback;
 import org.springframework.ws.transport.http.HttpComponentsMessageSender;
@@ -208,6 +211,7 @@ public class TMJobServiceImpl extends WebServiceGatewaySupport {
     }
   }
 
+  @Retryable(value = WebServiceException.class, backoff = @Backoff(delay = 5000))
   public <I, O> O send(I message) {
     log.debug("Began sending message of class {}", message.getClass().getSimpleName());
     String soapAction = lookupSOAPAction(message.getClass());

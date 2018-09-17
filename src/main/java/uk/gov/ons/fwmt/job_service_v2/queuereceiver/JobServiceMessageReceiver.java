@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Component;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.data.FWMTCancelJobRequest;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.data.FWMTCreateJobRequest;
@@ -23,6 +24,7 @@ public class JobServiceMessageReceiver {
   @Autowired
   private ObjectMapper mapper;
 
+  @Retryable(RuntimeException.class)
   public void receiveMessage(String message) throws IllegalAccessException, InstantiationException, DatatypeConfigurationException {
     log.info("received a message: " + message);
     processMessage(message);
