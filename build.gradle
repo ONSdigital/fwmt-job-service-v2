@@ -30,14 +30,14 @@ apply plugin: 'com.jfrog.artifactory'
 apply plugin: 'org.ajoberstar.grgit'
 
 mainClassName = 'uk.gov.ons.fwmt.job_service_v2.ApplicationConfig'
-
+group = 'uk.gov.ons.fwmt'
 description = "fwmt-job-service"
 def repo = Grgit.open('.')
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
-version = '0.0.1-SNAPSHOT'
+version = '0.0.2-SNAPSHOT'
 
 jar {
     group = 'uk.gov.ons.fwmt'
@@ -90,7 +90,7 @@ publishing {
     publications {
         maven(MavenPublication) {
             groupId = group
-            artifactId = 'fwmt-rm-adapter'
+            artifactId = 'fwmt-job-service-v2'
             version = version
 
             from components.java
