@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.config.QueueConfig;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.data.DummyTMResponse;
 
@@ -18,13 +19,14 @@ public class RMProducer {
   @Autowired
   private RabbitTemplate template;
 
-  public void send(DummyTMResponse dummyTMResponse) {
+  public void send(DummyTMResponse dummyTMResponse) throws CTPException {
     try {
       final String dummyResponseStr = objectMapper.writeValueAsString(dummyTMResponse);
       log.info("Message sent to queue :{}",dummyResponseStr);
       template.convertAndSend(QueueConfig.JOBSVC_TO_ADAPTER_QUEUE, dummyResponseStr);
     } catch (JsonProcessingException e) {
       log.error("JSON Processing Exception", e);
+      throw new CTPException(CTPException.Fault.SYSTEM_ERROR, "Failed reading the provided template file.");
     }
   }
 }
