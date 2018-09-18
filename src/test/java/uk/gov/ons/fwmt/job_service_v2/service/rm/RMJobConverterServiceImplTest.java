@@ -12,6 +12,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
+import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.data.DummyTMResponse;
 import uk.gov.ons.fwmt.job_service_v2.rmproducer.RMProducer;
 
@@ -32,7 +33,7 @@ public class RMJobConverterServiceImplTest {
   ArgumentCaptor argCaptor;
 
   @Test
-  public void transformRequest() {
+  public void transformRequest() throws CTPException {
     //Given
     ObjectFactory factory = new ObjectFactory();
     CompositeVisitRequest request = factory.createCompositeVisitRequest();

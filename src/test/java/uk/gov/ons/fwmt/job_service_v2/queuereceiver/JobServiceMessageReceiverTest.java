@@ -8,10 +8,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
+import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.fwmt.job_service_v2.service.JobService;
-
-import javax.xml.datatype.DatatypeConfigurationException;
-import java.io.IOException;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
@@ -29,7 +27,8 @@ public class JobServiceMessageReceiverTest {
   private ObjectMapper mapper;
 
   @Test
-  public void receiveMessageCreate() throws InstantiationException, IllegalAccessException, IOException, DatatypeConfigurationException {
+  public void receiveMessageCreate()
+      throws CTPException {
     JSONObject json = new JSONObject();
     JSONObject address = new JSONObject();
     json.put("actionType", "Create");
@@ -57,7 +56,8 @@ public class JobServiceMessageReceiverTest {
   }
 
   @Test
-  public void receiveMessageCancel() throws InstantiationException, IllegalAccessException, IOException, DatatypeConfigurationException {
+  public void receiveMessageCancel()
+      throws CTPException {
     JSONObject json = new JSONObject();
     json.put("actionType", "Cancel");
     json.put("jobIdentity", "1234");
