@@ -25,14 +25,12 @@ public class JobServiceMessageReceiver {
   private ObjectMapper mapper;
 
   @Retryable(RuntimeException.class)
-  public void receiveMessage(String message)
-      throws CTPException {
+  public void receiveMessage(String message) throws CTPException {
     log.info("received a message: " + message);
     processMessage(message);
   }
 
-  private void processMessage(String message)
-      throws CTPException {
+  private void processMessage(String message) throws CTPException {
     if (message.contains("Create")) {
       FWMTCreateJobRequest fwmtCreateJobRequest = convertMessageToDTO(FWMTCreateJobRequest.class, message);
       jobService.createJob(fwmtCreateJobRequest);
@@ -44,15 +42,14 @@ public class JobServiceMessageReceiver {
     }
   }
 
-  private <T> T convertMessageToDTO(Class<T> klass, String message)
-      throws CTPException {
+  private <T> T convertMessageToDTO(Class<T> klass, String message) throws CTPException {
     mapper.registerModule(new JavaTimeModule());
     mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     T dto;
     try {
       dto = mapper.readValue(message, klass);
     } catch (IOException e) {
-      throw new CTPException(CTPException.Fault.SYSTEM_ERROR, "Failed reading the provided template file.");
+      throw new CTPException(CTPException.Fault.SYSTEM_ERROR, "Failed to convert message to DTO.");
     }
     return dto;
   }
