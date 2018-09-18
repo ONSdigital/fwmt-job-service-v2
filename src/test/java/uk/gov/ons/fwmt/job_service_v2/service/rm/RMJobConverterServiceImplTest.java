@@ -34,6 +34,7 @@ public class RMJobConverterServiceImplTest {
 
   @Test
   public void transformRequest() throws CTPException {
+    // TODO rewrite test to use newly added converter
     //Given
     ObjectFactory factory = new ObjectFactory();
     CompositeVisitRequest request = factory.createCompositeVisitRequest();
