@@ -39,7 +39,7 @@ targetCompatibility = 1.8
 
 version = '0.0.2-SNAPSHOT'
 
-jar {
+bootJar {
     group = 'uk.gov.ons.fwmt'
     baseName = 'fwmt-job-service'
     manifest {
