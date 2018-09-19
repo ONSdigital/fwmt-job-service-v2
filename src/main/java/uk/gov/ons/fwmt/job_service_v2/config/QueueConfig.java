@@ -3,6 +3,7 @@ package uk.gov.ons.fwmt.job_service_v2.config;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.core.QueueBuilder;
 import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
@@ -18,14 +19,30 @@ import uk.gov.ons.fwmt.job_service_v2.retrysupport.DefaultListenerSupport;
 
 @Configuration
 public class QueueConfig {
+
+  public static final String DEAD_LETTER_QUEUE_NAME = "adapter-jobSvc.DLQ";
+
   @Bean
   Queue adapterQueue() {
     return new Queue(uk.gov.ons.fwmt.fwmtgatewaycommon.config.QueueConfig.JOBSVC_TO_ADAPTER_QUEUE, true);
   }
 
+  //  @Bean
+  //  Queue jobsvcQueue() {
+  //    return new Queue(uk.gov.ons.fwmt.fwmtgatewaycommon.config.QueueConfig.ADAPTER_TO_JOBSVC_QUEUE, true);
+  //  }
+
   @Bean
   Queue jobsvcQueue() {
-    return new Queue(uk.gov.ons.fwmt.fwmtgatewaycommon.config.QueueConfig.ADAPTER_TO_JOBSVC_QUEUE, true);
+    return QueueBuilder.durable(uk.gov.ons.fwmt.fwmtgatewaycommon.config.QueueConfig.ADAPTER_TO_JOBSVC_QUEUE)
+        .withArgument("x-dead-letter-exchange", "")
+        .withArgument("x-dead-letter-routing-key", DEAD_LETTER_QUEUE_NAME)
+        .build();
+  }
+
+  @Bean
+  Queue deadLetterQueue() {
+    return QueueBuilder.durable(DEAD_LETTER_QUEUE_NAME).build();
   }
 
   @Bean
@@ -50,6 +67,7 @@ public class QueueConfig {
     container.setConnectionFactory(connectionFactory);
     container.setQueueNames(uk.gov.ons.fwmt.fwmtgatewaycommon.config.QueueConfig.ADAPTER_TO_JOBSVC_QUEUE);
     container.setMessageListener(listenerAdapter);
+    container.setDefaultRequeueRejected(false);
     return container;
   }
 
