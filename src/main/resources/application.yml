@@ -57,8 +57,8 @@ security.user:
   password: "password"
 
 totalmobile:
-  username: "user"
-  password: "pass"
+  username: ""
+  password: ""
   url: ""
   message-queue-path: "/Services/TM/v20/Messaging/MessageQueueWs.asmx"
   message-queue-wsdl-path: "src/main/resources/wsdl/Messaging_MessageQueueWs.wsdl"

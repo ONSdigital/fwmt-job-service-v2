@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Component;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.data.FWMTCancelJobRequest;
@@ -23,6 +24,7 @@ public class JobServiceMessageReceiver {
   @Autowired
   private ObjectMapper mapper;
 
+  @Retryable
   public void receiveMessage(String message) throws CTPException {
     log.info("received a message from RM-Adapter: " + message);
     processMessage(message);
@@ -30,6 +32,7 @@ public class JobServiceMessageReceiver {
 
   private void processMessage(String message) throws CTPException {
     if (message.contains("Create")) {
+      System.out.println(message);
       log.info("Create message found: " + message);
       FWMTCreateJobRequest fwmtCreateJobRequest = convertMessageToDTO(FWMTCreateJobRequest.class, message);
       jobService.createJob(fwmtCreateJobRequest);
@@ -37,9 +40,6 @@ public class JobServiceMessageReceiver {
       log.info("Cancel message found: " + message);
       FWMTCancelJobRequest fwmtCancelJobRequest = convertMessageToDTO(FWMTCancelJobRequest.class, message);
       jobService.cancelJob(fwmtCancelJobRequest);
-    } else {
-      log.error("Message can be processed due to unknown type");
-      throw new CTPException(CTPException.Fault.SYSTEM_ERROR, "Failed to process message of an unknown type.");
     }
   }
 
