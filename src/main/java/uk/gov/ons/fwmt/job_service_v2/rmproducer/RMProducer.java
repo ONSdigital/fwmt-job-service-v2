@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Component;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.config.QueueConfig;
@@ -19,6 +20,7 @@ public class RMProducer {
   @Autowired
   private RabbitTemplate template;
 
+  @Retryable
   public void send(DummyTMResponse dummyTMResponse) throws CTPException {
     try {
       final String dummyResponseStr = objectMapper.writeValueAsString(dummyTMResponse);
