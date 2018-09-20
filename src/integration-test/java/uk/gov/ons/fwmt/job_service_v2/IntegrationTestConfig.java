@@ -55,7 +55,6 @@ public class IntegrationTestConfig {
     return webServiceTemplate;
   }
 
-
   @Bean
   public ObjectMapper objectMapper() {
     ObjectMapper mapper = new ObjectMapper();
