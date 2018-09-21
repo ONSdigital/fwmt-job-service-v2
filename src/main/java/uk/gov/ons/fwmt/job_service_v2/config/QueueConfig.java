@@ -5,16 +5,12 @@ import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.core.QueueBuilder;
 import org.springframework.amqp.core.TopicExchange;
-import org.springframework.amqp.rabbit.connection.ConnectionFactory;
-import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
-import org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.retry.backoff.ExponentialBackOffPolicy;
 import org.springframework.retry.support.RetryTemplate;
 import uk.gov.ons.ctp.common.retry.CTPRetryPolicy;
-import uk.gov.ons.fwmt.job_service_v2.queuereceiver.JobServiceMessageReceiver;
 import uk.gov.ons.fwmt.job_service_v2.retrysupport.DefaultListenerSupport;
 
 @Configuration
@@ -61,22 +57,6 @@ public class QueueConfig {
   @Bean
   Binding jobsvcBinding(@Qualifier("jobsvcQueue") Queue queue, TopicExchange exchange) {
     return BindingBuilder.bind(queue).to(exchange).with(uk.gov.ons.fwmt.fwmtgatewaycommon.config.QueueConfig.JOB_SVC_REQUEST_ROUTING_KEY);
-  }
-
-  @Bean
-  SimpleMessageListenerContainer container(ConnectionFactory connectionFactory,
-      MessageListenerAdapter listenerAdapter) {
-    SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
-    container.setConnectionFactory(connectionFactory);
-    container.setQueueNames(uk.gov.ons.fwmt.fwmtgatewaycommon.config.QueueConfig.ADAPTER_TO_JOBSVC_QUEUE);
-    container.setMessageListener(listenerAdapter);
-    container.setDefaultRequeueRejected(true);
-    return container;
-  }
-
-  @Bean
-  MessageListenerAdapter listenerAdapter(JobServiceMessageReceiver receiver) {
-    return new MessageListenerAdapter(receiver, "receiveMessage");
   }
 
   @Bean
