@@ -30,7 +30,6 @@ public class JobServiceMessageReceiver {
 
   private void processMessage(String message) throws CTPException {
     if (message.contains("Create")) {
-      System.out.println(message);
       FWMTCreateJobRequest fwmtCreateJobRequest = convertMessageToDTO(FWMTCreateJobRequest.class, message);
       jobService.createJob(fwmtCreateJobRequest);
     } else if (message.contains("Cancel")) {
