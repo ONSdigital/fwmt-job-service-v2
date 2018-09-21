@@ -9,7 +9,6 @@ import uk.gov.ons.fwmt.fwmtgatewaycommon.data.FWMTCreateJobRequest;
 import uk.gov.ons.fwmt.job_service_v2.converter.impl.CcsConverter;
 import uk.gov.ons.fwmt.job_service_v2.converter.impl.HouseholdConverter;
 
-import javax.xml.datatype.DatatypeConfigurationException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -20,7 +19,7 @@ import static org.junit.Assert.assertEquals;
 public class TMJobConverterTest {
 
   @Test
-  public void createHHJobTest() throws DatatypeConfigurationException {
+  public void createHHJobTest() {
     String user = "bob.smith";
     FWMTCreateJobRequest ingest = new FWMTCreateJobRequest();
     Address address = new Address();
@@ -52,7 +51,7 @@ public class TMJobConverterTest {
   }
 
   @Test
-  public void createCCSJobTest() throws DatatypeConfigurationException {
+  public void createCCSJobTest() {
     String user = "bob.smith";
     FWMTCreateJobRequest ingest = new FWMTCreateJobRequest();
     Address address = new Address();

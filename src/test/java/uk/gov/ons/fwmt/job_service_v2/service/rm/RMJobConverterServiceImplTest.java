@@ -8,10 +8,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.data.DummyTMResponse;
 import uk.gov.ons.fwmt.job_service_v2.rmproducer.RMProducer;
@@ -22,9 +21,6 @@ import static org.junit.Assert.assertEquals;
 @Ignore
 @RunWith(MockitoJUnitRunner.class)
 public class RMJobConverterServiceImplTest {
-
-  @InjectMocks
-  //RMJobConverterServiceImpl rmJobConverterService;
 
   @Mock
   RMProducer rmProducer;
