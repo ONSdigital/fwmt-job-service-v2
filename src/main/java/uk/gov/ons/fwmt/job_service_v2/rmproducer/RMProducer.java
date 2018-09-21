@@ -27,7 +27,7 @@ public class RMProducer {
       log.info("Message sent to queue :{}",dummyResponseStr);
       template.convertAndSend(QueueConfig.JOBSVC_TO_ADAPTER_QUEUE, dummyResponseStr);
     } catch (JsonProcessingException e) {
-      throw new CTPException(CTPException.Fault.SYSTEM_ERROR, "Failed to process message into JSON.");
+      throw new CTPException(CTPException.Fault.SYSTEM_ERROR, "Failed to process message into JSON.", e);
     }
   }
 }

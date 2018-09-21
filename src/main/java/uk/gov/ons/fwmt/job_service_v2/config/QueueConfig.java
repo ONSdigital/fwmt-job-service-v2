@@ -70,7 +70,7 @@ public class QueueConfig {
     container.setConnectionFactory(connectionFactory);
     container.setQueueNames(uk.gov.ons.fwmt.fwmtgatewaycommon.config.QueueConfig.ADAPTER_TO_JOBSVC_QUEUE);
     container.setMessageListener(listenerAdapter);
-    container.setDefaultRequeueRejected(false);
+    container.setDefaultRequeueRejected(true);
     return container;
   }
 
