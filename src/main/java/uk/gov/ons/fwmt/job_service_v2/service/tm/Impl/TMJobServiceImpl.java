@@ -210,7 +210,7 @@ public class TMJobServiceImpl extends WebServiceGatewaySupport {
     }
   }
 
-  @Retryable(value = WebServiceException.class, backoff = @Backoff(delay = 5000))
+  @Retryable(value = WebServiceException.class, maxAttempts = 3, backoff = @Backoff(delay = 5000))
   public <I, O> O send(I message) {
     log.debug("Began sending message of class {}", message.getClass().getSimpleName());
     String soapAction = lookupSOAPAction(message.getClass());
