@@ -2,10 +2,10 @@ package uk.gov.ons.fwmt.job_service_v2.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.data.DummyTMResponse;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.data.FWMTCancelJobRequest;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.data.FWMTCreateJobRequest;
+import uk.gov.ons.fwmt.job_service_v2.common.error.CTPException;
 import uk.gov.ons.fwmt.job_service_v2.rmproducer.RMProducer;
 import uk.gov.ons.fwmt.job_service_v2.service.JobService;
 import uk.gov.ons.fwmt.job_service_v2.service.tm.Impl.TMJobServiceImpl;

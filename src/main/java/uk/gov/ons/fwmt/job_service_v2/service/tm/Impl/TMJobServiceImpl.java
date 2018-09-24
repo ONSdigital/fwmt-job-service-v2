@@ -172,7 +172,6 @@ public class TMJobServiceImpl extends WebServiceGatewaySupport {
     send(deleteRequest);
   }
 
-
   /**
    * Translates a class name into the SOAP action expected by TotalMobile
    * <p>

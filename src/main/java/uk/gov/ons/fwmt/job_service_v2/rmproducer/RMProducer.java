@@ -7,9 +7,9 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Component;
-import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.config.QueueConfig;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.data.DummyTMResponse;
+import uk.gov.ons.fwmt.job_service_v2.common.error.CTPException;
 
 @Slf4j
 @Component

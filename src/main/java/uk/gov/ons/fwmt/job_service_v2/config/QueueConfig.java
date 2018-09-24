@@ -1,20 +1,29 @@
 package uk.gov.ons.fwmt.job_service_v2.config;
 
+import org.aopalliance.aop.Advice;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.core.QueueBuilder;
 import org.springframework.amqp.core.TopicExchange;
+import org.springframework.amqp.rabbit.connection.ConnectionFactory;
+import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
+import org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.retry.RetryOperations;
 import org.springframework.retry.backoff.ExponentialBackOffPolicy;
+import org.springframework.retry.interceptor.RetryOperationsInterceptor;
 import org.springframework.retry.support.RetryTemplate;
-import uk.gov.ons.ctp.common.retry.CTPRetryPolicy;
+import uk.gov.ons.fwmt.job_service_v2.common.retry.CTPRetryPolicy;
+import uk.gov.ons.fwmt.job_service_v2.common.retry.CustomMessageRecover;
+import uk.gov.ons.fwmt.job_service_v2.queuereceiver.JobServiceMessageReceiver;
 import uk.gov.ons.fwmt.job_service_v2.retrysupport.DefaultListenerSupport;
 
 @Configuration
 public class QueueConfig {
+  //TODO move to common QueueConfig
   private static final String ADAPTER_JOB_SVC_DLQ = "adapter-jobSvc.DLQ";
   private static final String JOB_SVC_ADAPTER_DLQ = "jobSvc-adapter.DLQ";
 
@@ -57,6 +66,34 @@ public class QueueConfig {
   @Bean
   Binding jobsvcBinding(@Qualifier("jobsvcQueue") Queue queue, TopicExchange exchange) {
     return BindingBuilder.bind(queue).to(exchange).with(uk.gov.ons.fwmt.fwmtgatewaycommon.config.QueueConfig.JOB_SVC_REQUEST_ROUTING_KEY);
+  }
+
+  @Bean
+  SimpleMessageListenerContainer container(ConnectionFactory connectionFactory,
+      MessageListenerAdapter listenerAdapter, RetryOperationsInterceptor interceptor) {
+    SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
+
+    Advice[] adviceChain = {interceptor};
+
+    container.setAdviceChain(adviceChain);
+    container.setConnectionFactory(connectionFactory);
+    container.setQueueNames(uk.gov.ons.fwmt.fwmtgatewaycommon.config.QueueConfig.ADAPTER_TO_JOBSVC_QUEUE);
+    container.setMessageListener(listenerAdapter);
+    return container;
+  }
+
+  @Bean
+  MessageListenerAdapter listenerAdapter(JobServiceMessageReceiver receiver) {
+    MessageListenerAdapter listenerAdapter = new MessageListenerAdapter(receiver, "receiveMessage");
+    return listenerAdapter;
+  }
+
+  @Bean
+  RetryOperationsInterceptor interceptor(RetryOperations retryTemplate) {
+    RetryOperationsInterceptor interceptor = new RetryOperationsInterceptor();
+    interceptor.setRecoverer(new CustomMessageRecover());
+    interceptor.setRetryOperations(retryTemplate);
+    return interceptor;
   }
 
   @Bean

@@ -11,8 +11,8 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
-import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.data.DummyTMResponse;
+import uk.gov.ons.fwmt.job_service_v2.common.error.CTPException;
 import uk.gov.ons.fwmt.job_service_v2.rmproducer.RMProducer;
 
 import javax.xml.bind.JAXBElement;

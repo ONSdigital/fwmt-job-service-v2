@@ -4,13 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import uk.gov.ons.ctp.common.error.CTPException;
-import uk.gov.ons.fwmt.fwmtgatewaycommon.config.QueueConfig;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.data.FWMTCancelJobRequest;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.data.FWMTCreateJobRequest;
+import uk.gov.ons.fwmt.job_service_v2.common.error.CTPException;
 import uk.gov.ons.fwmt.job_service_v2.service.JobService;
 
 import java.io.IOException;
@@ -25,7 +23,6 @@ public class JobServiceMessageReceiver {
   @Autowired
   private ObjectMapper mapper;
 
-  @RabbitListener(queues = QueueConfig.ADAPTER_TO_JOBSVC_QUEUE)
   public void receiveMessage(String message) throws CTPException {
     log.info("received a message from RM-Adapter: " + message);
     processMessage(message);

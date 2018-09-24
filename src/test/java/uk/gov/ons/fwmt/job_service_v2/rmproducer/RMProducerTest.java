@@ -8,9 +8,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import uk.gov.ons.ctp.common.error.CTPException;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.config.QueueConfig;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.data.DummyTMResponse;
+import uk.gov.ons.fwmt.job_service_v2.common.error.CTPException;
 
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
