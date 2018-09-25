@@ -24,7 +24,6 @@ import uk.gov.ons.fwmt.fwmtgatewaycommon.config.QueueNames;
 
 @Configuration
 public class QueueConfig {
-  //TODO move to common QueueConfig
   private static final String ADAPTER_JOB_SVC_DLQ = "adapter-jobSvc.DLQ";
   private static final String JOB_SVC_ADAPTER_DLQ = "jobSvc-adapter.DLQ";
 
@@ -45,32 +44,32 @@ public class QueueConfig {
   }
 
   @Bean
-  Queue adapterDeadLetterQueue() {
+  public Queue adapterDeadLetterQueue() {
     return QueueBuilder.durable(ADAPTER_JOB_SVC_DLQ).build();
   }
 
   @Bean
-  Queue jobSvsDeadLetterQueue() {
+  public Queue jobSvsDeadLetterQueue() {
     return QueueBuilder.durable(JOB_SVC_ADAPTER_DLQ).build();
   }
 
   @Bean
-  TopicExchange adapterExchange() {
+  public TopicExchange adapterExchange() {
     return new TopicExchange(QueueNames.RM_JOB_SVC_EXCHANGE);
   }
 
   @Bean
-  Binding adapterBinding(@Qualifier("adapterQueue") Queue queue, TopicExchange exchange) {
+  public Binding adapterBinding(@Qualifier("adapterQueue") Queue queue, TopicExchange exchange) {
     return BindingBuilder.bind(queue).to(exchange).with(QueueNames.JOB_SVC_RESPONSE_ROUTING_KEY);
   }
 
   @Bean
-  Binding jobsvcBinding(@Qualifier("jobsvcQueue") Queue queue, TopicExchange exchange) {
+  public Binding jobsvcBinding(@Qualifier("jobsvcQueue") Queue queue, TopicExchange exchange) {
     return BindingBuilder.bind(queue).to(exchange).with(QueueNames.JOB_SVC_REQUEST_ROUTING_KEY);
   }
 
   @Bean
-  SimpleMessageListenerContainer container(ConnectionFactory connectionFactory,
+  public SimpleMessageListenerContainer container(ConnectionFactory connectionFactory,
       MessageListenerAdapter listenerAdapter, RetryOperationsInterceptor interceptor) {
     SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
 
@@ -84,13 +83,13 @@ public class QueueConfig {
   }
 
   @Bean
-  MessageListenerAdapter listenerAdapter(JobServiceMessageReceiver receiver) {
+  public MessageListenerAdapter listenerAdapter(JobServiceMessageReceiver receiver) {
     MessageListenerAdapter listenerAdapter = new MessageListenerAdapter(receiver, "receiveMessage");
     return listenerAdapter;
   }
 
   @Bean
-  RetryOperationsInterceptor interceptor(RetryOperations retryTemplate) {
+  public RetryOperationsInterceptor interceptor(RetryOperations retryTemplate) {
     RetryOperationsInterceptor interceptor = new RetryOperationsInterceptor();
     interceptor.setRecoverer(new CustomMessageRecover());
     interceptor.setRetryOperations(retryTemplate);
