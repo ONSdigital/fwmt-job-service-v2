@@ -8,11 +8,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.data.DummyTMResponse;
+import uk.gov.ons.fwmt.job_service_v2.common.error.CTPException;
 import uk.gov.ons.fwmt.job_service_v2.rmproducer.RMProducer;
 
 import javax.xml.bind.JAXBElement;
@@ -22,9 +22,6 @@ import static org.junit.Assert.assertEquals;
 @RunWith(MockitoJUnitRunner.class)
 public class RMJobConverterServiceImplTest {
 
-  @InjectMocks
-  //RMJobConverterServiceImpl rmJobConverterService;
-
   @Mock
   RMProducer rmProducer;
 
@@ -32,7 +29,8 @@ public class RMJobConverterServiceImplTest {
   ArgumentCaptor argCaptor;
 
   @Test
-  public void transformRequest() {
+  public void transformRequest() throws CTPException {
+    // TODO rewrite test to use newly added converter
     //Given
     ObjectFactory factory = new ObjectFactory();
     CompositeVisitRequest request = factory.createCompositeVisitRequest();

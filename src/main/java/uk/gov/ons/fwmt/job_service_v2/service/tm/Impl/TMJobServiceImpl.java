@@ -58,7 +58,10 @@ import org.apache.http.auth.UsernamePasswordCredentials;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
+import org.springframework.ws.WebServiceException;
 import org.springframework.ws.client.core.support.WebServiceGatewaySupport;
 import org.springframework.ws.soap.client.core.SoapActionCallback;
 import org.springframework.ws.transport.http.HttpComponentsMessageSender;
@@ -84,7 +87,7 @@ public class TMJobServiceImpl extends WebServiceGatewaySupport {
   private String tmAdminUsername;
 
   @Autowired
-  private Map<String, TMConverter> tmConvertors;
+  private Map<String, TMConverter> tmConverters;
 
   // A lookup detailing the instances where the message name does not translate easily into a SOAP action
   // Normally, we assume that the SOAP action is equal to the class name with the word 'Response' at the end removed
@@ -158,7 +161,7 @@ public class TMJobServiceImpl extends WebServiceGatewaySupport {
   }
 
   public void createJob(FWMTCreateJobRequest jobRequest) {
-    final TMConverter tmConverter = tmConvertors.get(jobRequest.getSurveyType());
+    final TMConverter tmConverter = tmConverters.get(jobRequest.getSurveyType());
     SendCreateJobRequestMessage createRequest = TMJobConverter.createJob(jobRequest, tmConverter);
     send(createRequest);
   }
@@ -168,7 +171,6 @@ public class TMJobServiceImpl extends WebServiceGatewaySupport {
             .deleteJob(cancelRequest.getJobIdentity(), cancelRequest.getReason(), tmAdminUsername);
     send(deleteRequest);
   }
-
 
   /**
    * Translates a class name into the SOAP action expected by TotalMobile
@@ -208,6 +210,7 @@ public class TMJobServiceImpl extends WebServiceGatewaySupport {
     }
   }
 
+  @Retryable(value = WebServiceException.class, maxAttempts = 3, backoff = @Backoff(delay = 5000))
   public <I, O> O send(I message) {
     log.debug("Began sending message of class {}", message.getClass().getSimpleName());
     String soapAction = lookupSOAPAction(message.getClass());
@@ -218,8 +221,7 @@ public class TMJobServiceImpl extends WebServiceGatewaySupport {
     if (!Arrays.asList(knownResponseTypes).contains(response.getClass())) {
       log.error("Message received from TM that does not match any TotalMobile message", response);
     }
-    log.debug("Successfully sent message and received a response of class {}",
-        response.getClass().getSimpleName());
+    log.debug("Successfully sent message and received a response of class {}", response.getClass().getSimpleName());
     return response;
   }
 }
