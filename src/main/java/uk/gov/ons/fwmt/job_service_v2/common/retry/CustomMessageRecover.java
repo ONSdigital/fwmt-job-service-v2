@@ -7,7 +7,6 @@ public class CustomMessageRecover implements MethodInvocationRecoverer<Void> {
 
   @Override
   public Void recover(Object[] args, Throwable cause) {
-    System.out.println("IN THE RECOVER ZONE!!!");
     throw new AmqpRejectAndDontRequeueException(cause);
   }
 }

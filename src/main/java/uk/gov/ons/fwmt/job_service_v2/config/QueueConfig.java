@@ -20,6 +20,7 @@ import uk.gov.ons.fwmt.job_service_v2.common.retry.CTPRetryPolicy;
 import uk.gov.ons.fwmt.job_service_v2.common.retry.CustomMessageRecover;
 import uk.gov.ons.fwmt.job_service_v2.queuereceiver.JobServiceMessageReceiver;
 import uk.gov.ons.fwmt.job_service_v2.retrysupport.DefaultListenerSupport;
+import uk.gov.ons.fwmt.fwmtgatewaycommon.config.QueueNames;
 
 @Configuration
 public class QueueConfig {
@@ -29,7 +30,7 @@ public class QueueConfig {
 
   @Bean
   Queue adapterQueue() {
-    return QueueBuilder.durable(uk.gov.ons.fwmt.fwmtgatewaycommon.config.QueueConfig.JOBSVC_TO_ADAPTER_QUEUE)
+    return QueueBuilder.durable(QueueNames.JOBSVC_TO_ADAPTER_QUEUE)
         .withArgument("x-dead-letter-exchange", "")
         .withArgument("x-dead-letter-routing-key", JOB_SVC_ADAPTER_DLQ)
         .build();
@@ -37,7 +38,7 @@ public class QueueConfig {
 
   @Bean
   Queue jobsvcQueue() {
-    return QueueBuilder.durable(uk.gov.ons.fwmt.fwmtgatewaycommon.config.QueueConfig.ADAPTER_TO_JOBSVC_QUEUE)
+    return QueueBuilder.durable(QueueNames.ADAPTER_TO_JOBSVC_QUEUE)
         .withArgument("x-dead-letter-exchange", "")
         .withArgument("x-dead-letter-routing-key", ADAPTER_JOB_SVC_DLQ)
         .build();
@@ -55,17 +56,17 @@ public class QueueConfig {
 
   @Bean
   TopicExchange adapterExchange() {
-    return new TopicExchange(uk.gov.ons.fwmt.fwmtgatewaycommon.config.QueueConfig.RM_JOB_SVC_EXCHANGE);
+    return new TopicExchange(QueueNames.RM_JOB_SVC_EXCHANGE);
   }
 
   @Bean
   Binding adapterBinding(@Qualifier("adapterQueue") Queue queue, TopicExchange exchange) {
-    return BindingBuilder.bind(queue).to(exchange).with(uk.gov.ons.fwmt.fwmtgatewaycommon.config.QueueConfig.JOB_SVC_RESPONSE_ROUTING_KEY);
+    return BindingBuilder.bind(queue).to(exchange).with(QueueNames.JOB_SVC_RESPONSE_ROUTING_KEY);
   }
 
   @Bean
   Binding jobsvcBinding(@Qualifier("jobsvcQueue") Queue queue, TopicExchange exchange) {
-    return BindingBuilder.bind(queue).to(exchange).with(uk.gov.ons.fwmt.fwmtgatewaycommon.config.QueueConfig.JOB_SVC_REQUEST_ROUTING_KEY);
+    return BindingBuilder.bind(queue).to(exchange).with(QueueNames.JOB_SVC_REQUEST_ROUTING_KEY);
   }
 
   @Bean
@@ -77,7 +78,7 @@ public class QueueConfig {
 
     container.setAdviceChain(adviceChain);
     container.setConnectionFactory(connectionFactory);
-    container.setQueueNames(uk.gov.ons.fwmt.fwmtgatewaycommon.config.QueueConfig.ADAPTER_TO_JOBSVC_QUEUE);
+    container.setQueueNames(QueueNames.ADAPTER_TO_JOBSVC_QUEUE);
     container.setMessageListener(listenerAdapter);
     return container;
   }

@@ -7,7 +7,7 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Component;
-import uk.gov.ons.fwmt.fwmtgatewaycommon.config.QueueConfig;
+import uk.gov.ons.fwmt.fwmtgatewaycommon.config.QueueNames;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.data.DummyTMResponse;
 import uk.gov.ons.fwmt.job_service_v2.common.error.CTPException;
 
@@ -25,7 +25,7 @@ public class RMProducer {
     try {
       final String dummyResponseStr = objectMapper.writeValueAsString(dummyTMResponse);
       log.info("Message sent to queue :{}",dummyResponseStr);
-      template.convertAndSend(QueueConfig.JOBSVC_TO_ADAPTER_QUEUE, dummyResponseStr);
+      template.convertAndSend(QueueNames.JOBSVC_TO_ADAPTER_QUEUE, dummyResponseStr);
     } catch (JsonProcessingException e) {
       throw new CTPException(CTPException.Fault.SYSTEM_ERROR, "Failed to process message into JSON.", e);
     }
