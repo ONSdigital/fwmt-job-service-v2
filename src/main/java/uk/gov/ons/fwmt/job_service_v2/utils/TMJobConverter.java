@@ -12,6 +12,7 @@ import com.consiliumtechnologies.schemas.services.mobile._2009._03.messaging.Sen
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.data.FWMTCreateJobRequest;
+import uk.gov.ons.fwmt.fwmtgatewaycommon.error.CTPException;
 import uk.gov.ons.fwmt.job_service_v2.converter.TMConverter;
 
 import java.util.List;
@@ -21,7 +22,7 @@ public final class TMJobConverter {
   protected static final String JOB_QUEUE = "\\OPTIMISE\\INPUT";
 
   public static  SendCreateJobRequestMessage createJob(FWMTCreateJobRequest ingest,
-      TMConverter tmConverter) {
+      TMConverter tmConverter) throws CTPException {
 
     CreateJobRequest request = createJobRequestFromIngest(ingest, tmConverter);
 
@@ -51,7 +52,7 @@ public final class TMJobConverter {
   }
 
   protected static CreateJobRequest createJobRequestFromIngest(FWMTCreateJobRequest ingest,
-      TMConverter tmConverter) {
+      TMConverter tmConverter) throws CTPException {
     return tmConverter.convert(ingest);
   }
 

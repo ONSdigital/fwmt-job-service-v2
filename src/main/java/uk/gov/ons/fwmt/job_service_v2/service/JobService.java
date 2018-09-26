@@ -6,7 +6,7 @@ import uk.gov.ons.fwmt.fwmtgatewaycommon.data.FWMTCreateJobRequest;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.error.CTPException;
 
 public interface JobService {
-  void createJob(FWMTCreateJobRequest jobRequest);
+  void createJob(FWMTCreateJobRequest jobRequest) throws CTPException;
 
   void cancelJob(FWMTCancelJobRequest cancelRequest);
 
