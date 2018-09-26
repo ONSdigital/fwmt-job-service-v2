@@ -9,7 +9,7 @@ import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Component;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.config.QueueNames;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.data.DummyTMResponse;
-import uk.gov.ons.fwmt.job_service_v2.common.error.CTPException;
+import uk.gov.ons.fwmt.fwmtgatewaycommon.error.CTPException;
 
 @Slf4j
 @Component

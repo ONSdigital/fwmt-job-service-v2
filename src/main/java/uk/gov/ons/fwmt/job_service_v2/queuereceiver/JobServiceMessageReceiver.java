@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.data.FWMTCancelJobRequest;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.data.FWMTCreateJobRequest;
-import uk.gov.ons.fwmt.job_service_v2.common.error.CTPException;
+import uk.gov.ons.fwmt.fwmtgatewaycommon.error.CTPException;
 import uk.gov.ons.fwmt.job_service_v2.service.JobService;
 
 import java.io.IOException;
