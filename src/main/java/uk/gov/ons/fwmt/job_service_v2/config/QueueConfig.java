@@ -16,16 +16,17 @@ import org.springframework.retry.RetryOperations;
 import org.springframework.retry.backoff.ExponentialBackOffPolicy;
 import org.springframework.retry.interceptor.RetryOperationsInterceptor;
 import org.springframework.retry.support.RetryTemplate;
-import uk.gov.ons.fwmt.job_service_v2.common.retry.CTPRetryPolicy;
-import uk.gov.ons.fwmt.job_service_v2.common.retry.CustomMessageRecover;
+import uk.gov.ons.fwmt.fwmtgatewaycommon.config.QueueNames;
+import uk.gov.ons.fwmt.fwmtgatewaycommon.retry.CTPRetryPolicy;
+import uk.gov.ons.fwmt.fwmtgatewaycommon.retry.CustomMessageRecover;
 import uk.gov.ons.fwmt.job_service_v2.queuereceiver.JobServiceMessageReceiver;
 import uk.gov.ons.fwmt.job_service_v2.retrysupport.DefaultListenerSupport;
-import uk.gov.ons.fwmt.fwmtgatewaycommon.config.QueueNames;
+
+import static uk.gov.ons.fwmt.fwmtgatewaycommon.config.QueueNames.ADAPTER_JOB_SVC_DLQ;
+import static uk.gov.ons.fwmt.fwmtgatewaycommon.config.QueueNames.JOB_SVC_ADAPTER_DLQ;
 
 @Configuration
 public class QueueConfig {
-  private static final String ADAPTER_JOB_SVC_DLQ = "adapter-jobSvc.DLQ";
-  private static final String JOB_SVC_ADAPTER_DLQ = "jobSvc-adapter.DLQ";
 
   @Bean
   Queue adapterQueue() {

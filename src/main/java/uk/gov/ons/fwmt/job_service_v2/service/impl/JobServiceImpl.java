@@ -5,10 +5,11 @@ import org.springframework.stereotype.Service;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.data.DummyTMResponse;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.data.FWMTCancelJobRequest;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.data.FWMTCreateJobRequest;
-import uk.gov.ons.fwmt.job_service_v2.common.error.CTPException;
+import uk.gov.ons.fwmt.fwmtgatewaycommon.error.CTPException;
 import uk.gov.ons.fwmt.job_service_v2.rmproducer.RMProducer;
 import uk.gov.ons.fwmt.job_service_v2.service.JobService;
 import uk.gov.ons.fwmt.job_service_v2.service.tm.Impl.TMJobServiceImpl;
+
 @Service
 public class JobServiceImpl implements JobService {
   @Autowired
@@ -25,7 +26,8 @@ public class JobServiceImpl implements JobService {
     tmJobService.cancelJob(cancelRequest);
   }
 
-  @Override public void notifyRM(DummyTMResponse dummyTMResponse) throws CTPException {
+  @Override public void notifyRM(DummyTMResponse dummyTMResponse)
+      throws CTPException {
     rmProducer.send(dummyTMResponse);
   }
 }
