@@ -67,6 +67,7 @@ import org.springframework.ws.soap.client.core.SoapActionCallback;
 import org.springframework.ws.transport.http.HttpComponentsMessageSender;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.data.FWMTCancelJobRequest;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.data.FWMTCreateJobRequest;
+import uk.gov.ons.fwmt.fwmtgatewaycommon.error.CTPException;
 import uk.gov.ons.fwmt.job_service_v2.converter.TMConverter;
 import uk.gov.ons.fwmt.job_service_v2.utils.TMJobConverter;
 
@@ -160,7 +161,7 @@ public class TMJobServiceImpl extends WebServiceGatewaySupport {
     this.objectFactory = new ObjectFactory();
   }
 
-  public void createJob(FWMTCreateJobRequest jobRequest) {
+  public void createJob(FWMTCreateJobRequest jobRequest) throws CTPException {
     final TMConverter tmConverter = tmConverters.get(jobRequest.getSurveyType());
     SendCreateJobRequestMessage createRequest = TMJobConverter.createJob(jobRequest, tmConverter);
     send(createRequest);

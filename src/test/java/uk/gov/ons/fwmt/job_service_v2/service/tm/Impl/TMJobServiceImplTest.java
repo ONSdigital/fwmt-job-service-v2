@@ -19,6 +19,7 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.ws.client.core.WebServiceTemplate;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.data.Address;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.data.FWMTCreateJobRequest;
+import uk.gov.ons.fwmt.fwmtgatewaycommon.error.CTPException;
 import uk.gov.ons.fwmt.job_service_v2.converter.TMConverter;
 import uk.gov.ons.fwmt.job_service_v2.converter.impl.HouseholdConverter;
 
@@ -181,7 +182,7 @@ public class TMJobServiceImplTest {
   }
 
   @Test
-  public void createJob() {
+  public void createJob() throws CTPException {
     FWMTCreateJobRequest fwmtCreateJobRequest = new FWMTCreateJobRequest();
     Address address = new Address();
     address.setPostCode("188961");
