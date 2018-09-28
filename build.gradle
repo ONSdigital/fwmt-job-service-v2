@@ -41,7 +41,7 @@ version = '0.0.8-SNAPSHOT'
 
 bootJar {
     group = 'uk.gov.ons.fwmt'
-    baseName = 'fwmt-job-service'
+    baseName = 'fwmt-job-service-v2'
     manifest {
         attributes(["Git-Commit": repo.head().getAbbreviatedId(7),
                     "Git-Branch": repo.branch.getCurrent().getName() ], "common")
