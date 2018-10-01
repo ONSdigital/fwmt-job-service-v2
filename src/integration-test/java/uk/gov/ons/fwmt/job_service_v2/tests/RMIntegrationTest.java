@@ -3,7 +3,6 @@ package uk.gov.ons.fwmt.job_service_v2.tests;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,7 +15,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
-import uk.gov.ons.fwmt.fwmtgatewaycommon.config.QueueConfig;
+import uk.gov.ons.fwmt.fwmtgatewaycommon.config.QueueNames;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.data.Address;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.data.FWMTCancelJobRequest;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.data.FWMTCreateJobRequest;
@@ -25,7 +24,6 @@ import uk.gov.ons.fwmt.job_service_v2.IntegrationTestConfig;
 import uk.gov.ons.fwmt.job_service_v2.helper.TestReceiver;
 
 import javax.annotation.PostConstruct;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -107,7 +105,7 @@ public class RMIntegrationTest {
     JSONJobRequest = objectMapper.writeValueAsString(fwmtCreateJobRequest);
 
     log.info("Message send to queue"+ JSONJobRequest);
-    rabbitTemplate.convertAndSend(QueueConfig.RM_JOB_SVC_EXCHANGE, QueueConfig.JOB_SVC_REQUEST_ROUTING_KEY, JSONJobRequest);
+    rabbitTemplate.convertAndSend(QueueNames.RM_JOB_SVC_EXCHANGE, QueueNames.JOB_SVC_REQUEST_ROUTING_KEY, JSONJobRequest);
   }
 
   private void sendCancelMessage() throws JsonProcessingException {
@@ -119,7 +117,7 @@ public class RMIntegrationTest {
     String JSONJobRequest = null;
     JSONJobRequest = objectMapper.writeValueAsString(fwmtCancelJobRequest);
 
-    rabbitTemplate.convertAndSend(QueueConfig.RM_JOB_SVC_EXCHANGE, QueueConfig.JOB_SVC_REQUEST_ROUTING_KEY, JSONJobRequest);
+    rabbitTemplate.convertAndSend(QueueNames.RM_JOB_SVC_EXCHANGE, QueueNames.JOB_SVC_REQUEST_ROUTING_KEY, JSONJobRequest);
 
   }
 }

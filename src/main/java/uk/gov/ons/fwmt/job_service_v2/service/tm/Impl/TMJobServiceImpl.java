@@ -58,17 +58,20 @@ import org.apache.http.auth.UsernamePasswordCredentials;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
+import org.springframework.ws.WebServiceException;
 import org.springframework.ws.client.core.support.WebServiceGatewaySupport;
 import org.springframework.ws.soap.client.core.SoapActionCallback;
 import org.springframework.ws.transport.http.HttpComponentsMessageSender;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.data.FWMTCancelJobRequest;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.data.FWMTCreateJobRequest;
-import uk.gov.ons.fwmt.job_service_v2.service.tm.JobService;
+import uk.gov.ons.fwmt.fwmtgatewaycommon.error.CTPException;
+import uk.gov.ons.fwmt.job_service_v2.converter.TMConverter;
 import uk.gov.ons.fwmt.job_service_v2.utils.TMJobConverter;
 
 import javax.xml.bind.JAXBElement;
-import javax.xml.datatype.DatatypeConfigurationException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -79,10 +82,13 @@ import java.util.Map;
  */
 @Slf4j
 @Service
-public class TMJobServiceImpl extends WebServiceGatewaySupport implements JobService {
+public class TMJobServiceImpl extends WebServiceGatewaySupport {
 
   @Value("${totalmobile.username}")
   private String tmAdminUsername;
+
+  @Autowired
+  private Map<String, TMConverter> tmConverters;
 
   // A lookup detailing the instances where the message name does not translate easily into a SOAP action
   // Normally, we assume that the SOAP action is equal to the class name with the word 'Response' at the end removed
@@ -155,19 +161,17 @@ public class TMJobServiceImpl extends WebServiceGatewaySupport implements JobSer
     this.objectFactory = new ObjectFactory();
   }
 
-  @Override
-  public void createJob(FWMTCreateJobRequest jobRequest) throws DatatypeConfigurationException {
-    SendCreateJobRequestMessage createRequest = TMJobConverter.createJob(jobRequest, "");
+  public void createJob(FWMTCreateJobRequest jobRequest) throws CTPException {
+    final TMConverter tmConverter = tmConverters.get(jobRequest.getSurveyType());
+    SendCreateJobRequestMessage createRequest = TMJobConverter.createJob(jobRequest, tmConverter);
     send(createRequest);
   }
 
-  @Override
   public void cancelJob(FWMTCancelJobRequest cancelRequest) {
     SendDeleteJobRequestMessage deleteRequest = TMJobConverter
             .deleteJob(cancelRequest.getJobIdentity(), cancelRequest.getReason(), tmAdminUsername);
     send(deleteRequest);
   }
-
 
   /**
    * Translates a class name into the SOAP action expected by TotalMobile
@@ -207,6 +211,7 @@ public class TMJobServiceImpl extends WebServiceGatewaySupport implements JobSer
     }
   }
 
+  @Retryable(value = WebServiceException.class, maxAttempts = 3, backoff = @Backoff(delay = 5000))
   public <I, O> O send(I message) {
     log.debug("Began sending message of class {}", message.getClass().getSimpleName());
     String soapAction = lookupSOAPAction(message.getClass());
@@ -217,8 +222,7 @@ public class TMJobServiceImpl extends WebServiceGatewaySupport implements JobSer
     if (!Arrays.asList(knownResponseTypes).contains(response.getClass())) {
       log.error("Message received from TM that does not match any TotalMobile message", response);
     }
-    log.debug("Successfully sent message and received a response of class {}",
-        response.getClass().getSimpleName());
+    log.debug("Successfully sent message and received a response of class {}", response.getClass().getSimpleName());
     return response;
   }
 }

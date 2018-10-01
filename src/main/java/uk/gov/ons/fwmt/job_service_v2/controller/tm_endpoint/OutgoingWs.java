@@ -13,7 +13,8 @@ import org.springframework.ws.server.endpoint.annotation.Endpoint;
 import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
 import org.springframework.ws.server.endpoint.annotation.RequestPayload;
 import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
-import uk.gov.ons.fwmt.job_service_v2.service.rm.RMJobConverterService;
+import uk.gov.ons.fwmt.fwmtgatewaycommon.data.DummyTMResponse;
+import uk.gov.ons.fwmt.job_service_v2.service.JobService;
 
 import javax.xml.bind.JAXBElement;
 
@@ -24,7 +25,7 @@ public class OutgoingWs {
   private static final String NAMESPACE_URI = "http://schemas.consiliumtechnologies.com/services/mobile/2009/03/messaging";
 
   @Autowired
-  private RMJobConverterService rmJobConverterService;
+  private JobService jobService;
 
   private void stub(String messageType) {
     log.info("Found message of type {}", messageType);
@@ -73,7 +74,11 @@ public class OutgoingWs {
   public JAXBElement<CompositeVisitRequest> sendCompositeVisitRequestOutput(
       @RequestPayload JAXBElement<CompositeVisitRequest> request) throws Exception {
     stub("SendCompositeVisitRequestOutput");
-    rmJobConverterService.transformRequest(request);
+
+    DummyTMResponse dummyTMResponse = new DummyTMResponse();
+    dummyTMResponse.setIdentity(request.getValue().getIdentity().getGuid());
+    jobService.notifyRM(dummyTMResponse);
+
     request.setValue(null);
     return request;
   }

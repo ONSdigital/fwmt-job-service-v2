@@ -17,8 +17,16 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.ws.client.core.WebServiceTemplate;
+import uk.gov.ons.fwmt.fwmtgatewaycommon.data.Address;
+import uk.gov.ons.fwmt.fwmtgatewaycommon.data.FWMTCreateJobRequest;
+import uk.gov.ons.fwmt.fwmtgatewaycommon.error.CTPException;
+import uk.gov.ons.fwmt.job_service_v2.converter.TMConverter;
+import uk.gov.ons.fwmt.job_service_v2.converter.impl.HouseholdConverter;
 
 import javax.xml.bind.JAXBElement;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -36,6 +44,9 @@ public class TMJobServiceImplTest {
   private WebServiceTemplate webServiceTemplate;
   @Mock
   private JAXBElement<Object> jaxbElement;
+  @Mock
+  private Map<String, TMConverter> tmConvertors;
+
 
   @Before
   public void setUp() throws Exception {
@@ -169,4 +180,25 @@ public class TMJobServiceImplTest {
     //When
     tmServiceImpl.send(queryMessagesRequest);
   }
+
+  @Test
+  public void createJob() throws CTPException {
+    FWMTCreateJobRequest fwmtCreateJobRequest = new FWMTCreateJobRequest();
+    Address address = new Address();
+    address.setPostCode("188961");
+    address.setTownName("Borodinskiy");
+
+    fwmtCreateJobRequest.setJobIdentity("1234");
+    fwmtCreateJobRequest.setSurveyType("HH");
+    fwmtCreateJobRequest.setDueDate(LocalDate.parse("20180216", DateTimeFormatter.BASIC_ISO_DATE));
+    fwmtCreateJobRequest.setAddress(address);
+    fwmtCreateJobRequest.setActionType("Create");
+
+    when(tmConvertors.get(any())).thenReturn(new HouseholdConverter());
+    when(webServiceTemplate.marshalSendAndReceive(any(), any(), any())).thenReturn(jaxbElement);
+    when(jaxbElement.getValue()).thenReturn(new Object());
+
+    tmServiceImpl.createJob(fwmtCreateJobRequest);
+  }
+
 }

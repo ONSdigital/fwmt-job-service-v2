@@ -28,6 +28,14 @@ spring:
     host: localhost
     port: 5672
     virtualhost: /
+    listener:
+      simple:
+        retry:
+          enabled: true
+          max-interval: 45000
+          multiplier: 3
+          initial-interval: 2000
+          max-attempts: 3
 
 management.endpoint.health.show-details: always
 
@@ -49,8 +57,8 @@ security.user:
   password: "password"
 
 totalmobile:
-  username: ""
-  password: ""
+  username: "user"
+  password: "pass"
   url: ""
   message-queue-path: "/Services/TM/v20/Messaging/MessageQueueWs.asmx"
   message-queue-wsdl-path: "src/main/resources/wsdl/Messaging_MessageQueueWs.wsdl"

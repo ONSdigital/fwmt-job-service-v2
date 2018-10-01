@@ -6,10 +6,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import uk.gov.ons.fwmt.fwmtgatewaycommon.config.QueueConfig;
+import uk.gov.ons.fwmt.fwmtgatewaycommon.config.QueueNames;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.data.DummyTMResponse;
+import uk.gov.ons.fwmt.fwmtgatewaycommon.error.CTPException;
 
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
@@ -28,7 +29,7 @@ public class RMProducerTest {
   ObjectMapper objectMapper;
 
   @Test
-  public void send() throws JsonProcessingException {
+  public void send() throws JsonProcessingException, CTPException {
     //Given
     DummyTMResponse dummyTMResponse = new DummyTMResponse();
     dummyTMResponse.setIdentity("test");
@@ -39,7 +40,7 @@ public class RMProducerTest {
 
     //Then
     verify(objectMapper).writeValueAsString(eq(dummyTMResponse));
-    verify(template).convertAndSend(QueueConfig.JOBSVC_TO_ADAPTER_QUEUE,"dummyResponseStr");
+    verify(template).convertAndSend(QueueNames.JOBSVC_TO_ADAPTER_QUEUE,"dummyResponseStr");
 
   }
 }

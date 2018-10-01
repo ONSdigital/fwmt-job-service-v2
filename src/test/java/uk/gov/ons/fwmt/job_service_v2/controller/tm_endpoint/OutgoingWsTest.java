@@ -14,13 +14,14 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import uk.gov.ons.fwmt.job_service_v2.service.rm.RMJobConverterService;
+import uk.gov.ons.fwmt.job_service_v2.service.JobService;
 
 import javax.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -30,7 +31,7 @@ public class OutgoingWsTest {
   OutgoingWs outgoingWs;
 
   @Mock
-  private RMJobConverterService rmJobConverterService;
+  private JobService jobService;
 
   public <T> JAXBElement<T> getElement(Class<T> inputClass) {
     JAXBElement<T> result = new JAXBElement<T>(QName.valueOf(""), inputClass, null, null);
@@ -106,7 +107,7 @@ public class OutgoingWsTest {
         .sendCompositeVisitRequestOutput(compositeVisitRequestJAXBElement);
 
     //Then
-    verify(rmJobConverterService).transformRequest(compositeVisitRequestJAXBElement);
+    verify(jobService).notifyRM(any());
     assertNotNull(result);
     assertNull(result.getValue());
   }
