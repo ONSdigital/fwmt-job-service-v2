@@ -4,7 +4,6 @@ import com.consiliumtechnologies.schemas.mobile._2009._03.visitstypes.VisitIdent
 import com.consiliumtechnologies.schemas.mobile._2009._09.compositemessages.CompositeVisitRequest;
 import com.consiliumtechnologies.schemas.mobile._2009._09.compositemessages.ObjectFactory;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,8 +26,6 @@ import static org.junit.Assert.assertEquals;
 @Component
 @Slf4j
 @Import({IntegrationTestConfig.class, TestReceiver.class})
-@Ignore(" testReceiver doesn't increment correctly so therefore test fails")
-// TODO work out why this doesn't work and fix
 public class JobServiceV2Tests {
 
   @Autowired
