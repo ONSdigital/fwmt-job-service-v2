@@ -3,9 +3,9 @@ package uk.gov.ons.fwmt.job_service_v2.config;
 import org.aopalliance.aop.Advice;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
+import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.core.QueueBuilder;
-import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
 import org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter;
@@ -55,17 +55,17 @@ public class QueueConfig {
   }
 
   @Bean
-  public TopicExchange adapterExchange() {
-    return new TopicExchange(QueueNames.RM_JOB_SVC_EXCHANGE);
+  public DirectExchange adapterExchange() {
+    return new DirectExchange(QueueNames.RM_JOB_SVC_EXCHANGE);
   }
 
   @Bean
-  public Binding adapterBinding(@Qualifier("adapterQueue") Queue queue, TopicExchange exchange) {
+  public Binding adapterBinding(@Qualifier("adapterQueue") Queue queue, DirectExchange exchange) {
     return BindingBuilder.bind(queue).to(exchange).with(QueueNames.JOB_SVC_RESPONSE_ROUTING_KEY);
   }
 
   @Bean
-  public Binding jobsvcBinding(@Qualifier("jobsvcQueue") Queue queue, TopicExchange exchange) {
+  public Binding jobsvcBinding(@Qualifier("jobsvcQueue") Queue queue, DirectExchange exchange) {
     return BindingBuilder.bind(queue).to(exchange).with(QueueNames.JOB_SVC_REQUEST_ROUTING_KEY);
   }
 
