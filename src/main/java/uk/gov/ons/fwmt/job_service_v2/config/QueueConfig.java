@@ -37,7 +37,7 @@ public class QueueConfig {
   }
 
   @Bean
-  Queue jobsvcQueue() {
+  Queue jobSvcQueue() {
     return QueueBuilder.durable(QueueNames.ADAPTER_TO_JOBSVC_QUEUE)
         .withArgument("x-dead-letter-exchange", "")
         .withArgument("x-dead-letter-routing-key", ADAPTER_JOB_SVC_DLQ)
@@ -65,7 +65,7 @@ public class QueueConfig {
   }
 
   @Bean
-  public Binding jobsvcBinding(@Qualifier("jobsvcQueue") Queue queue, DirectExchange exchange) {
+  public Binding jobSvcBinding(@Qualifier("jobSvcQueue") Queue queue, DirectExchange exchange) {
     return BindingBuilder.bind(queue).to(exchange).with(QueueNames.JOB_SVC_REQUEST_ROUTING_KEY);
   }
 
@@ -85,8 +85,7 @@ public class QueueConfig {
 
   @Bean
   public MessageListenerAdapter listenerAdapter(JobServiceMessageReceiver receiver) {
-    MessageListenerAdapter listenerAdapter = new MessageListenerAdapter(receiver, "receiveMessage");
-    return listenerAdapter;
+    return new MessageListenerAdapter(receiver, "receiveMessage");
   }
 
   @Bean
