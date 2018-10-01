@@ -27,7 +27,8 @@ import static org.junit.Assert.assertEquals;
 @Component
 @Slf4j
 @Import({IntegrationTestConfig.class, TestReceiver.class})
-@Ignore
+@Ignore(" testReceiver doesn't increment correctly so therefore test fails")
+// TODO work out why this doesn't work and fix
 public class JobServiceV2Tests {
 
   @Autowired
@@ -56,8 +57,8 @@ public class JobServiceV2Tests {
     //        .marshalSendAndReceive("http://localhost:9999/jobs/ws", compositeVisitRequestJAXBElement);
 
     Thread.sleep(2000);
-    assertEquals("{\"identity\":\"testGuid\"}", testReceiver.result);
-    assertEquals(1, testReceiver.counter);
+    assertEquals("{\"identity\":\"testGuid\"}", TestReceiver.result);
+    assertEquals(1, TestReceiver.counter);
 
   }
 }
