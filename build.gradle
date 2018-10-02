@@ -37,11 +37,11 @@ def repo = Grgit.open('.')
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
-version = '0.0.8-SNAPSHOT'
+version = '0.0.10-SNAPSHOT'
 
 bootJar {
     group = 'uk.gov.ons.fwmt'
-    baseName = 'fwmt-job-service'
+    baseName = 'fwmt-job-service-v2'
     manifest {
         attributes(["Git-Commit": repo.head().getAbbreviatedId(7),
                     "Git-Branch": repo.branch.getCurrent().getName() ], "common")
@@ -140,7 +140,8 @@ task genJaxb {
 }
 
 dependencies {
-    compile group: 'uk.gov.ons.fwmt', name: 'fwmt-gateway-common', version: '0.0.10-RELEASE'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator', version: '1.5.13.RELEASE'
+    compile group: 'uk.gov.ons.fwmt', name: 'fwmt-gateway-common', version: '0.0.9-RELEASE'
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '1.5.13.RELEASE'
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-web-services', version: '1.5.13.RELEASE'
     compile group: 'org.springframework.retry', name: 'spring-retry', version: '1.2.2.RELEASE'
