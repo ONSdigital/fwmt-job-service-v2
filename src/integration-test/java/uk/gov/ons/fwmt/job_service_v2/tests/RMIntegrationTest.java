@@ -76,7 +76,8 @@ public class RMIntegrationTest {
   }
 
   @Test
-  @Ignore
+  @Ignore("Works locally, god knows why it doesn't on Travis.")
+  // TODO rewrite based on changes to queues going back to RM
   public void receiveRMCancelMessage_checkTMReceivedMessage() throws InterruptedException, JsonProcessingException {
     sendCancelMessage();
     Thread.sleep(7000);
