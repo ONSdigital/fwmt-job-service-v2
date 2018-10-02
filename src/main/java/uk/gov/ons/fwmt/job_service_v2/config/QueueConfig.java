@@ -34,7 +34,7 @@ public class QueueConfig {
   private int maxInterval;
 
   public QueueConfig(@Value("${rabbitmq.initialinterval}") int initialInterval,
-      @Value("${rabbitmq.multiplier}") int multiplier,
+      @Value("#{new Double('${rabbitmq.multiplier}')}") int multiplier,
       @Value("$rabbitmq.maxInterval") int maxInterval) {
     this.initialInterval = initialInterval;
     this.multiplier = multiplier;
