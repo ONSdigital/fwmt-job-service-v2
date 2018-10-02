@@ -84,3 +84,8 @@ service:
       fieldPeriods:
         find:
           path: "/fieldPeriods/{fieldPeriod}"
+
+rabbitmq:
+  initialinterval: 5000
+  multiplier: 3.0
+  maxInterval: 45000

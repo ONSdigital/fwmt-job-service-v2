@@ -10,6 +10,7 @@ import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
 import org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.retry.RetryOperations;
@@ -27,6 +28,18 @@ import static uk.gov.ons.fwmt.fwmtgatewaycommon.config.QueueNames.JOB_SVC_ADAPTE
 
 @Configuration
 public class QueueConfig {
+
+  private int initialInterval;
+  private int multiplier;
+  private int maxInterval;
+
+  public QueueConfig(@Value("${rabbitmq.initialinterval}") int initialInterval,
+      @Value("${rabbitmq.multiplier}") int multiplier,
+      @Value("$rabbitmq.maxInterval") int maxInterval) {
+    this.initialInterval = initialInterval;
+    this.multiplier = multiplier;
+    this.maxInterval = maxInterval;
+  }
 
   @Bean
   Queue adapterQueue() {
@@ -101,9 +114,9 @@ public class QueueConfig {
     RetryTemplate retryTemplate = new RetryTemplate();
 
     ExponentialBackOffPolicy backOffPolicy = new ExponentialBackOffPolicy();
-    backOffPolicy.setInitialInterval(5000);
-    backOffPolicy.setMultiplier(3.0);
-    backOffPolicy.setMaxInterval(45000);
+    backOffPolicy.setInitialInterval(initialInterval);
+    backOffPolicy.setMultiplier(multiplier);
+    backOffPolicy.setMaxInterval(maxInterval);
     retryTemplate.setBackOffPolicy(backOffPolicy);
 
     CTPRetryPolicy ctpRetryPolicy = new CTPRetryPolicy();
