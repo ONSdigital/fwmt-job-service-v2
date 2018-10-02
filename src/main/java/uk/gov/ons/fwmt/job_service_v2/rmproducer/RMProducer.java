@@ -8,8 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Component;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.config.QueueNames;
-import uk.gov.ons.fwmt.fwmtgatewaycommon.data.DummyTMResponse;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.error.CTPException;
+import uk.gov.ons.fwmt.fwmtohsjobstatusnotification.FwmtOHSJobStatusNotification;
 
 @Slf4j
 @Component
@@ -21,11 +21,11 @@ public class RMProducer {
   private RabbitTemplate template;
 
   @Retryable
-  public void send(DummyTMResponse dummyTMResponse) throws CTPException {
+  public void send(FwmtOHSJobStatusNotification fwmtOHSJobStatusNotification) throws CTPException {
     try {
-      final String dummyResponseStr = objectMapper.writeValueAsString(dummyTMResponse);
-      log.info("Message sent to queue :{}",dummyResponseStr);
-      template.convertAndSend(QueueNames.JOBSVC_TO_ADAPTER_QUEUE, dummyResponseStr);
+      final String notification = objectMapper.writeValueAsString(fwmtOHSJobStatusNotification);
+      log.info("Message sent to queue :{}",notification);
+      template.convertAndSend(QueueNames.JOBSVC_TO_ADAPTER_QUEUE, notification);
     } catch (JsonProcessingException e) {
       throw new CTPException(CTPException.Fault.SYSTEM_ERROR, "Failed to process message into JSON.", e);
     }

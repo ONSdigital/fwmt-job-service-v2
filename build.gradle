@@ -25,7 +25,7 @@ apply plugin: 'application'
 apply plugin: 'maven-publish'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'jacoco'
-apply plugin: "findbugs"
+//apply plugin: "findbugs"
 apply plugin: 'com.jfrog.artifactory'
 apply plugin: 'org.ajoberstar.grgit'
 
@@ -140,7 +140,7 @@ task genJaxb {
 }
 
 dependencies {
-    compile group: 'uk.gov.ons.fwmt', name: 'fwmt-gateway-common', version: '0.0.4-RELEASE'
+    compile group: 'uk.gov.ons.fwmt', name: 'fwmt-gateway-common', version: '0.0.10-RELEASE'
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '1.5.13.RELEASE'
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-web-services', version: '1.5.13.RELEASE'
     compile group: 'org.springframework.retry', name: 'spring-retry', version: '1.2.2.RELEASE'
@@ -251,18 +251,18 @@ jacocoTestReport {
 test.finalizedBy(project.tasks.jacocoTestReport)
 
 check.dependsOn jacocoTestReport
-
-findbugs {
-    ignoreFailures = false
-    sourceSets = [sourceSets.main]
-    reportsDir = file("$project.buildDir/reports/findbugs")
-    effort = "max"
-}
-
-
-tasks.withType(FindBugs) {
-    reports {
-        xml.enabled = false
-        html.enabled = true
-    }
-}
+//
+//findbugs {
+//    ignoreFailures = false
+//    sourceSets = [sourceSets.main]
+//    reportsDir = file("$project.buildDir/reports/findbugs")
+//    effort = "max"
+//}
+//
+//
+//tasks.withType(FindBugs) {
+//    reports {
+//        xml.enabled = false
+//        html.enabled = true
+//    }
+//}
