@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -68,7 +67,6 @@ public class RMIntegrationTest {
   }
 
   @Test
-  @Ignore("Works locally, doesn't on Travis.")
   // TODO rewrite based on changes to queues coming from RM
   public void receiveRMCreateMessage_checkTMReceivedMessage() throws InterruptedException, JsonProcessingException {
     sendCreateMessage();
@@ -78,13 +76,13 @@ public class RMIntegrationTest {
   }
 
   @Test
-  @Ignore("Works locally, doesn't on Travis.")
   // TODO rewrite based on changes to queues going back to RM
   public void receiveRMCancelMessage_checkTMReceivedMessage() throws InterruptedException, JsonProcessingException {
+    int initialCount = restTemplate.getForObject(mockUrl + "/logger/allMessages", MockMessage[].class).length;
     sendCancelMessage();
     Thread.sleep(7000);
-    MockMessage[] messages = restTemplate.getForObject(mockUrl + "/logger/allMessages", MockMessage[].class);
-    assertEquals(1, messages.length);
+    int msgCount = restTemplate.getForObject(mockUrl + "/logger/allMessages", MockMessage[].class).length;
+    assertEquals(1, (msgCount-initialCount));
   }
 
   private void sendCreateMessage() throws JsonProcessingException {
