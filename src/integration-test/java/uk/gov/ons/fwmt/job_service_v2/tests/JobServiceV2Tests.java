@@ -4,7 +4,6 @@ import com.consiliumtechnologies.schemas.mobile._2009._03.visitstypes.VisitIdent
 import com.consiliumtechnologies.schemas.mobile._2009._09.compositemessages.CompositeVisitRequest;
 import com.consiliumtechnologies.schemas.mobile._2009._09.compositemessages.ObjectFactory;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +26,6 @@ import static org.junit.Assert.assertEquals;
 @Component
 @Slf4j
 @Import({IntegrationTestConfig.class, TestReceiver.class})
-@Ignore
 public class JobServiceV2Tests {
 
   @Autowired
@@ -56,8 +54,8 @@ public class JobServiceV2Tests {
     //        .marshalSendAndReceive("http://localhost:9999/jobs/ws", compositeVisitRequestJAXBElement);
 
     Thread.sleep(2000);
-    assertEquals("{\"identity\":\"testGuid\"}", testReceiver.result);
-    assertEquals(1, testReceiver.counter);
+    assertEquals("{\"identity\":\"testGuid\"}", TestReceiver.result);
+    assertEquals(1, TestReceiver.counter);
 
   }
 }
