@@ -28,28 +28,30 @@ public class RMJobConverterServiceImplTest {
   @Captor
   ArgumentCaptor argCaptor;
 
+  //TODO is this still required?
   @Test
   public void transformRequest() throws CTPException {
-//    // TODO rewrite test to use newly added converter
-//    //Given
-//    ObjectFactory factory = new ObjectFactory();
-//    CompositeVisitRequest request = factory.createCompositeVisitRequest();
-//
-//    VisitIdentityType visitIdentityType = new VisitIdentityType();
-//    visitIdentityType.setGuid("doug");
-//    visitIdentityType.setCompany("doug");
-//    visitIdentityType.setReference("doug");
-//    visitIdentityType.setWorkType("doug");
-//    request.setIdentity(visitIdentityType);
-////
-////    JAXBElement<CompositeVisitRequest> input = factory.createCompositeVisitRequest(request);
-////
-////    //When
-////    //rmJobConverterService.transformRequest(input);
-////
-////    //Then
-////    Mockito.verify(rmProducer).send((DummyTMResponse) argCaptor.capture());
-////    DummyTMResponse result = (DummyTMResponse) argCaptor.getValue();
-////    assertEquals(visitIdentityType.getGuid(), result.getIdentity());
+    // TODO rewrite test to use newly added converter
+    //Given
+    ObjectFactory factory = new ObjectFactory();
+    CompositeVisitRequest request = factory.createCompositeVisitRequest();
+
+    VisitIdentityType visitIdentityType = new VisitIdentityType();
+    visitIdentityType.setGuid("doug");
+    visitIdentityType.setCompany("doug");
+    visitIdentityType.setReference("doug");
+    visitIdentityType.setWorkType("doug");
+    request.setIdentity(visitIdentityType);
+
+    JAXBElement<CompositeVisitRequest> input = factory.createCompositeVisitRequest(request);
+
+    //When
+    //rmJobConverterService.transformRequest(input);
+
+    //Then
+
+//    Mockito.verify(rmProducer).send((DummyTMResponse) argCaptor.capture());
+//    DummyTMResponse result = (DummyTMResponse) argCaptor.getValue();
+//    assertEquals(visitIdentityType.getGuid(), result.getIdentity());
   }
 }

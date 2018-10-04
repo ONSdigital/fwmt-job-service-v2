@@ -10,6 +10,6 @@ public interface JobService {
 
   void cancelJob(FWMTCancelJobRequest cancelRequest);
 
-  void notifyRM(String fwmtOHSJobStatusNotification)
+  void notifyRM(FwmtOHSJobStatusNotification fwmtOHSJobStatusNotification)
       throws CTPException;
 }

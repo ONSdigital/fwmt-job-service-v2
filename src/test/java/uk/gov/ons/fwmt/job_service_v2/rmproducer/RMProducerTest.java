@@ -11,6 +11,7 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.config.QueueNames;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.data.DummyTMResponse;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.error.CTPException;
+import uk.gov.ons.fwmt.fwmtohsjobstatusnotification.FwmtOHSJobStatusNotification;
 
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
@@ -30,17 +31,17 @@ public class RMProducerTest {
 
   @Test
   public void send() throws JsonProcessingException, CTPException {
-//    //Given
-//    DummyTMResponse dummyTMResponse = new DummyTMResponse();
-//    dummyTMResponse.setIdentity("test");
-//    when(objectMapper.writeValueAsString(eq(dummyTMResponse))).thenReturn("dummyResponseStr");
-//
-//    //When
-////    rmProducer.send(dummyTMResponse);
-////
-////    //Then
-////    verify(objectMapper).writeValueAsString(eq(dummyTMResponse));
-////    verify(template).convertAndSend(QueueNames.JOBSVC_TO_ADAPTER_QUEUE,"dummyResponseStr");
+    //Given
+    FwmtOHSJobStatusNotification dummyTMResponse = new FwmtOHSJobStatusNotification();
+    dummyTMResponse.setJobIdentity("test");
+    when(objectMapper.writeValueAsString(eq(dummyTMResponse))).thenReturn("dummyResponseStr");
+
+    //When
+    rmProducer.send(dummyTMResponse);
+
+    //Then
+    verify(objectMapper).writeValueAsString(eq(dummyTMResponse));
+    verify(template).convertAndSend(QueueNames.JOBSVC_TO_ADAPTER_QUEUE,"dummyResponseStr");
 
   }
 }

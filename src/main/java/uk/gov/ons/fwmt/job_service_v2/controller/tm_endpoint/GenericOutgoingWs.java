@@ -9,10 +9,18 @@ import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
 import org.springframework.ws.server.endpoint.annotation.RequestPayload;
 import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.error.CTPException;
+import uk.gov.ons.fwmt.fwmtohsjobstatusnotification.FwmtOHSJobStatusNotification;
 import uk.gov.ons.fwmt.job_service_v2.service.JobService;
 
+import javax.xml.bind.JAXB;
+import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
 import javax.xml.namespace.QName;
+import javax.xml.transform.stream.StreamSource;
+import java.io.ByteArrayInputStream;
+import java.io.StringReader;
 
 @Slf4j
 @Endpoint
@@ -26,18 +34,35 @@ public class GenericOutgoingWs {
   @ResponsePayload
   public JAXBElement<SendMessageResponse> request(@RequestPayload JAXBElement<WebServiceAdapterOutputRequest> request) throws
       CTPException {
+
+    WebServiceAdapterOutputRequest value = request.getValue();
+    FwmtOHSJobStatusNotification responseMessage = convertMessage(value);
+    jobService.notifyRM(responseMessage);
+
+    return createResponse(value);
+  }
+
+  private JAXBElement<SendMessageResponse> createResponse(WebServiceAdapterOutputRequest value) {
+    SendMessageResponse msg = new SendMessageResponse();
+    msg.setId(value.getId());
+
     SendMessageResponse smr = new SendMessageResponse();
     QName qname = new QName("request");
-    JAXBElement<SendMessageResponse> jaxbElement = new JAXBElement<SendMessageResponse>(qname,
-        SendMessageResponse.class, smr);
-    SendMessageResponse msg = new SendMessageResponse();
-    WebServiceAdapterOutputRequest value = request.getValue();
-    System.out.println(value.getContent());
-   // jobService.notifyRM(value.getContent());
-
-    msg.setId(value.getId());
+    JAXBElement<SendMessageResponse> jaxbElement = new JAXBElement<SendMessageResponse>(qname, SendMessageResponse.class, smr);
     jaxbElement.setValue(msg);
-    log.info("Incoming message received. Id:" + value.getId());
+    log.info("Incoming message received. Id:" + msg.getId());
+
     return jaxbElement;
+  }
+
+  private FwmtOHSJobStatusNotification convertMessage(WebServiceAdapterOutputRequest value) throws CTPException {
+
+    String content = value.getContent();
+    content = content.replaceAll("\\<\\!\\[CDATA\\[(.*)\\]\\]\\>", "$1");
+
+    FwmtOHSJobStatusNotification responseMessage;
+    responseMessage = JAXB.unmarshal(new StringReader(content), FwmtOHSJobStatusNotification.class);
+
+    return responseMessage;
   }
 }
