@@ -3,13 +3,14 @@ package uk.gov.ons.fwmt.job_service_v2.config;
 import org.aopalliance.aop.Advice;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
+import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.core.QueueBuilder;
-import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
 import org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.retry.RetryOperations;
@@ -28,6 +29,18 @@ import static uk.gov.ons.fwmt.fwmtgatewaycommon.config.QueueNames.JOB_SVC_ADAPTE
 @Configuration
 public class QueueConfig {
 
+  private int initialInterval;
+  private double multiplier;
+  private int maxInterval;
+
+  public QueueConfig(@Value("${rabbitmq.initialinterval}") Integer initialInterval,
+      @Value("${rabbitmq.multiplier}") Double multiplier,
+      @Value("${rabbitmq.maxInterval}") Integer maxInterval) {
+    this.initialInterval = initialInterval;
+    this.multiplier = multiplier;
+    this.maxInterval = maxInterval;
+  }
+
   @Bean
   Queue adapterQueue() {
     return QueueBuilder.durable(QueueNames.JOBSVC_TO_ADAPTER_QUEUE)
@@ -37,7 +50,7 @@ public class QueueConfig {
   }
 
   @Bean
-  Queue jobsvcQueue() {
+  Queue jobSvcQueue() {
     return QueueBuilder.durable(QueueNames.ADAPTER_TO_JOBSVC_QUEUE)
         .withArgument("x-dead-letter-exchange", "")
         .withArgument("x-dead-letter-routing-key", ADAPTER_JOB_SVC_DLQ)
@@ -55,17 +68,17 @@ public class QueueConfig {
   }
 
   @Bean
-  public TopicExchange adapterExchange() {
-    return new TopicExchange(QueueNames.RM_JOB_SVC_EXCHANGE);
+  public DirectExchange adapterExchange() {
+    return new DirectExchange(QueueNames.RM_JOB_SVC_EXCHANGE);
   }
 
   @Bean
-  public Binding adapterBinding(@Qualifier("adapterQueue") Queue queue, TopicExchange exchange) {
+  public Binding adapterBinding(@Qualifier("adapterQueue") Queue queue, DirectExchange exchange) {
     return BindingBuilder.bind(queue).to(exchange).with(QueueNames.JOB_SVC_RESPONSE_ROUTING_KEY);
   }
 
   @Bean
-  public Binding jobsvcBinding(@Qualifier("jobsvcQueue") Queue queue, TopicExchange exchange) {
+  public Binding jobSvcBinding(@Qualifier("jobSvcQueue") Queue queue, DirectExchange exchange) {
     return BindingBuilder.bind(queue).to(exchange).with(QueueNames.JOB_SVC_REQUEST_ROUTING_KEY);
   }
 
@@ -85,8 +98,7 @@ public class QueueConfig {
 
   @Bean
   public MessageListenerAdapter listenerAdapter(JobServiceMessageReceiver receiver) {
-    MessageListenerAdapter listenerAdapter = new MessageListenerAdapter(receiver, "receiveMessage");
-    return listenerAdapter;
+    return new MessageListenerAdapter(receiver, "receiveMessage");
   }
 
   @Bean
@@ -102,9 +114,9 @@ public class QueueConfig {
     RetryTemplate retryTemplate = new RetryTemplate();
 
     ExponentialBackOffPolicy backOffPolicy = new ExponentialBackOffPolicy();
-    backOffPolicy.setInitialInterval(5000);
-    backOffPolicy.setMultiplier(3.0);
-    backOffPolicy.setMaxInterval(45000);
+    backOffPolicy.setInitialInterval(initialInterval);
+    backOffPolicy.setMultiplier(multiplier);
+    backOffPolicy.setMaxInterval(maxInterval);
     retryTemplate.setBackOffPolicy(backOffPolicy);
 
     CTPRetryPolicy ctpRetryPolicy = new CTPRetryPolicy();

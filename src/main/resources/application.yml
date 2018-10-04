@@ -28,14 +28,6 @@ spring:
     host: localhost
     port: 5672
     virtualhost: /
-    listener:
-      simple:
-        retry:
-          enabled: true
-          max-interval: 45000
-          multiplier: 3
-          initial-interval: 2000
-          max-attempts: 3
 
 management.endpoint.health.show-details: always
 
@@ -92,3 +84,8 @@ service:
       fieldPeriods:
         find:
           path: "/fieldPeriods/{fieldPeriod}"
+
+rabbitmq:
+  initialinterval: 5000
+  multiplier: 3.0
+  maxInterval: 45000
