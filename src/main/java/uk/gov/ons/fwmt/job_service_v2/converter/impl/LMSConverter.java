@@ -23,6 +23,7 @@ import java.time.ZoneId;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import static uk.gov.ons.fwmt.job_service_v2.utils.TMJobConverter.addAdditionalProperty;
 import static uk.gov.ons.fwmt.job_service_v2.utils.TMJobConverter.addAddressLines;
 import static uk.gov.ons.fwmt.job_service_v2.utils.TMJobConverter.checkNumberOfAddressLines;
 
@@ -39,6 +40,8 @@ public class LMSConverter implements TMConverter {
   private static final String WORK_TYPE = "OHS";
   private static final String DEFAULT_WORLD = "Default";
   private static final String MOD_WORLD = "MOD WORLD";
+  private static final String DEFAULT_WAVE = "1";
+  private static final String ADDITIONAL_PROPERTY_WAVE = "wave";
 
   public CreateJobRequest convert(FWMTCreateJobRequest ingest) throws CTPException {
     CreateJobRequest createJobRequest =  new CreateJobRequest();
@@ -97,6 +100,7 @@ public class LMSConverter implements TMConverter {
     }
 
     job.setAdditionalProperties(new AdditionalPropertyCollectionType());
+    addAdditionalProperty(job, ADDITIONAL_PROPERTY_WAVE, DEFAULT_WAVE);
     //TODO: Map Additional properties from Adapter
 
     job.getContact().setName(ingest.getAddress().getPostCode());

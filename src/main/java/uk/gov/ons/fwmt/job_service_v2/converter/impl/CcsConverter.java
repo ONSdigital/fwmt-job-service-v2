@@ -22,8 +22,14 @@ import java.util.GregorianCalendar;
 import static uk.gov.ons.fwmt.job_service_v2.utils.TMJobConverter.addAdditionalProperty;
 
 @Component("CCS")
-public class CcsConverter implements TMConverter
-{
+public class CcsConverter implements TMConverter {
+
+  private static final String WORK_TYPE = "CSS";
+  private static final String SKILL = "CSS";
+  private static final String ADDITIONAL_PROPERTY_CCS_ADDR_POSTCODE = "CCS_AddrPostcode";
+  private static final String MOD_WORLD = "MOD WORLD";
+  private static final String DEFAULT_WORLD = "Default";
+
   @Override public CreateJobRequest convert(FWMTCreateJobRequest ingest) {
     CreateJobRequest request = new CreateJobRequest();
     JobType job = new JobType();
@@ -36,23 +42,23 @@ public class CcsConverter implements TMConverter
 
     job.getIdentity().setReference(ingest.getJobIdentity());
     job.getContact().setName(ingest.getAddress().getPostCode());
-    job.getSkills().getSkill().add("CCS");
-    job.setWorkType("CCS");
+    job.getSkills().getSkill().add(SKILL);
+    job.setWorkType(WORK_TYPE);
 
 
     if (ingest.isPreallocatedJob()) {
-      job.getWorld().setReference("Default");
+      job.getWorld().setReference(DEFAULT_WORLD);
       job.setAllocatedTo(new ResourceIdentityType());
       job.getAllocatedTo().setUsername("test"); //lookup not defined yet
     }
-    job.getWorld().setReference("MOD World");
+    job.getWorld().setReference(MOD_WORLD);
 
     job.setLocation(new LocationType());
     job.getLocation().setAddressDetail(new AddressDetailType());
     job.getLocation().getAddressDetail().setLines(new AddressDetailType.Lines());
 
     job.setAdditionalProperties(new AdditionalPropertyCollectionType());
-    addAdditionalProperty(job, "CCS_AddrPostcode", ingest.getAddress().getPostCode());
+    addAdditionalProperty(job, ADDITIONAL_PROPERTY_CCS_ADDR_POSTCODE, ingest.getAddress().getPostCode());
 
     job.getLocation().getAddressDetail().setPostCode(ingest.getAddress().getPostCode());
 
