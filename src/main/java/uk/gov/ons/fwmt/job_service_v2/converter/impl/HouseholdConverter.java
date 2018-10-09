@@ -9,6 +9,7 @@ import com.consiliumtechnologies.schemas.mobile._2015._05.optimisetypes.JobType;
 import com.consiliumtechnologies.schemas.mobile._2015._05.optimisetypes.LocationType;
 import com.consiliumtechnologies.schemas.mobile._2015._05.optimisetypes.SkillCollectionType;
 import com.consiliumtechnologies.schemas.mobile._2015._05.optimisetypes.WorldIdentityType;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.data.FWMTCreateJobRequest;
 import uk.gov.ons.fwmt.job_service_v2.converter.TMConverter;
@@ -25,6 +26,9 @@ import static uk.gov.ons.fwmt.job_service_v2.utils.TMJobConverter.checkNumberOfA
 @Component("HH")
 public class HouseholdConverter implements TMConverter
 {
+  @Value("${totalmobile.modworld}")
+  private String MOD_WORLD;
+
   @Override public CreateJobRequest convert(FWMTCreateJobRequest ingest) {
     CreateJobRequest request = new CreateJobRequest();
     JobType job = new JobType();
@@ -39,7 +43,7 @@ public class HouseholdConverter implements TMConverter
     job.getContact().setName(ingest.getAddress().getPostCode());
     job.getSkills().getSkill().add("Survey");
     job.setWorkType("Household");
-    job.getWorld().setReference("MOD World");
+    job.getWorld().setReference(MOD_WORLD);
 
     job.setLocation(new LocationType());
     job.getLocation().setAddressDetail(new AddressDetailType());

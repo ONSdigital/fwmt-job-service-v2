@@ -10,6 +10,7 @@ import com.consiliumtechnologies.schemas.mobile._2015._05.optimisetypes.Location
 import com.consiliumtechnologies.schemas.mobile._2015._05.optimisetypes.ResourceIdentityType;
 import com.consiliumtechnologies.schemas.mobile._2015._05.optimisetypes.SkillCollectionType;
 import com.consiliumtechnologies.schemas.mobile._2015._05.optimisetypes.WorldIdentityType;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.data.FWMTCreateJobRequest;
 import uk.gov.ons.fwmt.job_service_v2.converter.TMConverter;
@@ -27,8 +28,10 @@ public class CcsConverter implements TMConverter {
   private static final String WORK_TYPE = "CSS";
   private static final String SKILL = "CSS";
   private static final String ADDITIONAL_PROPERTY_CCS_ADDR_POSTCODE = "CCS_AddrPostcode";
-  private static final String MOD_WORLD = "MOD WORLD";
   private static final String DEFAULT_WORLD = "Default";
+
+  @Value("${totalmobile.modworld}")
+  private String MOD_WORLD;
 
   @Override public CreateJobRequest convert(FWMTCreateJobRequest ingest) {
     CreateJobRequest request = new CreateJobRequest();

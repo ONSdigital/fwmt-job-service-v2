@@ -12,6 +12,7 @@ import com.consiliumtechnologies.schemas.mobile._2015._05.optimisetypes.Resource
 import com.consiliumtechnologies.schemas.mobile._2015._05.optimisetypes.SkillCollectionType;
 import com.consiliumtechnologies.schemas.mobile._2015._05.optimisetypes.WorldIdentityType;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.data.FWMTCreateJobRequest;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.error.CTPException;
@@ -39,11 +40,13 @@ public class LMSConverter implements TMConverter {
   private static final String SKILL = "OHS";
   private static final String WORK_TYPE = "OHS";
   private static final String DEFAULT_WORLD = "Default";
-  private static final String MOD_WORLD = "MOD WORLD";
   private static final String DEFAULT_WAVE = "1";
   private static final String ADDITIONAL_PROPERTY_WAVE = "wave";
   private static final String ADDITIONAL_PROPERTY_TLA = "TLA";
   private static final String DEFAULT_TLA = "OHS";
+
+  @Value("${totalmobile.modworld}")
+  private String MOD_WORLD;
 
   public CreateJobRequest convert(FWMTCreateJobRequest ingest) throws CTPException {
     CreateJobRequest createJobRequest =  new CreateJobRequest();
