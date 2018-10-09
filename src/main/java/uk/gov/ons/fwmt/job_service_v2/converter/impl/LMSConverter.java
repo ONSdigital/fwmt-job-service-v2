@@ -42,6 +42,8 @@ public class LMSConverter implements TMConverter {
   private static final String MOD_WORLD = "MOD WORLD";
   private static final String DEFAULT_WAVE = "1";
   private static final String ADDITIONAL_PROPERTY_WAVE = "wave";
+  private static final String ADDITIONAL_PROPERTY_TLA = "TLA";
+  private static final String DEFAULT_TLA = "OHS";
 
   public CreateJobRequest convert(FWMTCreateJobRequest ingest) throws CTPException {
     CreateJobRequest createJobRequest =  new CreateJobRequest();
@@ -101,6 +103,7 @@ public class LMSConverter implements TMConverter {
 
     job.setAdditionalProperties(new AdditionalPropertyCollectionType());
     addAdditionalProperty(job, ADDITIONAL_PROPERTY_WAVE, DEFAULT_WAVE);
+    addAdditionalProperty(job, ADDITIONAL_PROPERTY_TLA, DEFAULT_TLA);
     //TODO: Map Additional properties from Adapter
 
     job.getContact().setName(ingest.getAddress().getPostCode());
