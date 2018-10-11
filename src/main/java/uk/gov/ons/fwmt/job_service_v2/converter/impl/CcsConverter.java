@@ -48,7 +48,6 @@ public class CcsConverter implements TMConverter {
     job.getSkills().getSkill().add(SKILL);
     job.setWorkType(WORK_TYPE);
 
-
     if (ingest.isPreallocatedJob()) {
       job.getWorld().setReference(DEFAULT_WORLD);
       job.setAllocatedTo(new ResourceIdentityType());
@@ -74,7 +73,7 @@ public class CcsConverter implements TMConverter {
       //TODO: Handle exception properly
     }
 
-    job.setDuration(1);
+    job.setDuration(15);
     job.setVisitComplete(false);
     job.setDispatched(false);
     job.setAppointmentPending(false);
