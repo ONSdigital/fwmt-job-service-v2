@@ -33,6 +33,12 @@ public class CcsConverter implements TMConverter {
   @Value("${totalmobile.modworld}")
   private String MOD_WORLD;
 
+  private DatatypeFactory datatypeFactory;
+
+  public CcsConverter() throws DatatypeConfigurationException {
+    datatypeFactory = DatatypeFactory.newInstance();
+  }
+
   @Override public CreateJobRequest convert(FWMTCreateJobRequest ingest) {
     CreateJobRequest request = new CreateJobRequest();
     JobType job = new JobType();
@@ -66,12 +72,7 @@ public class CcsConverter implements TMConverter {
 
     GregorianCalendar dueDateCalendar = GregorianCalendar
         .from(ingest.getDueDate().atTime(23, 59, 59).atZone(ZoneId.of("UTC")));
-    try {
-      job.setDueDate(DatatypeFactory.newInstance().newXMLGregorianCalendar(dueDateCalendar));
-    } catch (DatatypeConfigurationException e) {
-      e.printStackTrace();
-      //TODO: Handle exception properly
-    }
+    job.setDueDate(datatypeFactory.newXMLGregorianCalendar(dueDateCalendar));
 
     job.setDuration(15);
     job.setVisitComplete(false);
