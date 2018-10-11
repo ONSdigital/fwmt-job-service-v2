@@ -12,6 +12,7 @@ import com.consiliumtechnologies.schemas.mobile._2015._05.optimisetypes.Resource
 import com.consiliumtechnologies.schemas.mobile._2015._05.optimisetypes.SkillCollectionType;
 import com.consiliumtechnologies.schemas.mobile._2015._05.optimisetypes.WorldIdentityType;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.data.FWMTCreateJobRequest;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.error.CTPException;
@@ -23,6 +24,7 @@ import java.time.ZoneId;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import static uk.gov.ons.fwmt.job_service_v2.utils.TMJobConverter.addAdditionalProperty;
 import static uk.gov.ons.fwmt.job_service_v2.utils.TMJobConverter.addAddressLines;
 import static uk.gov.ons.fwmt.job_service_v2.utils.TMJobConverter.checkNumberOfAddressLines;
 
@@ -38,10 +40,16 @@ public class LMSConverter implements TMConverter {
   private static final String SKILL = "OHS";
   private static final String WORK_TYPE = "OHS";
   private static final String DEFAULT_WORLD = "Default";
-  private static final String MOD_WORLD = "MOD WORLD";
+  private static final String DEFAULT_WAVE = "1";
+  private static final String ADDITIONAL_PROPERTY_WAVE = "wave";
+  private static final String ADDITIONAL_PROPERTY_TLA = "TLA";
+  private static final String DEFAULT_TLA = "OHS";
+
+  @Value("${totalmobile.modworld}")
+  private String MOD_WORLD;
 
   public CreateJobRequest convert(FWMTCreateJobRequest ingest) throws CTPException {
-    CreateJobRequest createJobRequest =  new CreateJobRequest();
+    CreateJobRequest createJobRequest = new CreateJobRequest();
     JobType job = new JobType();
 
     job.setIdentity(new JobIdentityType());
@@ -63,12 +71,15 @@ public class LMSConverter implements TMConverter {
     checkNumberOfAddressLines(addressLines);
 
     ObjectFactory locationTypeOF = new ObjectFactory();
-    job.getLocation().getAddressDetail().setGeoX(locationTypeOF.createAddressDetailTypeGeoX(ingest.getAddress().getLongitude().floatValue()));
-    job.getLocation().getAddressDetail().setGeoY(locationTypeOF.createAddressDetailTypeGeoY(ingest.getAddress().getLatitude().floatValue()));
-
+    if (ingest.getAddress().getLongitude() != null && ingest.getAddress().getLatitude() != null) {
+      job.getLocation().getAddressDetail()
+          .setGeoX(locationTypeOF.createAddressDetailTypeGeoX(ingest.getAddress().getLongitude().floatValue()));
+      job.getLocation().getAddressDetail()
+          .setGeoY(locationTypeOF.createAddressDetailTypeGeoY(ingest.getAddress().getLatitude().floatValue()));
+    }
     job.getLocation().getAddressDetail().setPostCode(ingest.getAddress().getPostCode());
 
-    if(StringUtils.isNotBlank(ingest.getSurveyType())) {
+    if (StringUtils.isNotBlank(ingest.getSurveyType())) {
       job.setWorkType(ingest.getSurveyType());
     } else {
       job.setWorkType(WORK_TYPE);
@@ -79,24 +90,26 @@ public class LMSConverter implements TMConverter {
     try {
       job.setDueDate(DatatypeFactory.newInstance().newXMLGregorianCalendar(dueDateCalendar));
     } catch (DatatypeConfigurationException e) {
-      throw new CTPException(CTPException.Fault.SYSTEM_ERROR,e);
+      throw new CTPException(CTPException.Fault.SYSTEM_ERROR, e);
     }
 
-    if(ingest.isPreallocatedJob()) {
+    if (ingest.isPreallocatedJob()) {
       job.getWorld().setReference(DEFAULT_WORLD);
-      if(StringUtils.isNotBlank(ingest.getMandatoryResourceAuthNo())) {
+      if (StringUtils.isNotBlank(ingest.getMandatoryResourceAuthNo())) {
         job.setAllocatedTo(new ResourceIdentityType());
         job.getAllocatedTo().setUsername("test"); //lookup not defined yet
       }
     } else {
       job.getWorld().setReference(MOD_WORLD);
-      if(StringUtils.isNotBlank(ingest.getMandatoryResourceAuthNo())) {
+      if (StringUtils.isNotBlank(ingest.getMandatoryResourceAuthNo())) {
         job.setMandatoryResource(new ResourceIdentityType());
         job.getMandatoryResource().setUsername("temp");
       }
     }
 
     job.setAdditionalProperties(new AdditionalPropertyCollectionType());
+    addAdditionalProperty(job, ADDITIONAL_PROPERTY_WAVE, DEFAULT_WAVE);
+    addAdditionalProperty(job, ADDITIONAL_PROPERTY_TLA, DEFAULT_TLA);
     //TODO: Map Additional properties from Adapter
 
     job.getContact().setName(ingest.getAddress().getPostCode());

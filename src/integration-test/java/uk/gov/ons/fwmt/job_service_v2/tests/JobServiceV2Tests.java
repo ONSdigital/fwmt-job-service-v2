@@ -6,6 +6,7 @@ import com.consiliumtechnologies.schemas.mobile._2009._09.compositemessages.Obje
 import com.consiliumtechnologies.schemas.services.mobile._2009._03.messaging.SendMessageResponse;
 import com.consiliumtechnologies.schemas.services.mobile._2009._03.messaging.WebServiceAdapterOutputRequest;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,7 @@ import static org.junit.Assert.assertEquals;
 @Component
 @Slf4j
 @Import({IntegrationTestConfig.class, TestReceiver.class})
+@Ignore
 public class JobServiceV2Tests {
 
   @Autowired
