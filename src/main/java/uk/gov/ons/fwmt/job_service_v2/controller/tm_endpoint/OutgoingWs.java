@@ -78,7 +78,7 @@ public class OutgoingWs {
     DummyTMResponse dummyTMResponse = new DummyTMResponse();
     dummyTMResponse.setIdentity(request.getValue().getIdentity().getGuid());
     jobService.notifyRM(dummyTMResponse);
-
+    log.info("message from TM to RM");
     request.setValue(null);
     return request;
   }
