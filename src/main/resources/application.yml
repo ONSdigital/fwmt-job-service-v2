@@ -39,6 +39,9 @@ logging:
     org.springframework.web: ERROR
     org.hibernate: ERROR
     org.apache.commons.dbcp2: ERROR
+    org.springframework.ws.client.MessageTracing.received: TRACE
+    org.springframework.ws.server.MessageTracing.received: TRACE
+
   file: target/SpringErrors/spring.log
   pattern:
     console: "%d{yyyy-MMM-dd HH:mm:ss.SSS} %-5level [%thread] [%X{CID}] [%X{FILENAME}] %logger{1}::%M - %msg%n"
