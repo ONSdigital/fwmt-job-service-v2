@@ -20,3 +20,5 @@ applications:
     totalmobile_password: REPLACE_TM_PASS
     totalmobile_url: REPLACE_TM_URL
     totalmobile_modworld: REPLACE_TM_MODWORLD
+    security_user_name: REPLACE_USER
+    security_user_password: REPLACE_PASSWORD
