@@ -16,7 +16,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.stereotype.Component;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.ws.client.core.WebServiceTemplate;
-import uk.gov.ons.fwmt.fwmtohsjobstatusnotification.FwmtOHSJobStatusNotification;
 import uk.gov.ons.fwmt.job_service_v2.IntegrationTestConfig;
 import uk.gov.ons.fwmt.job_service_v2.controller.tm_endpoint.GenericOutgoingWs;
 import uk.gov.ons.fwmt.job_service_v2.controller.tm_endpoint.OutgoingWs;
