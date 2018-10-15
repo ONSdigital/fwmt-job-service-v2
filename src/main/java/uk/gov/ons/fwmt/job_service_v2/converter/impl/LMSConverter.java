@@ -49,7 +49,7 @@ public class LMSConverter implements TMConverter {
   private String MOD_WORLD;
 
   public CreateJobRequest convert(FWMTCreateJobRequest ingest) throws CTPException {
-    CreateJobRequest createJobRequest =  new CreateJobRequest();
+    CreateJobRequest createJobRequest = new CreateJobRequest();
     JobType job = new JobType();
 
     job.setIdentity(new JobIdentityType());
@@ -71,12 +71,15 @@ public class LMSConverter implements TMConverter {
     checkNumberOfAddressLines(addressLines);
 
     ObjectFactory locationTypeOF = new ObjectFactory();
-    job.getLocation().getAddressDetail().setGeoX(locationTypeOF.createAddressDetailTypeGeoX(ingest.getAddress().getLongitude().floatValue()));
-    job.getLocation().getAddressDetail().setGeoY(locationTypeOF.createAddressDetailTypeGeoY(ingest.getAddress().getLatitude().floatValue()));
-
+    if (ingest.getAddress().getLongitude() != null && ingest.getAddress().getLatitude() != null) {
+      job.getLocation().getAddressDetail()
+          .setGeoX(locationTypeOF.createAddressDetailTypeGeoX(ingest.getAddress().getLongitude().floatValue()));
+      job.getLocation().getAddressDetail()
+          .setGeoY(locationTypeOF.createAddressDetailTypeGeoY(ingest.getAddress().getLatitude().floatValue()));
+    }
     job.getLocation().getAddressDetail().setPostCode(ingest.getAddress().getPostCode());
 
-    if(StringUtils.isNotBlank(ingest.getSurveyType())) {
+    if (StringUtils.isNotBlank(ingest.getSurveyType())) {
       job.setWorkType(ingest.getSurveyType());
     } else {
       job.setWorkType(WORK_TYPE);
@@ -87,18 +90,18 @@ public class LMSConverter implements TMConverter {
     try {
       job.setDueDate(DatatypeFactory.newInstance().newXMLGregorianCalendar(dueDateCalendar));
     } catch (DatatypeConfigurationException e) {
-      throw new CTPException(CTPException.Fault.SYSTEM_ERROR,e);
+      throw new CTPException(CTPException.Fault.SYSTEM_ERROR, e);
     }
 
-    if(ingest.isPreallocatedJob()) {
+    if (ingest.isPreallocatedJob()) {
       job.getWorld().setReference(DEFAULT_WORLD);
-      if(StringUtils.isNotBlank(ingest.getMandatoryResourceAuthNo())) {
+      if (StringUtils.isNotBlank(ingest.getMandatoryResourceAuthNo())) {
         job.setAllocatedTo(new ResourceIdentityType());
         job.getAllocatedTo().setUsername("test"); //lookup not defined yet
       }
     } else {
       job.getWorld().setReference(MOD_WORLD);
-      if(StringUtils.isNotBlank(ingest.getMandatoryResourceAuthNo())) {
+      if (StringUtils.isNotBlank(ingest.getMandatoryResourceAuthNo())) {
         job.setMandatoryResource(new ResourceIdentityType());
         job.getMandatoryResource().setUsername("temp");
       }
