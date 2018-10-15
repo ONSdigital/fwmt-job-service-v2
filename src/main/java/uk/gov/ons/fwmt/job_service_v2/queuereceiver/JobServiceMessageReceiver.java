@@ -32,9 +32,11 @@ public class JobServiceMessageReceiver {
     if (message.contains("Create")) {
       FWMTCreateJobRequest fwmtCreateJobRequest = convertMessageToDTO(FWMTCreateJobRequest.class, message);
       jobService.createJob(fwmtCreateJobRequest);
+      log.info("Sending Create job to TM");
     } else if (message.contains("Cancel")) {
       FWMTCancelJobRequest fwmtCancelJobRequest = convertMessageToDTO(FWMTCancelJobRequest.class, message);
       jobService.cancelJob(fwmtCancelJobRequest);
+      log.info("Sending Cancel job to TM");
     }
   }
 
