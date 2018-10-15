@@ -58,8 +58,13 @@ public class GenericOutgoingWs {
   private FwmtOHSJobStatusNotification convertMessage(WebServiceAdapterOutputRequest value) throws CTPException {
 
     String content = value.getContent();
-    content = content.replaceAll("\\<\\!\\[CDATA\\[(.*)\\]\\]\\>", "$1");
+    content = content.replaceAll("&lt;","<");
+    content = content.replaceAll("&gt;",">");
+    content = content.replaceAll("<!\\[CDATA\\[", "");
+    content = content.replaceAll("\\]\\]>", "");
 
+
+    log.debug(content);
     FwmtOHSJobStatusNotification responseMessage;
     responseMessage = JAXB.unmarshal(new StringReader(content), FwmtOHSJobStatusNotification.class);
 
