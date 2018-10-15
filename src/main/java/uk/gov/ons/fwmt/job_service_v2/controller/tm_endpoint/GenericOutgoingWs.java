@@ -34,7 +34,6 @@ public class GenericOutgoingWs {
   @ResponsePayload
   public JAXBElement<SendMessageResponse> request(@RequestPayload JAXBElement<WebServiceAdapterOutputRequest> request) throws
       CTPException {
-
     WebServiceAdapterOutputRequest value = request.getValue();
     FwmtOHSJobStatusNotification responseMessage = convertMessage(value);
     jobService.notifyRM(responseMessage);
@@ -56,13 +55,11 @@ public class GenericOutgoingWs {
   }
 
   private FwmtOHSJobStatusNotification convertMessage(WebServiceAdapterOutputRequest value) throws CTPException {
-
     String content = value.getContent();
     content = content.replaceAll("&lt;","<");
     content = content.replaceAll("&gt;",">");
     content = content.replaceAll("<!\\[CDATA\\[", "");
     content = content.replaceAll("\\]\\]>", "");
-
 
     log.debug(content);
     FwmtOHSJobStatusNotification responseMessage;
