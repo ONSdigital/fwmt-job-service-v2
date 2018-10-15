@@ -68,7 +68,6 @@ public class OutgoingWs {
     request.setValue(null);
     return request;
   }
-
   @PayloadRoot(namespace = NAMESPACE_URI, localPart = "submitFormResultRequest")
   @ResponsePayload
   public JAXBElement<SubmitFormResultRequest> sendSubmitFormResultRequestOutput(
