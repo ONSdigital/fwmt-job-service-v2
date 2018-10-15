@@ -1,9 +1,5 @@
 package uk.gov.ons.fwmt.job_service_v2.tests;
 
-import com.consiliumtechnologies.schemas.mobile._2009._03.visitstypes.VisitIdentityType;
-import com.consiliumtechnologies.schemas.mobile._2009._09.compositemessages.CompositeVisitRequest;
-import com.consiliumtechnologies.schemas.mobile._2009._09.compositemessages.ObjectFactory;
-import com.consiliumtechnologies.schemas.services.mobile._2009._03.messaging.SendMessageResponse;
 import com.consiliumtechnologies.schemas.services.mobile._2009._03.messaging.WebServiceAdapterOutputRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Ignore;
@@ -18,10 +14,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.ws.client.core.WebServiceTemplate;
 import uk.gov.ons.fwmt.job_service_v2.IntegrationTestConfig;
 import uk.gov.ons.fwmt.job_service_v2.controller.tm_endpoint.GenericOutgoingWs;
-import uk.gov.ons.fwmt.job_service_v2.controller.tm_endpoint.OutgoingWs;
 import uk.gov.ons.fwmt.job_service_v2.helper.TestReceiver;
-import uk.gov.ons.fwmt.noncontactdetail.NonContactDetail;
-import uk.gov.ons.fwmt.propertydetails.PropertyDetails;
 
 import javax.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
@@ -48,7 +41,6 @@ public class JobServiceV2Tests {
 
   @Test
   public void testPathFromTMToAdapterViaJobSvc() throws Exception {
-
     WebServiceAdapterOutputRequest webServiceAdapterOutputRequest =  new WebServiceAdapterOutputRequest();
     webServiceAdapterOutputRequest.setContent(CONTENT);
 

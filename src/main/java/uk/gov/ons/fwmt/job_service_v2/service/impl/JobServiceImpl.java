@@ -27,7 +27,6 @@ public class JobServiceImpl implements JobService {
   }
 
   @Override public void notifyRM(FwmtOHSJobStatusNotification response) throws CTPException {
-
     rmProducer.send(response);
 
   }
