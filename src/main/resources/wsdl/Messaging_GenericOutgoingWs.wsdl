@@ -55,3 +55,4 @@
             <soap12:address location="http://localhost:9091/tm" />
         </wsdl:port>
     </wsdl:service>
+</wsdl:definitions>
