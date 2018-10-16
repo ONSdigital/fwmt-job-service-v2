@@ -68,21 +68,6 @@ public class OutgoingWs {
     request.setValue(null);
     return request;
   }
-
-  @PayloadRoot(namespace = NAMESPACE_URI, localPart = "compositeVisitRequest")
-  @ResponsePayload
-  public JAXBElement<CompositeVisitRequest> sendCompositeVisitRequestOutput(
-      @RequestPayload JAXBElement<CompositeVisitRequest> request) throws Exception {
-    stub("SendCompositeVisitRequestOutput");
-
-    DummyTMResponse dummyTMResponse = new DummyTMResponse();
-    dummyTMResponse.setIdentity(request.getValue().getIdentity().getGuid());
-    jobService.notifyRM(dummyTMResponse);
-    log.info("message from TM to RM");
-    request.setValue(null);
-    return request;
-  }
-
   @PayloadRoot(namespace = NAMESPACE_URI, localPart = "submitFormResultRequest")
   @ResponsePayload
   public JAXBElement<SubmitFormResultRequest> sendSubmitFormResultRequestOutput(

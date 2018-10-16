@@ -33,4 +33,3 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         .httpBasic().authenticationEntryPoint(basicAuthenticationPoint);
   }
 }
-
