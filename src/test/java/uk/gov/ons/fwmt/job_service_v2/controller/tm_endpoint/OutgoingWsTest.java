@@ -91,30 +91,6 @@ public class OutgoingWsTest {
     assertNull(result.getValue());
   }
 
-
-  @Test
-  @Ignore //TODO OutgoingWs isn't used anymore
-  public void sendCompositeVisitRequestOutput() throws Exception {
-    //Given
-    ObjectFactory factory = new ObjectFactory();
-
-    CompositeVisitRequest compositeVisitRequest = factory.createCompositeVisitRequest();
-    VisitIdentityType visitIdentityType = new VisitIdentityType();
-    visitIdentityType.setGuid("testGuid");
-    compositeVisitRequest.setIdentity(visitIdentityType);
-    JAXBElement<CompositeVisitRequest> compositeVisitRequestJAXBElement = factory
-        .createCompositeVisitRequest(compositeVisitRequest);
-
-    //When
-    JAXBElement<CompositeVisitRequest> result = outgoingWs
-        .sendCompositeVisitRequestOutput(compositeVisitRequestJAXBElement);
-
-    //Then
-    verify(jobService).notifyRM(any());
-    assertNotNull(result);
-    assertNull(result.getValue());
-  }
-
   @Test
   public void sendSubmitFormResultRequestOutput() {
     //Given
