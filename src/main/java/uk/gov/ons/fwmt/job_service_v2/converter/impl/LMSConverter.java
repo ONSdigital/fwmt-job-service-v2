@@ -79,11 +79,7 @@ public class LMSConverter implements TMConverter {
     }
     job.getLocation().getAddressDetail().setPostCode(ingest.getAddress().getPostCode());
 
-    if (StringUtils.isNotBlank(ingest.getSurveyType())) {
-      job.setWorkType(ingest.getSurveyType());
-    } else {
-      job.setWorkType(WORK_TYPE);
-    }
+    job.setWorkType(WORK_TYPE);
 
     GregorianCalendar dueDateCalendar = GregorianCalendar
         .from(ingest.getDueDate().atTime(23, 59, 59).atZone(ZoneId.of("UTC")));
