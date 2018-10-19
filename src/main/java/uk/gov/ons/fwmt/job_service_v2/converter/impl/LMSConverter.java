@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.data.FWMTCreateJobRequest;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.error.CTPException;
 import uk.gov.ons.fwmt.job_service_v2.converter.TMConverter;
+import uk.gov.ons.fwmt.job_service_v2.utils.TMJobConverter;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
@@ -104,6 +105,9 @@ public class LMSConverter implements TMConverter {
     }
 
     job.setAdditionalProperties(new AdditionalPropertyCollectionType());
+    if(ingest.getAdditionalProperties() != null) {
+      TMJobConverter.addAdditionalPropertiesFromMap(job, ingest.getAdditionalProperties());
+    }
     addAdditionalProperty(job, ADDITIONAL_PROPERTY_WAVE, DEFAULT_WAVE);
     addAdditionalProperty(job, ADDITIONAL_PROPERTY_TLA, DEFAULT_TLA);
     //TODO: Map Additional properties from Adapter

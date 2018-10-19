@@ -14,8 +14,6 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
 
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class GenericOutgoingWsTest {
