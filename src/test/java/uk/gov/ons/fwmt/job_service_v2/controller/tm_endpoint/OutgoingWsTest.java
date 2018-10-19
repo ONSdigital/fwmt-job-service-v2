@@ -5,11 +5,7 @@ import com.consiliumtechnologies.schemas.mobile._2009._03.commonmessages.SubmitD
 import com.consiliumtechnologies.schemas.mobile._2009._03.visitsmessages.CompleteVisitRequest;
 import com.consiliumtechnologies.schemas.mobile._2009._03.visitsmessages.RequestVisitRequest;
 import com.consiliumtechnologies.schemas.mobile._2009._03.visitsmessages.UpdateVisitStatusRequest;
-import com.consiliumtechnologies.schemas.mobile._2009._03.visitstypes.VisitIdentityType;
 import com.consiliumtechnologies.schemas.mobile._2009._07.formsmessages.SubmitFormResultRequest;
-import com.consiliumtechnologies.schemas.mobile._2009._09.compositemessages.CompositeVisitRequest;
-import com.consiliumtechnologies.schemas.mobile._2009._09.compositemessages.ObjectFactory;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -22,8 +18,6 @@ import javax.xml.namespace.QName;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 public class OutgoingWsTest {
