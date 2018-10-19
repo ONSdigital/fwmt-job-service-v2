@@ -17,6 +17,7 @@ import uk.gov.ons.fwmt.job_service_v2.converter.TMConverter;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @Slf4j
 public final class TMJobConverter {
@@ -90,9 +91,11 @@ public final class TMJobConverter {
     AdditionalPropertyType propertyType = new AdditionalPropertyType();
 
     for (Map.Entry<String, String> stringEntry : commonProperties.entrySet()) {
-      propertyType.setName(stringEntry.getKey());
-      propertyType.setValue(stringEntry.getValue());
-      job.getAdditionalProperties().getAdditionalProperty().add(propertyType);
+      if (stringEntry.getValue() != null) {
+        propertyType.setName(stringEntry.getKey());
+        propertyType.setValue(stringEntry.getValue());
+        job.getAdditionalProperties().getAdditionalProperty().add(propertyType);
+      }
     }
   }
 }
