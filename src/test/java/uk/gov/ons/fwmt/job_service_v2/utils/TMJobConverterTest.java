@@ -7,7 +7,7 @@ import org.junit.Test;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.data.Address;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.data.FWMTCreateJobRequest;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.error.CTPException;
-import uk.gov.ons.fwmt.job_service_v2.converter.impl.CcsConverter;
+import uk.gov.ons.fwmt.job_service_v2.converter.impl.CCSConverter;
 import uk.gov.ons.fwmt.job_service_v2.converter.impl.HouseholdConverter;
 import uk.gov.ons.fwmt.job_service_v2.converter.impl.LMSConverter;
 
@@ -73,7 +73,7 @@ public class TMJobConverterTest {
     address.setLongitude(BigDecimal.valueOf(34.3739957));
     ingest.setAddress(address);
 
-    SendCreateJobRequestMessage request = TMJobConverter.createJob(ingest, new CcsConverter());
+    SendCreateJobRequestMessage request = TMJobConverter.createJob(ingest, new CCSConverter());
 
     assertEquals(request.getCreateJobRequest().getJob().getIdentity().getReference(), "1234");
     assertEquals(request.getCreateJobRequest().getJob().getContact().getName(), "188961");

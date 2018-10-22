@@ -23,7 +23,7 @@ import java.util.GregorianCalendar;
 import static uk.gov.ons.fwmt.job_service_v2.utils.TMJobConverter.addAdditionalProperty;
 
 @Component("CCS")
-public class CcsConverter implements TMConverter {
+public class CCSConverter implements TMConverter {
 
   private static final String WORK_TYPE = "CCS";
   private static final String SKILL = "CCS";
@@ -35,7 +35,7 @@ public class CcsConverter implements TMConverter {
 
   private DatatypeFactory datatypeFactory;
 
-  public CcsConverter() throws DatatypeConfigurationException {
+  public CCSConverter() throws DatatypeConfigurationException {
     datatypeFactory = DatatypeFactory.newInstance();
   }
 
