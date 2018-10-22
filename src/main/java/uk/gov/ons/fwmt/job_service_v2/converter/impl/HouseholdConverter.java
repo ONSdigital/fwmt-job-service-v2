@@ -12,6 +12,7 @@ import com.consiliumtechnologies.schemas.mobile._2015._05.optimisetypes.WorldIde
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.data.FWMTCreateJobRequest;
+import uk.gov.ons.fwmt.fwmtgatewaycommon.error.CTPException;
 import uk.gov.ons.fwmt.job_service_v2.converter.TMConverter;
 
 import javax.xml.datatype.DatatypeConfigurationException;
@@ -29,7 +30,7 @@ public class HouseholdConverter implements TMConverter
   @Value("${totalmobile.modworld}")
   private String MOD_WORLD;
 
-  @Override public CreateJobRequest convert(FWMTCreateJobRequest ingest) {
+  @Override public CreateJobRequest convert(FWMTCreateJobRequest ingest) throws CTPException {
     CreateJobRequest request = new CreateJobRequest();
     JobType job = new JobType();
     job.setIdentity(new JobIdentityType());
@@ -66,8 +67,7 @@ public class HouseholdConverter implements TMConverter
     try {
       job.setDueDate(DatatypeFactory.newInstance().newXMLGregorianCalendar(dueDateCalendar));
     } catch (DatatypeConfigurationException e) {
-      e.printStackTrace();
-      //TODO: Handle exception properly
+      throw new CTPException(CTPException.Fault.SYSTEM_ERROR, e);
     }
 
     job.setDuration(1);
