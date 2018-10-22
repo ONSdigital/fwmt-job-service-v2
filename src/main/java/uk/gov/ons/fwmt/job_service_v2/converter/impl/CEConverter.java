@@ -1,5 +1,6 @@
 package uk.gov.ons.fwmt.job_service_v2.converter.impl;
 
+import com.consiliumtechnologies.schemas.mobile._2009._03.visitstypes.AdditionalPropertyCollectionType;
 import com.consiliumtechnologies.schemas.mobile._2015._05.optimisemessages.CreateJobRequest;
 import com.consiliumtechnologies.schemas.mobile._2015._05.optimisetypes.*;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.data.FWMTCreateJobRequest;
@@ -12,6 +13,7 @@ import java.time.ZoneId;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import static uk.gov.ons.fwmt.job_service_v2.utils.TMJobConverter.addAdditionalProperty;
 import static uk.gov.ons.fwmt.job_service_v2.utils.TMJobConverter.addAddressLines;
 import static uk.gov.ons.fwmt.job_service_v2.utils.TMJobConverter.checkNumberOfAddressLines;
 
@@ -41,8 +43,12 @@ public class CEConverter implements TMConverter {
         job.setContact(new ContactInfoType());
         job.setWorld(new WorldIdentityType());
 
+        job.setDescription(ingest.getAddress().getOrganisationName());
+
         job.getIdentity().setReference(ingest.getJobIdentity());
-        job.getContact().setName(ingest.getAddress().getPostCode());
+        job.getContact().setName(ingest.getContact().getForename() + " " + ingest.getContact().getSurname());
+        job.getContact().setWorkPhone(ingest.getContact().getWorkPhone());
+        job.getContact().setEmail(ingest.getContact().getEmail());
 
         job.getLocation().setAddressDetail(new AddressDetailType());
         job.getLocation().getAddressDetail().setLines(new AddressDetailType.Lines());
@@ -54,6 +60,11 @@ public class CEConverter implements TMConverter {
         addAddressLines(addressLines, ingest.getAddress().getTownName());
         checkNumberOfAddressLines(addressLines);
         job.getLocation().getAddressDetail().setPostCode(ingest.getAddress().getPostCode());
+
+        job.setAdditionalProperties(new AdditionalPropertyCollectionType());
+        addAdditionalProperty(job, "EstablishmentType", ingest.getAdditionalProperties().get("EstablishmentType"));
+        addAdditionalProperty(job, "Category", ingest.getAdditionalProperties().get("Category"));
+        addAdditionalProperty(job, "LAD", ingest.getAdditionalProperties().get("LAD"));
 
         GregorianCalendar dueDateCalendar = GregorianCalendar.from(ingest.getDueDate().atTime(23, 59, 59).atZone(ZoneId.of("UTC")));
         job.setDueDate(datatypeFactory.newXMLGregorianCalendar(dueDateCalendar));
