@@ -6,14 +6,12 @@ import com.consiliumtechnologies.schemas.mobile._2009._03.visitsmessages.Complet
 import com.consiliumtechnologies.schemas.mobile._2009._03.visitsmessages.RequestVisitRequest;
 import com.consiliumtechnologies.schemas.mobile._2009._03.visitsmessages.UpdateVisitStatusRequest;
 import com.consiliumtechnologies.schemas.mobile._2009._07.formsmessages.SubmitFormResultRequest;
-import com.consiliumtechnologies.schemas.mobile._2009._09.compositemessages.CompositeVisitRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ws.server.endpoint.annotation.Endpoint;
 import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
 import org.springframework.ws.server.endpoint.annotation.RequestPayload;
 import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
-import uk.gov.ons.fwmt.fwmtgatewaycommon.data.DummyTMResponse;
 import uk.gov.ons.fwmt.job_service_v2.service.JobService;
 
 import javax.xml.bind.JAXBElement;
@@ -68,21 +66,6 @@ public class OutgoingWs {
     request.setValue(null);
     return request;
   }
-
-  @PayloadRoot(namespace = NAMESPACE_URI, localPart = "compositeVisitRequest")
-  @ResponsePayload
-  public JAXBElement<CompositeVisitRequest> sendCompositeVisitRequestOutput(
-      @RequestPayload JAXBElement<CompositeVisitRequest> request) throws Exception {
-    stub("SendCompositeVisitRequestOutput");
-
-    DummyTMResponse dummyTMResponse = new DummyTMResponse();
-    dummyTMResponse.setIdentity(request.getValue().getIdentity().getGuid());
-    jobService.notifyRM(dummyTMResponse);
-
-    request.setValue(null);
-    return request;
-  }
-
   @PayloadRoot(namespace = NAMESPACE_URI, localPart = "submitFormResultRequest")
   @ResponsePayload
   public JAXBElement<SubmitFormResultRequest> sendSubmitFormResultRequestOutput(

@@ -25,8 +25,8 @@ import static uk.gov.ons.fwmt.job_service_v2.utils.TMJobConverter.addAdditionalP
 @Component("CCS")
 public class CcsConverter implements TMConverter {
 
-  private static final String WORK_TYPE = "CSS";
-  private static final String SKILL = "CSS";
+  private static final String WORK_TYPE = "CCS";
+  private static final String SKILL = "CCS";
   private static final String ADDITIONAL_PROPERTY_CCS_ADDR_POSTCODE = "CCS_AddrPostcode";
   private static final String DEFAULT_WORLD = "Default";
 

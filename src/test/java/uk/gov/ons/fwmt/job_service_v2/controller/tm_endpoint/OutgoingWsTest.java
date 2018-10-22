@@ -5,10 +5,7 @@ import com.consiliumtechnologies.schemas.mobile._2009._03.commonmessages.SubmitD
 import com.consiliumtechnologies.schemas.mobile._2009._03.visitsmessages.CompleteVisitRequest;
 import com.consiliumtechnologies.schemas.mobile._2009._03.visitsmessages.RequestVisitRequest;
 import com.consiliumtechnologies.schemas.mobile._2009._03.visitsmessages.UpdateVisitStatusRequest;
-import com.consiliumtechnologies.schemas.mobile._2009._03.visitstypes.VisitIdentityType;
 import com.consiliumtechnologies.schemas.mobile._2009._07.formsmessages.SubmitFormResultRequest;
-import com.consiliumtechnologies.schemas.mobile._2009._09.compositemessages.CompositeVisitRequest;
-import com.consiliumtechnologies.schemas.mobile._2009._09.compositemessages.ObjectFactory;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -21,8 +18,6 @@ import javax.xml.namespace.QName;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 public class OutgoingWsTest {
@@ -86,28 +81,6 @@ public class OutgoingWsTest {
         getElement(SubmitDocumentRequest.class));
 
     //Then
-    assertNotNull(result);
-    assertNull(result.getValue());
-  }
-
-  @Test
-  public void sendCompositeVisitRequestOutput() throws Exception {
-    //Given
-    ObjectFactory factory = new ObjectFactory();
-
-    CompositeVisitRequest compositeVisitRequest = factory.createCompositeVisitRequest();
-    VisitIdentityType visitIdentityType = new VisitIdentityType();
-    visitIdentityType.setGuid("testGuid");
-    compositeVisitRequest.setIdentity(visitIdentityType);
-    JAXBElement<CompositeVisitRequest> compositeVisitRequestJAXBElement = factory
-        .createCompositeVisitRequest(compositeVisitRequest);
-
-    //When
-    JAXBElement<CompositeVisitRequest> result = outgoingWs
-        .sendCompositeVisitRequestOutput(compositeVisitRequestJAXBElement);
-
-    //Then
-    verify(jobService).notifyRM(any());
     assertNotNull(result);
     assertNull(result.getValue());
   }

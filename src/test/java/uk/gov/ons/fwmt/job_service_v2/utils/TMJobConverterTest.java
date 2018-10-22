@@ -112,7 +112,7 @@ public class TMJobConverterTest {
     assertEquals(request.getCreateJobRequest().getJob().getDueDate(),
         XMLGregorianCalendarImpl.parse("2018-08-16T23:59:59.000Z"));
     assertEquals(request.getCreateJobRequest().getJob().getDescription(), "OHS");
-    assertEquals(request.getCreateJobRequest().getJob().getWorkType(), "LMS");
+    assertEquals(request.getCreateJobRequest().getJob().getWorkType(), "OHS");
     assertEquals(request.getCreateJobRequest().getJob().getWorld().getReference(), "Default");
     assertEquals(request.getCreateJobRequest().getJob().getAllocatedTo().getUsername(), "test");
     assertEquals(request.getSendMessageRequestInfo().getQueueName(), "\\OPTIMISE\\INPUT");

@@ -42,7 +42,7 @@ public class HouseholdConverter implements TMConverter
     job.getIdentity().setReference(ingest.getJobIdentity());
     job.getContact().setName(ingest.getAddress().getPostCode());
     job.getSkills().getSkill().add("Survey");
-    job.setWorkType("Household");
+    job.setWorkType("HH");
     job.getWorld().setReference(MOD_WORLD);
 
     job.setLocation(new LocationType());

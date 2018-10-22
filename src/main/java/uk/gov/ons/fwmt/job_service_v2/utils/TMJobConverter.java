@@ -16,12 +16,13 @@ import uk.gov.ons.fwmt.fwmtgatewaycommon.error.CTPException;
 import uk.gov.ons.fwmt.job_service_v2.converter.TMConverter;
 
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 public final class TMJobConverter {
   protected static final String JOB_QUEUE = "\\OPTIMISE\\INPUT";
 
-  public static  SendCreateJobRequestMessage createJob(FWMTCreateJobRequest ingest,
+  public static SendCreateJobRequestMessage createJob(FWMTCreateJobRequest ingest,
       TMConverter tmConverter) throws CTPException {
 
     CreateJobRequest request = createJobRequestFromIngest(ingest, tmConverter);
@@ -33,7 +34,8 @@ public final class TMJobConverter {
     return message;
   }
 
-  public static  SendDeleteJobRequestMessage deleteJob(String jobIdentity, String deletionReason, String TMAdminUsername) {
+  public static SendDeleteJobRequestMessage deleteJob(String jobIdentity, String deletionReason,
+      String TMAdminUsername) {
     SendDeleteJobRequestMessage message = new SendDeleteJobRequestMessage();
     DeleteJobRequest deleteJobRequest = new DeleteJobRequest();
     JobIdentityType jobIdentityType = new JobIdentityType();
@@ -82,6 +84,18 @@ public final class TMJobConverter {
     propertyType.setName(key);
     propertyType.setValue(value);
     job.getAdditionalProperties().getAdditionalProperty().add(propertyType);
+  }
+
+  public static void addAdditionalPropertiesFromMap(JobType job, Map<String, String> commonProperties) {
+    AdditionalPropertyType propertyType = new AdditionalPropertyType();
+
+    for (Map.Entry<String, String> stringEntry : commonProperties.entrySet()) {
+      if (stringEntry.getValue() != null) {
+        propertyType.setName(stringEntry.getKey());
+        propertyType.setValue(stringEntry.getValue());
+        job.getAdditionalProperties().getAdditionalProperty().add(propertyType);
+      }
+    }
   }
 }
 

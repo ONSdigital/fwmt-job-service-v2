@@ -37,7 +37,7 @@ def repo = Grgit.open('.')
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
-version = '0.0.15-SNAPSHOT'
+version = '0.0.23-SNAPSHOT'
 
 bootJar {
     group = 'uk.gov.ons.fwmt'
@@ -50,12 +50,12 @@ bootJar {
 }
 
 repositories {
+    mavenLocal()
     mavenCentral()
     maven { url "http://artifactory-sdc.onsdigital.uk/artifactory/libs-snapshot-local" }
     maven { url "http://artifactory-sdc.onsdigital.uk/artifactory/libs-release-local" }
     maven { url "https://oss.sonatype.org/content/repositories/libs-snapshot" }
     maven { url "http://repo.maven.apache.org/maven2" }
-    mavenLocal()
     flatDir { dirs 'libs' }
 }
 
@@ -141,7 +141,7 @@ task genJaxb {
 
 dependencies {
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator', version: '1.5.13.RELEASE'
-    compile group: 'uk.gov.ons.fwmt', name: 'fwmt-gateway-common', version: '0.0.4-RELEASE'
+    compile group: 'uk.gov.ons.fwmt', name: 'fwmt-gateway-common', version: '0.0.13-RELEASE'
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '1.5.13.RELEASE'
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-web-services', version: '1.5.13.RELEASE'
     compile group: 'org.springframework.retry', name: 'spring-retry', version: '1.2.2.RELEASE'

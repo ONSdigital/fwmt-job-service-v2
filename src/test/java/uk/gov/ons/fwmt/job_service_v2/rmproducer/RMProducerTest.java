@@ -9,8 +9,8 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.config.QueueNames;
-import uk.gov.ons.fwmt.fwmtgatewaycommon.data.DummyTMResponse;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.error.CTPException;
+import uk.gov.ons.fwmt.fwmtohsjobstatusnotification.FwmtOHSJobStatusNotification;
 
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
@@ -31,8 +31,8 @@ public class RMProducerTest {
   @Test
   public void send() throws JsonProcessingException, CTPException {
     //Given
-    DummyTMResponse dummyTMResponse = new DummyTMResponse();
-    dummyTMResponse.setIdentity("test");
+    FwmtOHSJobStatusNotification dummyTMResponse = new FwmtOHSJobStatusNotification();
+    dummyTMResponse.setJobIdentity("test");
     when(objectMapper.writeValueAsString(eq(dummyTMResponse))).thenReturn("dummyResponseStr");
 
     //When
