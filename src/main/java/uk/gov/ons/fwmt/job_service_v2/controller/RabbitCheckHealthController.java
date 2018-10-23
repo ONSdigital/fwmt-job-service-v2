@@ -1,24 +1,26 @@
 package uk.gov.ons.fwmt.job_service_v2.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.List;
 
+
+@Slf4j
+@RestController
 public class RabbitCheckHealthController {
 
-  private static final String ACTION_FIELD_QUEUE = "Action.Field";
-  private static final String ACTION_FIELD_BINDING = "Action.Field.binding";
-
-  @Value("${rabbitmq.username}") String username;
-  @Value("${rabbitmq.password}") String password;
-  @Value("${rabbitmq.hostname}") String hostname;
-  @Value("${rabbitmq.port}") Integer port;
-  @Value("${rabbitmq.virtualHost}") String virtualHost;
+  @Value("${spring.rabbitmq.username}") String username;
+  @Value("${spring.rabbitmq.password}") String password;
+  @Value("${spring.rabbitmq.host}") String hostname;
+  @Value("${spring.rabbitmq.port}") Integer port;
+  @Value("${spring.rabbitmq.virtualhost}") String virtualHost;
 
   private CachingConnectionFactory getRMConnectionFactory() {
     CachingConnectionFactory factory = new CachingConnectionFactory();
@@ -47,6 +49,8 @@ public class RabbitCheckHealthController {
     results.add(result2);
     results.add(result3);
     results.add(result4);
+
+    System.out.println(results);
 
     return results;
   }
