@@ -33,7 +33,7 @@ import static uk.gov.ons.fwmt.job_service_v2.utils.TMJobConverter.checkNumberOfA
 public class LMSConverter implements TMConverter {
 
   private static final String DESCRIPTION = "OHS";
-  private static final int DURATION = 0;
+  private static final int DURATION = 1;
   private static final boolean STATUS = false;
   private static final boolean EMERGENCY = false;
   private static final boolean DISPATCHED = false;
