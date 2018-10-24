@@ -24,60 +24,68 @@ import static uk.gov.ons.fwmt.job_service_v2.utils.TMJobConverter.addAddressLine
 import static uk.gov.ons.fwmt.job_service_v2.utils.TMJobConverter.checkNumberOfAddressLines;
 
 @Component("HH")
-public class HouseholdConverter implements TMConverter
-{
-  @Value("${totalmobile.modworld}")
-  private String MOD_WORLD;
+public class HouseholdConverter implements TMConverter {
 
-  @Override public CreateJobRequest convert(FWMTCreateJobRequest ingest) {
-    CreateJobRequest request = new CreateJobRequest();
-    JobType job = new JobType();
-    job.setIdentity(new JobIdentityType());
-    job.setSkills(new SkillCollectionType());
-    job.setContact(new ContactInfoType());
-    job.setWorld(new WorldIdentityType());
+    private static final String WORK_TYPE = "HH";
+    private static final int DURATION = 5;
+    private static final String DESCRIPTION = "TEST MESSAGE";
 
-    job.setDescription("TEST MESSAGE");
+    @Value("${totalmobile.modworld}")
+    private String MOD_WORLD;
 
-    job.getIdentity().setReference(ingest.getJobIdentity());
-    job.getContact().setName(ingest.getAddress().getPostCode());
-    job.getSkills().getSkill().add("Survey");
-    job.setWorkType("HH");
-    job.getWorld().setReference(MOD_WORLD);
+    private DatatypeFactory datatypeFactory;
 
-    job.setLocation(new LocationType());
-    job.getLocation().setAddressDetail(new AddressDetailType());
-    job.getLocation().getAddressDetail().setLines(new AddressDetailType.Lines());
-    List<String> addressLines = job.getLocation().getAddressDetail().getLines().getAddressLine();
-
-    job.setAdditionalProperties(new AdditionalPropertyCollectionType());
-
-    addAddressLines(addressLines, ingest.getAddress().getLine1());
-    addAddressLines(addressLines, ingest.getAddress().getLine2());
-    addAddressLines(addressLines, ingest.getAddress().getLine3());
-    addAddressLines(addressLines, ingest.getAddress().getLine4());
-    addAddressLines(addressLines, ingest.getAddress().getTownName());
-    checkNumberOfAddressLines(addressLines);
-
-    job.getLocation().getAddressDetail().setPostCode(ingest.getAddress().getPostCode());
-
-    GregorianCalendar dueDateCalendar = GregorianCalendar
-        .from(ingest.getDueDate().atTime(23, 59, 59).atZone(ZoneId.of("UTC")));
-    try {
-      job.setDueDate(DatatypeFactory.newInstance().newXMLGregorianCalendar(dueDateCalendar));
-    } catch (DatatypeConfigurationException e) {
-      e.printStackTrace();
-      //TODO: Handle exception properly
+    public HouseholdConverter() throws DatatypeConfigurationException {
+        datatypeFactory = DatatypeFactory.newInstance();
     }
 
-    job.setDuration(15);
-    job.setVisitComplete(false);
-    job.setDispatched(false);
-    job.setAppointmentPending(false);
-    job.setEmergency(false);
-    request.setJob(job);
+    @Override
+    public CreateJobRequest convert(FWMTCreateJobRequest ingest) {
+        CreateJobRequest request = new CreateJobRequest();
+        JobType job = new JobType();
+        request.setJob(job);
 
-    return request;
-  }
+        job.setDescription(DESCRIPTION);
+        job.setDuration(DURATION);
+        job.setWorkType(WORK_TYPE);
+        job.setVisitComplete(false);
+        job.setDispatched(false);
+        job.setAppointmentPending(false);
+        job.setEmergency(false);
+
+        job.setIdentity(new JobIdentityType());
+        job.getIdentity().setReference(ingest.getJobIdentity());
+
+        job.setContact(new ContactInfoType());
+        job.getContact().setName(ingest.getAddress().getPostCode());
+
+        job.setSkills(new SkillCollectionType());
+        job.getSkills().getSkill().add("Survey");
+
+        job.setWorld(new WorldIdentityType());
+        job.getWorld().setReference(MOD_WORLD);
+
+        LocationType location = new LocationType();
+        job.setLocation(location);
+        AddressDetailType addressDetail = new AddressDetailType();
+        location.setAddressDetail(addressDetail);
+        addressDetail.setLines(new AddressDetailType.Lines());
+        addressDetail.setPostCode(ingest.getAddress().getPostCode());
+        List<String> addressLines = addressDetail.getLines().getAddressLine();
+        addAddressLines(addressLines, ingest.getAddress().getLine1());
+        addAddressLines(addressLines, ingest.getAddress().getLine2());
+        addAddressLines(addressLines, ingest.getAddress().getLine3());
+        addAddressLines(addressLines, ingest.getAddress().getLine4());
+        addAddressLines(addressLines, ingest.getAddress().getTownName());
+        checkNumberOfAddressLines(addressLines);
+
+        job.setAdditionalProperties(new AdditionalPropertyCollectionType());
+
+        GregorianCalendar dueDateCalendar = GregorianCalendar
+                .from(ingest.getDueDate().atTime(23, 59, 59).atZone(ZoneId.of("UTC")));
+        job.setDueDate(datatypeFactory.newXMLGregorianCalendar(dueDateCalendar));
+
+        return request;
+    }
 
 }

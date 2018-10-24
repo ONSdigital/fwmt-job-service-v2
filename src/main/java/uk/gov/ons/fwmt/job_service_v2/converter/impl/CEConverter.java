@@ -25,7 +25,7 @@ public class CEConverter implements TMConverter {
     private static final String SKILL = "CE";
     private static final String DESCRIPTION = "CE";
     private static final String DEFAULT_WORLD = "Default";
-    private static final int DURATION = 15;
+    private static final int DURATION = 5;
 
     private DatatypeFactory datatypeFactory;
     private ObjectFactory objectFactory;
