@@ -56,7 +56,6 @@ public class GenericOutgoingWs {
     content = content.replaceAll("<!\\[CDATA\\[", "");
     content = content.replaceAll("\\]\\]>", "");
 
-    log.debug(content);
     FwmtOHSJobStatusNotification responseMessage;
     responseMessage = JAXB.unmarshal(new StringReader(content), FwmtOHSJobStatusNotification.class);
 

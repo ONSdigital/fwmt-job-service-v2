@@ -24,7 +24,7 @@ public class JobServiceMessageReceiver {
   private ObjectMapper mapper;
 
   public void receiveMessage(String message) throws CTPException {
-    log.info("received a message from RM-Adapter: " + message);
+    log.info("received a message from RM-Adapter");
     processMessage(message);
   }
 
