@@ -11,6 +11,7 @@ import uk.gov.ons.fwmt.job_service_v2.converter.impl.CCSConverter;
 import uk.gov.ons.fwmt.job_service_v2.converter.impl.HouseholdConverter;
 import uk.gov.ons.fwmt.job_service_v2.converter.impl.LMSConverter;
 
+import javax.xml.datatype.DatatypeConfigurationException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -53,7 +54,7 @@ public class TMJobConverterTest {
   }
 
   @Test
-  public void createCCSJobTest() throws CTPException {
+  public void createCCSJobTest() throws CTPException, DatatypeConfigurationException {
     String user = "bob.smith";
     FWMTCreateJobRequest ingest = new FWMTCreateJobRequest();
     Address address = new Address();
