@@ -40,15 +40,13 @@ public class RabbitCheckHealthController {
 
     List<String> results = new ArrayList<>();
 
-    String result1 = rabbitAdmin.getQueueProperties("rm-adapter").getProperty("QUEUE_NAME");
-    String result2 = rabbitAdmin.getQueueProperties("jobsvc-adapter").getProperty("QUEUE_NAME");
-    String result3 = rabbitAdmin.getQueueProperties("adapter-jobSvc").getProperty("QUEUE_NAME");
-    String result4 = rabbitAdmin.getQueueProperties("adapter-rm").getProperty("QUEUE_NAME");
+    String result1 = rabbitAdmin.getQueueProperties("jobsvc-adapter").getProperty("QUEUE_NAME");
+    String result2 = rabbitAdmin.getQueueProperties("adapter-jobSvc").getProperty("QUEUE_NAME");
+    String result3 = rabbitAdmin.getQueueProperties("adapter-rm").getProperty("QUEUE_NAME");
 
     results.add(result1);
     results.add(result2);
     results.add(result3);
-    results.add(result4);
 
     System.out.println(results);
 
