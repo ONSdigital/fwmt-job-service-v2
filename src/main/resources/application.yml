@@ -35,6 +35,7 @@ logging:
   level:
     root: WARN
     uk.gov.ons.fwmt: DEBUG
+    org.springframework: ERROR
     org.springframework.security: ERROR
     org.springframework.web: ERROR
     org.hibernate: ERROR
