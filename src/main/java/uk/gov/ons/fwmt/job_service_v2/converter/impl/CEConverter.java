@@ -3,6 +3,7 @@ package uk.gov.ons.fwmt.job_service_v2.converter.impl;
 import com.consiliumtechnologies.schemas.mobile._2009._03.visitstypes.AdditionalPropertyCollectionType;
 import com.consiliumtechnologies.schemas.mobile._2015._05.optimisemessages.CreateJobRequest;
 import com.consiliumtechnologies.schemas.mobile._2015._05.optimisetypes.*;
+import org.springframework.beans.factory.annotation.Value;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.data.FWMTCreateJobRequest;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.error.CTPException;
 import uk.gov.ons.fwmt.job_service_v2.converter.TMConverter;
@@ -14,21 +15,23 @@ import java.time.ZoneId;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import static uk.gov.ons.fwmt.job_service_v2.utils.TMJobConverter.addAdditionalPropertiesFromMap;
 import static uk.gov.ons.fwmt.job_service_v2.utils.TMJobConverter.addAdditionalProperty;
 import static uk.gov.ons.fwmt.job_service_v2.utils.TMJobConverter.addAddressLines;
 import static uk.gov.ons.fwmt.job_service_v2.utils.TMJobConverter.checkNumberOfAddressLines;
 
 public class CEConverter implements TMConverter {
 
-    private static final String WORLD = "???";
     private static final String WORK_TYPE = "CE";
     private static final String SKILL = "CE";
     private static final String DESCRIPTION = "CE";
-    private static final String DEFAULT_WORLD = "Default";
     private static final int DURATION = 15;
 
     private DatatypeFactory datatypeFactory;
     private ObjectFactory objectFactory;
+
+    @Value("${totalmobile.modworld}")
+    private String MOD_WORLD;
 
     public CEConverter() throws DatatypeConfigurationException {
         datatypeFactory = DatatypeFactory.newInstance();
@@ -54,7 +57,7 @@ public class CEConverter implements TMConverter {
 
         // world
         job.setWorld(new WorldIdentityType());
-        job.getWorld().setReference(WORLD);
+        job.getWorld().setReference(MOD_WORLD);
 
         // skills
         job.setSkills(new SkillCollectionType());
@@ -96,11 +99,9 @@ public class CEConverter implements TMConverter {
 
         // additional properties
         job.setAdditionalProperties(new AdditionalPropertyCollectionType());
-        addAdditionalProperty(job, "EstablishmentType", ingest.getAdditionalProperties().get("EstablishmentType"));
-        addAdditionalProperty(job, "Category", ingest.getAdditionalProperties().get("Category"));
-        addAdditionalProperty(job, "LAD", ingest.getAdditionalProperties().get("LAD"));
-        addAdditionalProperty(job, "Region", ingest.getAdditionalProperties().get("Region"));
-        addAdditionalProperty(job, "CaseId", ingest.getAdditionalProperties().get("CaseId"));
+        if (ingest.getAdditionalProperties() != null) {
+            addAdditionalPropertiesFromMap(job, ingest.getAdditionalProperties());
+        }
         addAdditionalProperty(job, "CaseRef", ingest.getJobIdentity());
 
         return request;
