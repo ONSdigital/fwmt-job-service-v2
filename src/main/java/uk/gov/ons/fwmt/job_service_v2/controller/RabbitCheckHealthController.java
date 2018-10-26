@@ -2,7 +2,9 @@ package uk.gov.ons.fwmt.job_service_v2.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
+import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -16,27 +18,13 @@ import java.util.List;
 @RestController
 public class RabbitCheckHealthController {
 
-  @Value("${spring.rabbitmq.username}") String username;
-  @Value("${spring.rabbitmq.password}") String password;
-  @Value("${spring.rabbitmq.host}") String hostname;
-  @Value("${spring.rabbitmq.port}") Integer port;
-  @Value("${spring.rabbitmq.virtualhost}") String virtualHost;
-
-  private CachingConnectionFactory getRMConnectionFactory() {
-    CachingConnectionFactory factory = new CachingConnectionFactory();
-    factory.setHost(hostname);
-    factory.setUsername(username);
-    factory.setPassword(password);
-    factory.setPort(port);
-    factory.setVirtualHost(virtualHost);
-    return factory;
-  }
-
+  @Autowired
+  ConnectionFactory factory;
 
   @RequestMapping(value = "/rabbitHealth", method = RequestMethod.GET, produces = "application/json")
   public List<String> rabbitHealth(){
 
-    RabbitAdmin rabbitAdmin = new RabbitAdmin(getRMConnectionFactory());
+    RabbitAdmin rabbitAdmin = new RabbitAdmin(factory);
 
     List<String> results = new ArrayList<>();
 
@@ -49,8 +37,6 @@ public class RabbitCheckHealthController {
     results.add(result2);
     results.add(result3);
     results.add(result4);
-
-    System.out.println(results);
 
     return results;
   }
