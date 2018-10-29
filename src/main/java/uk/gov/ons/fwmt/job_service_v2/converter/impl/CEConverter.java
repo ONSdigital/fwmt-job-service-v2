@@ -8,7 +8,6 @@ import uk.gov.ons.fwmt.fwmtgatewaycommon.data.FWMTCreateJobRequest;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.error.CTPException;
 import uk.gov.ons.fwmt.job_service_v2.converter.TMConverter;
 
-import javax.xml.bind.JAXBElement;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import java.time.ZoneId;
@@ -53,7 +52,7 @@ public class CEConverter implements TMConverter {
         job.setEmergency(false);
         job.setDispatched(false);
         job.setAppointmentPending(false);
-        job.setDescription(ingest.getAddress().getOrganizationName());
+        job.setDescription(ingest.getAddress().getOrganisationName());
 
         // world
         job.setWorld(new WorldIdentityType());
