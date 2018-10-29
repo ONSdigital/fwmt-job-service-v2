@@ -37,7 +37,7 @@ def repo = Grgit.open('.')
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
-version = '0.0.26-SNAPSHOT'
+version = '0.0.27-SNAPSHOT'
 
 bootJar {
     group = 'uk.gov.ons.fwmt'
