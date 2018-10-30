@@ -27,11 +27,13 @@ import static uk.gov.ons.fwmt.job_service_v2.utils.TMJobConverter.checkNumberOfA
 public class HouseholdConverter implements TMConverter {
 
     private static final String WORK_TYPE = "HH";
-    private static final int DURATION = 5;
     private static final String DESCRIPTION = "TEST MESSAGE";
 
     @Value("${totalmobile.modworld}")
     private String MOD_WORLD;
+
+    @Value("${fwmt.workTypes.hh.duration}")
+    private int duration;
 
     private DatatypeFactory datatypeFactory;
 
@@ -46,7 +48,7 @@ public class HouseholdConverter implements TMConverter {
         request.setJob(job);
 
         job.setDescription(DESCRIPTION);
-        job.setDuration(DURATION);
+        job.setDuration(duration);
         job.setWorkType(WORK_TYPE);
         job.setVisitComplete(false);
         job.setDispatched(false);

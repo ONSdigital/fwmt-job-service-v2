@@ -30,10 +30,9 @@ import static uk.gov.ons.fwmt.job_service_v2.utils.TMJobConverter.addAddressLine
 import static uk.gov.ons.fwmt.job_service_v2.utils.TMJobConverter.checkNumberOfAddressLines;
 
 @Component("LMS")
-public class LMSConverter implements TMConverter {
+public class OHSConverter implements TMConverter {
 
     private static final String DESCRIPTION = "OHS";
-    private static final int DURATION = 5;
     private static final boolean STATUS = false;
     private static final boolean EMERGENCY = false;
     private static final boolean DISPATCHED = false;
@@ -49,10 +48,13 @@ public class LMSConverter implements TMConverter {
     @Value("${totalmobile.modworld}")
     private String MOD_WORLD;
 
+    @Value("${fwmt.workTypes.ohs.duration}")
+    private int duration;
+
     private DatatypeFactory datatypeFactory;
     private ObjectFactory objectFactory;
 
-    public LMSConverter() throws DatatypeConfigurationException {
+    public OHSConverter() throws DatatypeConfigurationException {
         datatypeFactory = DatatypeFactory.newInstance();
         objectFactory = new ObjectFactory();
     }
@@ -63,7 +65,7 @@ public class LMSConverter implements TMConverter {
         createJobRequest.setJob(job);
 
         job.setDescription(DESCRIPTION);
-        job.setDuration(DURATION);
+        job.setDuration(duration);
         job.setVisitComplete(STATUS);
         job.setEmergency(EMERGENCY);
         job.setDispatched(DISPATCHED);

@@ -4,6 +4,7 @@ import com.consiliumtechnologies.schemas.mobile._2009._03.visitstypes.Additional
 import com.consiliumtechnologies.schemas.mobile._2015._05.optimisemessages.CreateJobRequest;
 import com.consiliumtechnologies.schemas.mobile._2015._05.optimisetypes.*;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.data.FWMTCreateJobRequest;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.error.CTPException;
 import uk.gov.ons.fwmt.job_service_v2.converter.TMConverter;
@@ -19,20 +20,21 @@ import static uk.gov.ons.fwmt.job_service_v2.utils.TMJobConverter.addAdditionalP
 import static uk.gov.ons.fwmt.job_service_v2.utils.TMJobConverter.addAddressLines;
 import static uk.gov.ons.fwmt.job_service_v2.utils.TMJobConverter.checkNumberOfAddressLines;
 
+@Component("CE")
 public class CEConverter implements TMConverter {
 
     private static final String WORK_TYPE = "CE";
     private static final String SKILL = "CE";
     private static final String DESCRIPTION = "CE";
-    private static final String DEFAULT_WORLD = "Default";
-    private static final int DURATION = 5;
-    private static final int DURATION = 15;
 
     private DatatypeFactory datatypeFactory;
     private ObjectFactory objectFactory;
 
     @Value("${totalmobile.modworld}")
     private String MOD_WORLD;
+
+    @Value("${fwmt.workTypes.ce.duration}")
+    private int duration;
 
     public CEConverter() throws DatatypeConfigurationException {
         datatypeFactory = DatatypeFactory.newInstance();
@@ -49,7 +51,7 @@ public class CEConverter implements TMConverter {
         // simple details
         job.setWorkType(WORK_TYPE);
         job.setDescription(DESCRIPTION);
-        job.setDuration(DURATION);
+        job.setDuration(duration);
         job.setVisitComplete(false);
         job.setEmergency(false);
         job.setDispatched(false);

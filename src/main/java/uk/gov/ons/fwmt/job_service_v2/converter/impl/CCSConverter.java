@@ -29,10 +29,12 @@ public class CCSConverter implements TMConverter {
     private static final String SKILL = "CCS";
     private static final String ADDITIONAL_PROPERTY_CCS_ADDR_POSTCODE = "CCS_AddrPostcode";
     private static final String DEFAULT_WORLD = "Default";
-    private static final int DURATION = 5;
 
     @Value("${totalmobile.modworld}")
     private String MOD_WORLD;
+
+    @Value("${fwmt.workTypes.ccs.duration}")
+    private int duration;
 
     private DatatypeFactory datatypeFactory;
 
@@ -76,7 +78,7 @@ public class CCSConverter implements TMConverter {
                 .from(ingest.getDueDate().atTime(23, 59, 59).atZone(ZoneId.of("UTC")));
         job.setDueDate(datatypeFactory.newXMLGregorianCalendar(dueDateCalendar));
 
-        job.setDuration(DURATION);
+        job.setDuration(duration);
         job.setVisitComplete(false);
         job.setDispatched(false);
         job.setAppointmentPending(false);
