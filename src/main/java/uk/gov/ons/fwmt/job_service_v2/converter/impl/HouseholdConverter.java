@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.data.FWMTCreateJobRequest;
 import uk.gov.ons.fwmt.job_service_v2.converter.TMConverter;
+import uk.gov.ons.fwmt.job_service_v2.utils.CreateJobBuilder;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
@@ -28,9 +29,10 @@ public class HouseholdConverter implements TMConverter {
 
   private static final String WORK_TYPE = "HH";
   private static final String DESCRIPTION = "TEST MESSAGE";
+  private static final String SKILL = "Survey";
 
   @Value("${totalmobile.modworld}")
-  private String MOD_WORLD;
+  private String modWorld;
 
   @Value("${fwmt.workTypes.hh.duration}")
   private int duration;
@@ -43,51 +45,31 @@ public class HouseholdConverter implements TMConverter {
 
   @Override
   public CreateJobRequest convert(FWMTCreateJobRequest ingest) {
-    CreateJobRequest request = new CreateJobRequest();
-    JobType job = new JobType();
-    request.setJob(job);
-
-    job.setDescription(DESCRIPTION);
-    job.setDuration(duration);
-    job.setWorkType(WORK_TYPE);
-    job.setVisitComplete(false);
-    job.setDispatched(false);
-    job.setAppointmentPending(false);
-    job.setEmergency(false);
-
-    job.setIdentity(new JobIdentityType());
-    job.getIdentity().setReference(ingest.getJobIdentity());
-
-    job.setContact(new ContactInfoType());
-    job.getContact().setName(ingest.getAddress().getPostCode());
-
-    job.setSkills(new SkillCollectionType());
-    job.getSkills().getSkill().add("Survey");
-
-    job.setWorld(new WorldIdentityType());
-    job.getWorld().setReference(MOD_WORLD);
-
-    LocationType location = new LocationType();
-    job.setLocation(location);
-    AddressDetailType addressDetail = new AddressDetailType();
-    location.setAddressDetail(addressDetail);
-    addressDetail.setLines(new AddressDetailType.Lines());
-    addressDetail.setPostCode(ingest.getAddress().getPostCode());
-    List<String> addressLines = addressDetail.getLines().getAddressLine();
-    addAddressLines(addressLines, ingest.getAddress().getLine1());
-    addAddressLines(addressLines, ingest.getAddress().getLine2());
-    addAddressLines(addressLines, ingest.getAddress().getLine3());
-    addAddressLines(addressLines, ingest.getAddress().getLine4());
-    addAddressLines(addressLines, ingest.getAddress().getTownName());
-    checkNumberOfAddressLines(addressLines);
-
-    job.setAdditionalProperties(new AdditionalPropertyCollectionType());
-
-    GregorianCalendar dueDateCalendar = GregorianCalendar
-        .from(ingest.getDueDate().atTime(23, 59, 59).atZone(ZoneId.of("UTC")));
-    job.setDueDate(datatypeFactory.newXMLGregorianCalendar(dueDateCalendar));
-
-    return request;
+    return new CreateJobBuilder(datatypeFactory)
+        .withDescription(DESCRIPTION)
+        .withWorkType(WORK_TYPE)
+        .withDescription("Census - " + ingest.getAddress().getPostCode())
+        .withDuration(duration)
+        .withWorld(modWorld)
+        .withVisitComplete(false)
+        .withEmergency(false)
+        .withDispatched(false)
+        .withAppointmentPending(false)
+        .addSkill(SKILL)
+        .withIdentity(ingest.getJobIdentity())
+        .withDueDate(ingest.getDueDate().atTime(23, 59, 59).atZone(ZoneId.of("UTC")))
+        .withContactName(ingest.getAddress().getPostCode())
+        .withAddressLines(
+            ingest.getAddress().getLine1(),
+            ingest.getAddress().getLine2(),
+            ingest.getAddress().getLine3(),
+            ingest.getAddress().getLine4(),
+            ingest.getAddress().getTownName()
+        )
+        .withPostCode(ingest.getAddress().getPostCode())
+        .withGeoCoords(ingest.getAddress().getLongitude(), ingest.getAddress().getLatitude())
+        .withAdditionalProperties(ingest.getAdditionalProperties())
+        .build();
   }
 
 }

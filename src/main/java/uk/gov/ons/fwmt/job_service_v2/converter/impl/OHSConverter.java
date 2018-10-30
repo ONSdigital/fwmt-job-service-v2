@@ -70,8 +70,6 @@ public class OHSConverter implements TMConverter {
         .withIdentity(ingest.getJobIdentity())
         .withDueDate(ingest.getDueDate().atTime(23, 59, 59).atZone(ZoneId.of("UTC")))
         .withContactName(ingest.getAddress().getPostCode())
-        .withContactEmail(ingest.getContact().getEmail())
-        .withContactPhone(ingest.getContact().getPhoneNumber())
         .withAddressLines(
             ingest.getAddress().getLine1(),
             ingest.getAddress().getLine2(),
