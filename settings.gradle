@@ -1,3 +1,2 @@
 rootProject.name = 'fwmt-job-service-v2'
-include ":fwmt-gateway-common"
 
