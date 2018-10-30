@@ -139,12 +139,12 @@ public class TMJobServiceImpl extends WebServiceGatewaySupport {
 
   @Autowired
   public TMJobServiceImpl(
-          @Value("${totalmobile.url}") String url,
-          @Value("${totalmobile.message-queue-path}") String messageQueuePath,
-          @Value("${totalmobile.message-queue-package}") String messageQueuePackage,
-          @Value("${totalmobile.message-queue-namespace}") String namespace,
-          @Value("${totalmobile.username}") String username,
-          @Value("${totalmobile.password}") String password) throws Exception {
+      @Value("${totalmobile.url}") String url,
+      @Value("${totalmobile.message-queue-path}") String messageQueuePath,
+      @Value("${totalmobile.message-queue-package}") String messageQueuePackage,
+      @Value("${totalmobile.message-queue-namespace}") String namespace,
+      @Value("${totalmobile.username}") String username,
+      @Value("${totalmobile.password}") String password) throws Exception {
     this.messageQueueUrl = url + messageQueuePath;
     this.namespace = namespace;
 
@@ -169,7 +169,7 @@ public class TMJobServiceImpl extends WebServiceGatewaySupport {
 
   public void cancelJob(FWMTCancelJobRequest cancelRequest) {
     SendDeleteJobRequestMessage deleteRequest = TMJobConverter
-            .deleteJob(cancelRequest.getJobIdentity(), cancelRequest.getReason(), tmAdminUsername);
+        .deleteJob(cancelRequest.getJobIdentity(), cancelRequest.getReason(), tmAdminUsername);
     send(deleteRequest);
   }
 

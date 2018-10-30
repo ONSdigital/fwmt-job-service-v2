@@ -25,7 +25,7 @@ public final class TMJobConverter {
   public static SendCreateJobRequestMessage createJob(FWMTCreateJobRequest ingest,
       TMConverter tmConverter) throws CTPException {
 
-    CreateJobRequest request = createJobRequestFromIngest(ingest, tmConverter);
+    CreateJobRequest request = tmConverter.convert(ingest);
 
     SendCreateJobRequestMessage message = new SendCreateJobRequestMessage();
     message.setSendMessageRequestInfo(makeSendMessageRequestInfo(ingest.getJobIdentity()));
@@ -34,8 +34,16 @@ public final class TMJobConverter {
     return message;
   }
 
+  public static SendCreateJobRequestMessage createJobRequestToMessage(String jobIdentity, CreateJobRequest request) {
+    SendCreateJobRequestMessage message = new SendCreateJobRequestMessage();
+    message.setSendMessageRequestInfo(makeSendMessageRequestInfo(jobIdentity));
+    message.setCreateJobRequest(request);
+
+    return message;
+  }
+
   public static SendDeleteJobRequestMessage deleteJob(String jobIdentity, String deletionReason,
-      String TMAdminUsername) {
+      String tmAdminUsername) {
     SendDeleteJobRequestMessage message = new SendDeleteJobRequestMessage();
     DeleteJobRequest deleteJobRequest = new DeleteJobRequest();
     JobIdentityType jobIdentityType = new JobIdentityType();
@@ -44,7 +52,7 @@ public final class TMJobConverter {
     jobIdentityType.setReference(jobIdentity);
     deleteJobRequest.setIdentity(jobIdentityType);
     deleteJobRequest.setDeletionReason(deletionReason);
-    auditType.setUsername(TMAdminUsername);
+    auditType.setUsername(tmAdminUsername);
     deleteJobRequest.setDeletedBy(auditType);
 
     message.setSendMessageRequestInfo(makeSendMessageRequestInfo(jobIdentity));
@@ -53,13 +61,8 @@ public final class TMJobConverter {
     return message;
   }
 
-  protected static CreateJobRequest createJobRequestFromIngest(FWMTCreateJobRequest ingest,
-      TMConverter tmConverter) throws CTPException {
-    return tmConverter.convert(ingest);
-  }
-
   public static void addAddressLines(List<String> addressLines, String addressLine) {
-    if (StringUtils.isNotBlank((addressLine))) {
+    if (StringUtils.isNotBlank(addressLine)) {
       addressLines.add(addressLine);
     }
   }

@@ -27,7 +27,8 @@ public class GenericOutgoingWs {
 
   @PayloadRoot(namespace = NAMESPACE_URI, localPart = "request")
   @ResponsePayload
-  public JAXBElement<SendMessageResponse> request(@RequestPayload JAXBElement<WebServiceAdapterOutputRequest> request) throws
+  public JAXBElement<SendMessageResponse> request(@RequestPayload JAXBElement<WebServiceAdapterOutputRequest> request)
+      throws
       CTPException {
     WebServiceAdapterOutputRequest value = request.getValue();
     FwmtOHSJobStatusNotification responseMessage = convertMessage(value);
@@ -42,7 +43,8 @@ public class GenericOutgoingWs {
 
     SendMessageResponse smr = new SendMessageResponse();
     QName qname = new QName("request");
-    JAXBElement<SendMessageResponse> jaxbElement = new JAXBElement<SendMessageResponse>(qname, SendMessageResponse.class, smr);
+    JAXBElement<SendMessageResponse> jaxbElement = new JAXBElement<SendMessageResponse>(qname,
+        SendMessageResponse.class, smr);
     jaxbElement.setValue(msg);
     log.debug("Incoming message received. Id:" + msg.getId());
 
@@ -51,8 +53,8 @@ public class GenericOutgoingWs {
 
   private FwmtOHSJobStatusNotification convertMessage(WebServiceAdapterOutputRequest value) throws CTPException {
     String content = value.getContent();
-    content = content.replaceAll("&lt;","<");
-    content = content.replaceAll("&gt;",">");
+    content = content.replaceAll("&lt;", "<");
+    content = content.replaceAll("&gt;", ">");
     content = content.replaceAll("<!\\[CDATA\\[", "");
     content = content.replaceAll("\\]\\]>", "");
 
