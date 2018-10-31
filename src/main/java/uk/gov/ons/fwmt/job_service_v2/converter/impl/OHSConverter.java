@@ -48,11 +48,9 @@ public class OHSConverter implements TMConverter {
   private int duration;
 
   private DatatypeFactory datatypeFactory;
-  private ObjectFactory objectFactory;
 
   public OHSConverter() throws DatatypeConfigurationException {
     datatypeFactory = DatatypeFactory.newInstance();
-    objectFactory = new ObjectFactory();
   }
 
   public CreateJobRequest convert(FWMTCreateJobRequest ingest) {
