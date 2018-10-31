@@ -1,7 +1,6 @@
 package uk.gov.ons.fwmt.job_service_v2.converter.impl;
 
 import com.consiliumtechnologies.schemas.mobile._2015._05.optimisemessages.CreateJobRequest;
-import com.consiliumtechnologies.schemas.mobile._2015._05.optimisetypes.ObjectFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.data.FWMTCreateJobRequest;
