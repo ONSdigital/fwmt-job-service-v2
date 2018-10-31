@@ -35,11 +35,13 @@ public class OHSConverter implements TMConverter {
   private static final String DESCRIPTION = "OHS";
   private static final String SKILL = "OHS";
   private static final String WORK_TYPE = "OHS";
-  private static final String DEFAULT_WORLD = "Default";
   private static final String DEFAULT_WAVE = "1";
   private static final String ADDITIONAL_PROPERTY_WAVE = "wave";
   private static final String ADDITIONAL_PROPERTY_TLA = "TLA";
   private static final String DEFAULT_TLA = "OHS";
+
+  @Value("${totalmobile.default_world}")
+  private String defaultWorld;
 
   @Value("${totalmobile.modworld}")
   private String modWorld;
@@ -82,26 +84,20 @@ public class OHSConverter implements TMConverter {
         .withAdditionalProperty(ADDITIONAL_PROPERTY_TLA, DEFAULT_TLA);
 
     if (ingest.isPreallocatedJob()) {
-      builder.withWorld(DEFAULT_WORLD);
+      builder.withWorld(defaultWorld);
       builder.withAllocatedUser("test");
+      // TODO lookup not defined yet
+      if (StringUtils.isNotBlank(ingest.getMandatoryResourceAuthNo())) {
+        builder.withAllocatedUser("test");
+      }
+    } else {
+      builder.withWorld(modWorld);
+      // TODO lookup not defined yet
+      if (StringUtils.isNotBlank(ingest.getMandatoryResourceAuthNo())) {
+        builder.withAllocatedUser("temp");
+      }
     }
 
     return builder.build();
-
-    // TODO resolve this section
-//    job.setWorld(new WorldIdentityType());
-//    if (ingest.isPreallocatedJob()) {
-//      job.getWorld().setReference(DEFAULT_WORLD);
-//      if (StringUtils.isNotBlank(ingest.getMandatoryResourceAuthNo())) {
-//        job.setAllocatedTo(new ResourceIdentityType());
-//        job.getAllocatedTo().setUsername("test"); //lookup not defined yet
-//      }
-//    } else {
-//      job.getWorld().setReference(MOD_WORLD);
-//      if (StringUtils.isNotBlank(ingest.getMandatoryResourceAuthNo())) {
-//        job.setMandatoryResource(new ResourceIdentityType());
-//        job.getMandatoryResource().setUsername("temp");
-//      }
-//    }
   }
 }

@@ -19,7 +19,9 @@ public class CCSConverter implements TMConverter {
   private static final String WORK_TYPE = "CCS";
   private static final String SKILL = "CCS";
   private static final String ADDITIONAL_PROPERTY_CCS_ADDR_POSTCODE = "CCS_AddrPostcode";
-  private static final String DEFAULT_WORLD = "Default";
+
+  @Value("${totalmobile.default_world}")
+  private String defaultWorld;
 
   @Value("${totalmobile.modworld}")
   private String modWorld;
@@ -40,7 +42,6 @@ public class CCSConverter implements TMConverter {
         .withWorkType(WORK_TYPE)
         .withDescription("Census - " + ingest.getAddress().getPostCode())
         .withDuration(duration)
-        .withWorld(modWorld)
         .withVisitComplete(false)
         .withEmergency(false)
         .withDispatched(false)
@@ -55,8 +56,10 @@ public class CCSConverter implements TMConverter {
         .withAdditionalProperty(ADDITIONAL_PROPERTY_CCS_ADDR_POSTCODE, ingest.getAddress().getPostCode());
 
     if (ingest.isPreallocatedJob()) {
-      builder.withWorld(DEFAULT_WORLD);
-      builder.withAllocatedUser("test");
+      builder.withWorld(defaultWorld)
+          .withAllocatedUser("test");
+    } else {
+      builder.withWorld(modWorld);
     }
 
     return builder.build();
