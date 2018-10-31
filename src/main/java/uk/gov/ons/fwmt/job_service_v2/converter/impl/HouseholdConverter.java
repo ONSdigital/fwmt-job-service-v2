@@ -48,7 +48,6 @@ public class HouseholdConverter implements TMConverter {
     return new CreateJobBuilder(datatypeFactory)
         .withDescription(DESCRIPTION)
         .withWorkType(WORK_TYPE)
-        .withDescription("Census - " + ingest.getAddress().getPostCode())
         .withDuration(duration)
         .withWorld(modWorld)
         .withVisitComplete(false)
