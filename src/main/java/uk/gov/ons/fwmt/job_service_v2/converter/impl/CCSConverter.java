@@ -23,7 +23,7 @@ import java.util.GregorianCalendar;
 import static uk.gov.ons.fwmt.job_service_v2.utils.TMJobConverter.addAdditionalProperty;
 
 @Component("CCS")
-public class CcsConverter implements TMConverter {
+public class CCSConverter implements TMConverter {
 
   private static final String WORK_TYPE = "CCS";
   private static final String SKILL = "CCS";
@@ -32,6 +32,12 @@ public class CcsConverter implements TMConverter {
 
   @Value("${totalmobile.modworld}")
   private String MOD_WORLD;
+
+  private DatatypeFactory datatypeFactory;
+
+  public CCSConverter() throws DatatypeConfigurationException {
+    datatypeFactory = DatatypeFactory.newInstance();
+  }
 
   @Override public CreateJobRequest convert(FWMTCreateJobRequest ingest) {
     CreateJobRequest request = new CreateJobRequest();
@@ -47,7 +53,6 @@ public class CcsConverter implements TMConverter {
     job.getContact().setName(ingest.getAddress().getPostCode());
     job.getSkills().getSkill().add(SKILL);
     job.setWorkType(WORK_TYPE);
-
 
     if (ingest.isPreallocatedJob()) {
       job.getWorld().setReference(DEFAULT_WORLD);
@@ -67,14 +72,9 @@ public class CcsConverter implements TMConverter {
 
     GregorianCalendar dueDateCalendar = GregorianCalendar
         .from(ingest.getDueDate().atTime(23, 59, 59).atZone(ZoneId.of("UTC")));
-    try {
-      job.setDueDate(DatatypeFactory.newInstance().newXMLGregorianCalendar(dueDateCalendar));
-    } catch (DatatypeConfigurationException e) {
-      e.printStackTrace();
-      //TODO: Handle exception properly
-    }
+    job.setDueDate(datatypeFactory.newXMLGregorianCalendar(dueDateCalendar));
 
-    job.setDuration(1);
+    job.setDuration(15);
     job.setVisitComplete(false);
     job.setDispatched(false);
     job.setAppointmentPending(false);
