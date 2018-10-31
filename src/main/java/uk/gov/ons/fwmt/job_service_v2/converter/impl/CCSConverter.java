@@ -51,7 +51,6 @@ public class CCSConverter implements TMConverter {
         .withDueDate(ingest.getDueDate().atTime(23, 59, 59).atZone(ZoneId.of("UTC")))
         .withContactName(ingest.getAddress().getPostCode())
         .withPostCode(ingest.getAddress().getPostCode())
-        .withGeoCoords(ingest.getAddress().getLongitude(), ingest.getAddress().getLatitude())
         .withAdditionalProperties(ingest.getAdditionalProperties())
         .withAdditionalProperty(ADDITIONAL_PROPERTY_CCS_ADDR_POSTCODE, ingest.getAddress().getPostCode());
 
