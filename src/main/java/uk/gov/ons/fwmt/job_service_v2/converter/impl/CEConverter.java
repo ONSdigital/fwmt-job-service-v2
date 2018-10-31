@@ -4,6 +4,7 @@ import com.consiliumtechnologies.schemas.mobile._2009._03.visitstypes.Additional
 import com.consiliumtechnologies.schemas.mobile._2015._05.optimisemessages.CreateJobRequest;
 import com.consiliumtechnologies.schemas.mobile._2015._05.optimisetypes.*;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.data.FWMTCreateJobRequest;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.error.CTPException;
 import uk.gov.ons.fwmt.job_service_v2.converter.TMConverter;
@@ -19,6 +20,7 @@ import static uk.gov.ons.fwmt.job_service_v2.utils.TMJobConverter.addAdditionalP
 import static uk.gov.ons.fwmt.job_service_v2.utils.TMJobConverter.addAddressLines;
 import static uk.gov.ons.fwmt.job_service_v2.utils.TMJobConverter.checkNumberOfAddressLines;
 
+@Component("CE")
 public class CEConverter implements TMConverter {
 
     private static final String WORK_TYPE = "CE";
