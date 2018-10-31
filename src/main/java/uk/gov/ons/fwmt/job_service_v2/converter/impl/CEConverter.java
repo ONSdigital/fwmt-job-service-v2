@@ -21,7 +21,6 @@ public class CEConverter implements TMConverter {
   private static final String DESCRIPTION = "CE";
 
   private DatatypeFactory datatypeFactory;
-  private ObjectFactory objectFactory;
 
   @Value("${totalmobile.modworld}")
   private String modWorld;
@@ -31,7 +30,6 @@ public class CEConverter implements TMConverter {
 
   public CEConverter() throws DatatypeConfigurationException {
     datatypeFactory = DatatypeFactory.newInstance();
-    objectFactory = new ObjectFactory();
   }
 
   @Override
