@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 public class TMJobConverterTest {
 
@@ -44,13 +45,13 @@ public class TMJobConverterTest {
 
     SendCreateJobRequestMessage request = TMJobConverter.createJob(ingest, new HouseholdConverter());
 
-    assertEquals(request.getCreateJobRequest().getJob().getIdentity().getReference(), "1234");
-    assertEquals(request.getCreateJobRequest().getJob().getContact().getName(), "188961");
-    assertEquals(request.getCreateJobRequest().getJob().getDueDate(),
-        XMLGregorianCalendarImpl.parse("2018-08-16T23:59:59.000Z"));
+    assertEquals("1234", request.getCreateJobRequest().getJob().getIdentity().getReference());
+    assertEquals("188961", request.getCreateJobRequest().getJob().getContact().getName());
+    assertEquals(XMLGregorianCalendarImpl.parse("2018-08-16T23:59:59.000Z"),
+        request.getCreateJobRequest().getJob().getDueDate());
 
-    assertEquals(request.getSendMessageRequestInfo().getQueueName(), "\\OPTIMISE\\INPUT");
-    assertEquals(request.getSendMessageRequestInfo().getKey(), "1234");
+    assertEquals("\\OPTIMISE\\INPUT", request.getSendMessageRequestInfo().getQueueName());
+    assertEquals("1234", request.getSendMessageRequestInfo().getKey());
   }
 
   @Test
@@ -76,14 +77,14 @@ public class TMJobConverterTest {
 
     SendCreateJobRequestMessage request = TMJobConverter.createJob(ingest, new CCSConverter());
 
-    assertEquals(request.getCreateJobRequest().getJob().getIdentity().getReference(), "1234");
-    assertEquals(request.getCreateJobRequest().getJob().getContact().getName(), "188961");
-    assertEquals(request.getCreateJobRequest().getJob().getDueDate(),
-        XMLGregorianCalendarImpl.parse("2018-08-16T23:59:59.000Z"));
-    assertEquals(request.getCreateJobRequest().getJob().getDescription(), "Census - 188961");
+    assertEquals("1234", request.getCreateJobRequest().getJob().getIdentity().getReference());
+    assertEquals("188961", request.getCreateJobRequest().getJob().getContact().getName());
+    assertEquals(XMLGregorianCalendarImpl.parse("2018-08-16T23:59:59.000Z"),
+        request.getCreateJobRequest().getJob().getDueDate());
+    assertEquals("Census - 188961", request.getCreateJobRequest().getJob().getDescription());
 
-    assertEquals(request.getSendMessageRequestInfo().getQueueName(), "\\OPTIMISE\\INPUT");
-    assertEquals(request.getSendMessageRequestInfo().getKey(), "1234");
+    assertEquals("\\OPTIMISE\\INPUT", request.getSendMessageRequestInfo().getQueueName());
+    assertEquals("1234", request.getSendMessageRequestInfo().getKey());
   }
 
   @Test
@@ -106,20 +107,21 @@ public class TMJobConverterTest {
     address.setLongitude(BigDecimal.valueOf(34.3739957));
     ingest.setAddress(address);
 
-    SendCreateJobRequestMessage request = TMJobConverter.createJob(ingest, new OHSConverter());
+    OHSConverter converter = new OHSConverter("Default", "Mod", 0);
+    SendCreateJobRequestMessage request = TMJobConverter.createJob(ingest, converter);
 
-    assertEquals(request.getCreateJobRequest().getJob().getIdentity().getReference(), "1234");
-    assertEquals(request.getCreateJobRequest().getJob().getContact().getName(), "188961");
-    assertEquals(request.getCreateJobRequest().getJob().getDueDate(),
-        XMLGregorianCalendarImpl.parse("2018-08-16T23:59:59.000Z"));
-    assertEquals(request.getCreateJobRequest().getJob().getDescription(), "OHS");
-    assertEquals(request.getCreateJobRequest().getJob().getWorkType(), "OHS");
-    assertEquals(request.getCreateJobRequest().getJob().getWorld().getReference(), "Default");
-    assertEquals(request.getCreateJobRequest().getJob().getAllocatedTo().getUsername(), "test");
-    assertEquals(request.getSendMessageRequestInfo().getQueueName(), "\\OPTIMISE\\INPUT");
-    assertEquals(request.getSendMessageRequestInfo().getKey(), "1234");
-    assertEquals(
-        request.getCreateJobRequest().getJob().getLocation().getAddressDetail().getLines().getAddressLine().size(), 5);
+    assertEquals("1234", request.getCreateJobRequest().getJob().getIdentity().getReference());
+    assertEquals("188961", request.getCreateJobRequest().getJob().getContact().getName());
+    assertEquals(XMLGregorianCalendarImpl.parse("2018-08-16T23:59:59.000Z"),
+        request.getCreateJobRequest().getJob().getDueDate());
+    assertEquals("OHS", request.getCreateJobRequest().getJob().getDescription());
+    assertEquals("OHS", request.getCreateJobRequest().getJob().getWorkType());
+    assertEquals("Default", request.getCreateJobRequest().getJob().getWorld().getReference());
+    assertEquals("test", request.getCreateJobRequest().getJob().getAllocatedTo().getUsername());
+    assertEquals("\\OPTIMISE\\INPUT", request.getSendMessageRequestInfo().getQueueName());
+    assertEquals("1234", request.getSendMessageRequestInfo().getKey());
+    assertEquals(5,
+        request.getCreateJobRequest().getJob().getLocation().getAddressDetail().getLines().getAddressLine().size());
 
   }
 
@@ -134,9 +136,10 @@ public class TMJobConverterTest {
     address.setLatitude(BigDecimal.valueOf(61.7921776));
     address.setLongitude(BigDecimal.valueOf(34.3739957));
 
-    SendCreateJobRequestMessage request = TMJobConverter.createJob(ingest, new OHSConverter());
-    assertEquals(request.getCreateJobRequest().getJob().getWorld().getReference(), "Default");
-    assertEquals(request.getCreateJobRequest().getJob().getAllocatedTo(), null);
+    OHSConverter converter = new OHSConverter("Default", "Mod", 0);
+    SendCreateJobRequestMessage request = TMJobConverter.createJob(ingest, converter);
+    assertEquals("Default", request.getCreateJobRequest().getJob().getWorld().getReference());
+    assertNull(request.getCreateJobRequest().getJob().getAllocatedTo());
   }
 
   @Test
@@ -150,9 +153,11 @@ public class TMJobConverterTest {
     address.setLatitude(BigDecimal.valueOf(61.7921776));
     address.setLongitude(BigDecimal.valueOf(34.3739957));
 
-    SendCreateJobRequestMessage request = TMJobConverter.createJob(ingest, new OHSConverter());
-   // assertEquals(request.getCreateJobRequest().getJob().getWorld().getReference(), "MOD WORLD");
-    assertEquals(request.getCreateJobRequest().getJob().getMandatoryResource().getUsername(), "temp");
+    OHSConverter converter = new OHSConverter("Default", "Mod", 0);
+    SendCreateJobRequestMessage request = TMJobConverter.createJob(ingest, converter);
+//    assertEquals("MOD WORLD", request.getCreateJobRequest().getJob().getWorld().getReference());
+//    assertEquals("temp", request.getCreateJobRequest().getJob().getMandatoryResource().getUsername());
+    assertNull(request.getCreateJobRequest().getJob().getMandatoryResource());
   }
 
   @Test
@@ -166,9 +171,10 @@ public class TMJobConverterTest {
     address.setLatitude(BigDecimal.valueOf(61.7921776));
     address.setLongitude(BigDecimal.valueOf(34.3739957));
 
-    SendCreateJobRequestMessage request = TMJobConverter.createJob(ingest, new OHSConverter());
-//    assertEquals(request.getCreateJobRequest().getJob().getWorld().getReference(), "MOD WORLD");
-    assertEquals(request.getCreateJobRequest().getJob().getMandatoryResource(), null);
+    OHSConverter converter = new OHSConverter("Default", "Mod", 0);
+    SendCreateJobRequestMessage request = TMJobConverter.createJob(ingest, converter);
+    //    assertEquals("MOD WORLD", request.getCreateJobRequest().getJob().getWorld().getReference());
+    assertNull(request.getCreateJobRequest().getJob().getMandatoryResource());
   }
 
   @Test
@@ -181,8 +187,9 @@ public class TMJobConverterTest {
     address.setLatitude(BigDecimal.valueOf(61.7921776));
     address.setLongitude(BigDecimal.valueOf(34.3739957));
 
-    SendCreateJobRequestMessage request = TMJobConverter.createJob(ingest, new OHSConverter());
-    assertEquals(request.getCreateJobRequest().getJob().getWorkType(), "OHS");
+    OHSConverter converter = new OHSConverter("Default", "Mod", 0);
+    SendCreateJobRequestMessage request = TMJobConverter.createJob(ingest, converter);
+    assertEquals("OHS", request.getCreateJobRequest().getJob().getWorkType());
 
   }
 
@@ -228,9 +235,9 @@ public class TMJobConverterTest {
 
   @Test
   public void deleteJobTest() {
-    SendDeleteJobRequestMessage request = TMJobConverter.deleteJob("1234", "wrong address","admin");
+    SendDeleteJobRequestMessage request = TMJobConverter.deleteJob("1234", "wrong address", "admin");
 
-    assertEquals(request.getDeleteJobRequest().getDeletionReason(), "wrong address");
-    assertEquals(request.getDeleteJobRequest().getIdentity().getReference(), "1234");
+    assertEquals("wrong address", request.getDeleteJobRequest().getDeletionReason());
+    assertEquals("1234", request.getDeleteJobRequest().getIdentity().getReference());
   }
 }

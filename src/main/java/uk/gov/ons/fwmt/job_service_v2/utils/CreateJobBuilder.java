@@ -167,12 +167,14 @@ public class CreateJobBuilder {
   }
 
   public CreateJobBuilder withAdditionalProperties(Map<String, String> properties) {
-    for (Map.Entry<String, String> stringEntry : properties.entrySet()) {
-      if (stringEntry.getValue() != null) {
-        AdditionalPropertyType propertyType = new AdditionalPropertyType();
-        propertyType.setName(stringEntry.getKey());
-        propertyType.setValue(stringEntry.getValue());
-        request.getJob().getAdditionalProperties().getAdditionalProperty().add(propertyType);
+    if (properties != null) {
+      for (Map.Entry<String, String> stringEntry : properties.entrySet()) {
+        if (stringEntry.getValue() != null) {
+          AdditionalPropertyType propertyType = new AdditionalPropertyType();
+          propertyType.setName(stringEntry.getKey());
+          propertyType.setValue(stringEntry.getValue());
+          request.getJob().getAdditionalProperties().getAdditionalProperty().add(propertyType);
+        }
       }
     }
     return this;

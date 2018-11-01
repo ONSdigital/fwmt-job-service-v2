@@ -55,11 +55,17 @@ public class OHSConverter implements TMConverter {
     datatypeFactory = DatatypeFactory.newInstance();
   }
 
+  public OHSConverter(String defaultWorld, String modWorld, int duration) throws DatatypeConfigurationException {
+    datatypeFactory = DatatypeFactory.newInstance();
+    this.defaultWorld = defaultWorld;
+    this.modWorld = modWorld;
+    this.duration = duration;
+  }
+
   public CreateJobRequest convert(FWMTCreateJobRequest ingest) {
     CreateJobBuilder builder = new CreateJobBuilder(datatypeFactory)
-        .withDescription(DESCRIPTION)
         .withWorkType(WORK_TYPE)
-        .withDescription("Census - " + ingest.getAddress().getPostCode())
+        .withDescription(DESCRIPTION)
         .withDuration(duration)
         .withWorld(modWorld)
         .withVisitComplete(false)
@@ -85,7 +91,6 @@ public class OHSConverter implements TMConverter {
 
     if (ingest.isPreallocatedJob()) {
       builder.withWorld(defaultWorld);
-      builder.withAllocatedUser("test");
       // TODO lookup not defined yet
       if (StringUtils.isNotBlank(ingest.getMandatoryResourceAuthNo())) {
         builder.withAllocatedUser("test");
