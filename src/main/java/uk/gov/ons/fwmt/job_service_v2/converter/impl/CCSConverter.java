@@ -13,7 +13,6 @@ import com.consiliumtechnologies.schemas.mobile._2015._05.optimisetypes.WorldIde
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.data.FWMTCreateJobRequest;
-import uk.gov.ons.fwmt.fwmtgatewaycommon.error.CTPException;
 import uk.gov.ons.fwmt.job_service_v2.converter.TMConverter;
 
 import javax.xml.datatype.DatatypeConfigurationException;
@@ -73,11 +72,8 @@ public class CCSConverter implements TMConverter {
 
     GregorianCalendar dueDateCalendar = GregorianCalendar
         .from(ingest.getDueDate().atTime(23, 59, 59).atZone(ZoneId.of("UTC")));
-    try {
-      job.setDueDate(datatypeFactory.newXMLGregorianCalendar(dueDateCalendar));
-    } catch (DatatypeConfigurationException e) {
-      throw new CTPException(CTPException.Fault.SYSTEM_ERROR, e);
-    }
+
+    job.setDueDate(datatypeFactory.newXMLGregorianCalendar(dueDateCalendar));
 
     job.setDuration(15);
     job.setVisitComplete(false);
