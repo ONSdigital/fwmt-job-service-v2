@@ -70,7 +70,7 @@ public class HouseholdConverter implements TMConverter
       throw new CTPException(CTPException.Fault.SYSTEM_ERROR, e);
     }
 
-    job.setDuration(1);
+    job.setDuration(15);
     job.setVisitComplete(false);
     job.setDispatched(false);
     job.setAppointmentPending(false);
