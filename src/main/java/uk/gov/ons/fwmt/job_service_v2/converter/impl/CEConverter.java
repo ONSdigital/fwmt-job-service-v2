@@ -27,8 +27,12 @@ public class CEConverter implements TMConverter {
   @Value("${fwmt.workTypes.ce.duration}")
   private int duration;
 
-  public CEConverter() throws DatatypeConfigurationException {
-    datatypeFactory = DatatypeFactory.newInstance();
+  public CEConverter() throws CTPException {
+    try {
+      datatypeFactory = DatatypeFactory.newInstance();
+    } catch (DatatypeConfigurationException e) {
+      throw new CTPException(CTPException.Fault.SYSTEM_ERROR, e);
+    }
   }
 
   @Override
