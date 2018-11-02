@@ -72,6 +72,7 @@ public class CCSConverter implements TMConverter {
 
     GregorianCalendar dueDateCalendar = GregorianCalendar
         .from(ingest.getDueDate().atTime(23, 59, 59).atZone(ZoneId.of("UTC")));
+
     job.setDueDate(datatypeFactory.newXMLGregorianCalendar(dueDateCalendar));
 
     job.setDuration(15);
