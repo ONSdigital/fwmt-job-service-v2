@@ -1,14 +1,6 @@
 package uk.gov.ons.fwmt.job_service_v2.converter.impl;
 
-import com.consiliumtechnologies.schemas.mobile._2009._03.visitstypes.AdditionalPropertyCollectionType;
 import com.consiliumtechnologies.schemas.mobile._2015._05.optimisemessages.CreateJobRequest;
-import com.consiliumtechnologies.schemas.mobile._2015._05.optimisetypes.AddressDetailType;
-import com.consiliumtechnologies.schemas.mobile._2015._05.optimisetypes.ContactInfoType;
-import com.consiliumtechnologies.schemas.mobile._2015._05.optimisetypes.JobIdentityType;
-import com.consiliumtechnologies.schemas.mobile._2015._05.optimisetypes.JobType;
-import com.consiliumtechnologies.schemas.mobile._2015._05.optimisetypes.LocationType;
-import com.consiliumtechnologies.schemas.mobile._2015._05.optimisetypes.SkillCollectionType;
-import com.consiliumtechnologies.schemas.mobile._2015._05.optimisetypes.WorldIdentityType;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.data.FWMTCreateJobRequest;
@@ -19,11 +11,6 @@ import uk.gov.ons.fwmt.job_service_v2.utils.CreateJobBuilder;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import java.time.ZoneId;
-import java.util.GregorianCalendar;
-import java.util.List;
-
-import static uk.gov.ons.fwmt.job_service_v2.utils.TMJobConverter.addAddressLines;
-import static uk.gov.ons.fwmt.job_service_v2.utils.TMJobConverter.checkNumberOfAddressLines;
 
 @Component("HH")
 public class HouseholdConverter implements TMConverter {
