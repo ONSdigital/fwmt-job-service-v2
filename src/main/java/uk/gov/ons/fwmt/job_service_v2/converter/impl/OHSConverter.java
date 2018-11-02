@@ -15,15 +15,6 @@ import java.time.ZoneId;
 
 @Component("LMS")
 public class OHSConverter implements TMConverter {
-
-  private static final String DESCRIPTION = "OHS";
-  private static final String SKILL = "OHS";
-  private static final String WORK_TYPE = "OHS";
-  private static final String DEFAULT_WAVE = "1";
-  private static final String ADDITIONAL_PROPERTY_WAVE = "wave";
-  private static final String ADDITIONAL_PROPERTY_TLA = "TLA";
-  private static final String DEFAULT_TLA = "OHS";
-
   @Value("${totalmobile.default_world}")
   private String defaultWorld;
 
@@ -52,15 +43,15 @@ public class OHSConverter implements TMConverter {
 
   public CreateJobRequest convert(FWMTCreateJobRequest ingest) {
     CreateJobBuilder builder = new CreateJobBuilder(datatypeFactory)
-        .withWorkType(WORK_TYPE)
-        .withDescription(DESCRIPTION)
+        .withWorkType("OHS")
+        .withDescription("OHS")
         .withDuration(duration)
         .withWorld(modWorld)
         .withVisitComplete(false)
         .withEmergency(false)
         .withDispatched(false)
         .withAppointmentPending(false)
-        .addSkill(SKILL)
+        .addSkill("OHS")
         .withIdentity(ingest.getJobIdentity())
         .withDueDate(ingest.getDueDate().atTime(23, 59, 59).atZone(ZoneId.of("UTC")))
         .withContactName(ingest.getAddress().getPostCode())
@@ -74,8 +65,8 @@ public class OHSConverter implements TMConverter {
         .withPostCode(ingest.getAddress().getPostCode())
         .withGeoCoords(ingest.getAddress().getLongitude(), ingest.getAddress().getLatitude())
         .withAdditionalProperties(ingest.getAdditionalProperties())
-        .withAdditionalProperty(ADDITIONAL_PROPERTY_WAVE, DEFAULT_WAVE)
-        .withAdditionalProperty(ADDITIONAL_PROPERTY_TLA, DEFAULT_TLA);
+        .withAdditionalProperty("wave", "1")
+        .withAdditionalProperty("TLA", "OHS");
 
     if (ingest.isPreallocatedJob()) {
       builder.withWorld(defaultWorld);

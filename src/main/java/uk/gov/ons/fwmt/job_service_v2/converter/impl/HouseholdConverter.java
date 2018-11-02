@@ -14,11 +14,6 @@ import java.time.ZoneId;
 
 @Component("HH")
 public class HouseholdConverter implements TMConverter {
-
-  private static final String WORK_TYPE = "HH";
-  private static final String DESCRIPTION = "TEST MESSAGE";
-  private static final String SKILL = "Survey";
-
   @Value("${totalmobile.default_world}")
   private String defaultWorld;
 
@@ -48,15 +43,15 @@ public class HouseholdConverter implements TMConverter {
   @Override
   public CreateJobRequest convert(FWMTCreateJobRequest ingest) {
     return new CreateJobBuilder(datatypeFactory)
-        .withDescription(DESCRIPTION)
-        .withWorkType(WORK_TYPE)
+        .withDescription("TEST MESSAGE")
+        .withWorkType("HH")
         .withDuration(duration)
         .withWorld(modWorld)
         .withVisitComplete(false)
         .withEmergency(false)
         .withDispatched(false)
         .withAppointmentPending(false)
-        .addSkill(SKILL)
+        .addSkill("Survey")
         .withIdentity(ingest.getJobIdentity())
         .withDueDate(ingest.getDueDate().atTime(23, 59, 59).atZone(ZoneId.of("UTC")))
         .withContactName(ingest.getAddress().getPostCode())

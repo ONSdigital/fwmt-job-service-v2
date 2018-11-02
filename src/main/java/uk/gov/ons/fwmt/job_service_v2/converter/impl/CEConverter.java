@@ -14,13 +14,6 @@ import java.time.ZoneId;
 
 @Component("CE")
 public class CEConverter implements TMConverter {
-
-  private static final String WORK_TYPE = "CE";
-  private static final String SKILL = "CE";
-  private static final String DESCRIPTION = "CE";
-
-  private DatatypeFactory datatypeFactory;
-
   @Value("${totalmobile.default_world}")
   private String defaultWorld;
 
@@ -29,6 +22,8 @@ public class CEConverter implements TMConverter {
 
   @Value("${fwmt.workTypes.ce.duration}")
   private int duration;
+
+  private DatatypeFactory datatypeFactory;
 
   public CEConverter() throws CTPException {
     try {
@@ -48,8 +43,8 @@ public class CEConverter implements TMConverter {
   @Override
   public CreateJobRequest convert(FWMTCreateJobRequest ingest) {
     return new CreateJobBuilder(datatypeFactory)
-        .withDescription(DESCRIPTION)
-        .withWorkType(WORK_TYPE)
+        .withDescription("CE")
+        .withWorkType("CE")
         .withDescription(ingest.getAddress().getOrganisationName())
         .withDuration(duration)
         .withWorld(modWorld)
@@ -57,7 +52,7 @@ public class CEConverter implements TMConverter {
         .withEmergency(false)
         .withDispatched(false)
         .withAppointmentPending(false)
-        .addSkill(SKILL)
+        .addSkill("CE")
         .withIdentity(ingest.getJobIdentity())
         .withDueDate(ingest.getDueDate().atTime(23, 59, 59).atZone(ZoneId.of("UTC")))
         .withContactName(ingest.getContact().getForename() + " " + ingest.getContact().getSurname())

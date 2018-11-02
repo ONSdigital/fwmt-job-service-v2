@@ -14,12 +14,6 @@ import java.time.ZoneId;
 
 @Component("CCS")
 public class CCSConverter implements TMConverter {
-
-  private static final String DESCRIPTION = "CCS";
-  private static final String WORK_TYPE = "CCS";
-  private static final String SKILL = "CCS";
-  private static final String ADDITIONAL_PROPERTY_CCS_ADDR_POSTCODE = "CCS_AddrPostcode";
-
   @Value("${totalmobile.default_world}")
   private String defaultWorld;
 
@@ -49,21 +43,21 @@ public class CCSConverter implements TMConverter {
   @Override
   public CreateJobRequest convert(FWMTCreateJobRequest ingest) {
     CreateJobBuilder builder = new CreateJobBuilder(datatypeFactory)
-        .withDescription(DESCRIPTION)
-        .withWorkType(WORK_TYPE)
+        .withDescription("CCS")
+        .withWorkType("CCS")
         .withDescription("Census - " + ingest.getAddress().getPostCode())
         .withDuration(duration)
         .withVisitComplete(false)
         .withEmergency(false)
         .withDispatched(false)
         .withAppointmentPending(false)
-        .addSkill(SKILL)
+        .addSkill("CCS")
         .withIdentity(ingest.getJobIdentity())
         .withDueDate(ingest.getDueDate().atTime(23, 59, 59).atZone(ZoneId.of("UTC")))
         .withContactName(ingest.getAddress().getPostCode())
         .withPostCode(ingest.getAddress().getPostCode())
         .withAdditionalProperties(ingest.getAdditionalProperties())
-        .withAdditionalProperty(ADDITIONAL_PROPERTY_CCS_ADDR_POSTCODE, ingest.getAddress().getPostCode());
+        .withAdditionalProperty("CCS_AddrPostcode", ingest.getAddress().getPostCode());
 
     if (ingest.isPreallocatedJob()) {
       builder.withWorld(defaultWorld)
