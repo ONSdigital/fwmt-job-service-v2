@@ -13,6 +13,7 @@ import com.consiliumtechnologies.schemas.mobile._2015._05.optimisetypes.WorldIde
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.data.FWMTCreateJobRequest;
+import uk.gov.ons.fwmt.fwmtgatewaycommon.error.CTPException;
 import uk.gov.ons.fwmt.job_service_v2.converter.TMConverter;
 
 import javax.xml.datatype.DatatypeConfigurationException;
@@ -38,8 +39,12 @@ public class CCSConverter implements TMConverter {
 
     private DatatypeFactory datatypeFactory;
 
-    public CCSConverter() throws DatatypeConfigurationException {
-        datatypeFactory = DatatypeFactory.newInstance();
+    public CCSConverter() throws CTPException {
+        try {
+            datatypeFactory = DatatypeFactory.newInstance();
+        } catch (DatatypeConfigurationException e) {
+            throw new CTPException(CTPException.Fault.SYSTEM_ERROR, e);
+        }
     }
 
     @Override

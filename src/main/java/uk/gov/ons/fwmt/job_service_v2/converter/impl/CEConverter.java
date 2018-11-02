@@ -36,13 +36,17 @@ public class CEConverter implements TMConverter {
     @Value("${fwmt.workTypes.ce.duration}")
     private int duration;
 
-    public CEConverter() throws DatatypeConfigurationException {
-        datatypeFactory = DatatypeFactory.newInstance();
+    public CEConverter() throws CTPException {
+        try {
+            datatypeFactory = DatatypeFactory.newInstance();
+        } catch (DatatypeConfigurationException e) {
+            throw new CTPException(CTPException.Fault.SYSTEM_ERROR, e);
+        }
         objectFactory = new ObjectFactory();
     }
 
     @Override
-    public CreateJobRequest convert(FWMTCreateJobRequest ingest) throws CTPException {
+    public CreateJobRequest convert(FWMTCreateJobRequest ingest) {
         // root object
         CreateJobRequest request = new CreateJobRequest();
         JobType job = new JobType();

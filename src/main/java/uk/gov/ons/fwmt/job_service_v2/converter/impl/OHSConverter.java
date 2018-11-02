@@ -54,8 +54,12 @@ public class OHSConverter implements TMConverter {
     private DatatypeFactory datatypeFactory;
     private ObjectFactory objectFactory;
 
-    public OHSConverter() throws DatatypeConfigurationException {
-        datatypeFactory = DatatypeFactory.newInstance();
+    public OHSConverter() throws CTPException {
+        try {
+            datatypeFactory = DatatypeFactory.newInstance();
+        } catch (DatatypeConfigurationException e) {
+            throw new CTPException(CTPException.Fault.SYSTEM_ERROR, e);
+        }
         objectFactory = new ObjectFactory();
     }
 
