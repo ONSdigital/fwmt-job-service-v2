@@ -43,11 +43,10 @@ public class CEConverter implements TMConverter {
   @Override
   public CreateJobRequest convert(FWMTCreateJobRequest ingest) {
     return new CreateJobBuilder(datatypeFactory)
-        .withDescription("CE")
+        .withWorld(modWorld)
         .withWorkType("CE")
         .withDescription(ingest.getAddress().getOrganisationName())
         .withDuration(duration)
-        .withWorld(modWorld)
         .withVisitComplete(false)
         .withEmergency(false)
         .withDispatched(false)

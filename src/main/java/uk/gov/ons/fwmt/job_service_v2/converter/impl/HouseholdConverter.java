@@ -43,10 +43,10 @@ public class HouseholdConverter implements TMConverter {
   @Override
   public CreateJobRequest convert(FWMTCreateJobRequest ingest) {
     return new CreateJobBuilder(datatypeFactory)
-        .withDescription("TEST MESSAGE")
-        .withWorkType("HH")
-        .withDuration(duration)
         .withWorld(modWorld)
+        .withWorkType("HH")
+        .withDescription("TEST MESSAGE")
+        .withDuration(duration)
         .withVisitComplete(false)
         .withEmergency(false)
         .withDispatched(false)

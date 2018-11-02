@@ -41,12 +41,12 @@ public class OHSConverter implements TMConverter {
     this.duration = duration;
   }
 
+  @Override
   public CreateJobRequest convert(FWMTCreateJobRequest ingest) {
     CreateJobBuilder builder = new CreateJobBuilder(datatypeFactory)
         .withWorkType("OHS")
         .withDescription("OHS")
         .withDuration(duration)
-        .withWorld(modWorld)
         .withVisitComplete(false)
         .withEmergency(false)
         .withDispatched(false)

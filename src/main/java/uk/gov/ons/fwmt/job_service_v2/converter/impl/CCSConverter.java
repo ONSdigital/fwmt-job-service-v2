@@ -43,7 +43,6 @@ public class CCSConverter implements TMConverter {
   @Override
   public CreateJobRequest convert(FWMTCreateJobRequest ingest) {
     CreateJobBuilder builder = new CreateJobBuilder(datatypeFactory)
-        .withDescription("CCS")
         .withWorkType("CCS")
         .withDescription("Census - " + ingest.getAddress().getPostCode())
         .withDuration(duration)
@@ -60,8 +59,7 @@ public class CCSConverter implements TMConverter {
         .withAdditionalProperty("CCS_AddrPostcode", ingest.getAddress().getPostCode());
 
     if (ingest.isPreallocatedJob()) {
-      builder.withWorld(defaultWorld)
-          .withAllocatedUser("test");
+      builder.withWorld(defaultWorld).withAllocatedUser("test");
     } else {
       builder.withWorld(modWorld);
     }
