@@ -43,8 +43,8 @@ public class OHSConverter implements TMConverter {
     }
   }
 
-  public OHSConverter(String defaultWorld, String modWorld, int duration) throws DatatypeConfigurationException {
-    super();
+  public OHSConverter(String defaultWorld, String modWorld, int duration) throws CTPException {
+    this();
     this.defaultWorld = defaultWorld;
     this.modWorld = modWorld;
     this.duration = duration;

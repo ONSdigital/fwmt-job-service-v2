@@ -21,6 +21,9 @@ public class CEConverter implements TMConverter {
 
   private DatatypeFactory datatypeFactory;
 
+  @Value("${totalmobile.default_world}")
+  private String defaultWorld;
+
   @Value("${totalmobile.modworld}")
   private String modWorld;
 
@@ -35,8 +38,15 @@ public class CEConverter implements TMConverter {
     }
   }
 
+  public CEConverter(String defaultWorld, String modWorld, int duration) throws CTPException {
+    this();
+    this.defaultWorld = defaultWorld;
+    this.modWorld = modWorld;
+    this.duration = duration;
+  }
+
   @Override
-  public CreateJobRequest convert(FWMTCreateJobRequest ingest) throws CTPException {
+  public CreateJobRequest convert(FWMTCreateJobRequest ingest) {
     return new CreateJobBuilder(datatypeFactory)
         .withDescription(DESCRIPTION)
         .withWorkType(WORK_TYPE)

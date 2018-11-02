@@ -19,6 +19,9 @@ public class HouseholdConverter implements TMConverter {
   private static final String DESCRIPTION = "TEST MESSAGE";
   private static final String SKILL = "Survey";
 
+  @Value("${totalmobile.default_world}")
+  private String defaultWorld;
+
   @Value("${totalmobile.modworld}")
   private String modWorld;
 
@@ -33,6 +36,13 @@ public class HouseholdConverter implements TMConverter {
     } catch (DatatypeConfigurationException e) {
       throw new CTPException(CTPException.Fault.SYSTEM_ERROR, e);
     }
+  }
+
+  public HouseholdConverter(String defaultWorld, String modWorld, int duration) throws CTPException {
+    this();
+    this.defaultWorld = defaultWorld;
+    this.modWorld = modWorld;
+    this.duration = duration;
   }
 
   @Override

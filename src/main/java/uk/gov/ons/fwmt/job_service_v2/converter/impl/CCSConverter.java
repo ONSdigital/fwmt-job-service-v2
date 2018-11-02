@@ -39,6 +39,13 @@ public class CCSConverter implements TMConverter {
     }
   }
 
+  public CCSConverter(String defaultWorld, String modWorld, int duration) throws CTPException {
+    this();
+    this.defaultWorld = defaultWorld;
+    this.modWorld = modWorld;
+    this.duration = duration;
+  }
+
   @Override
   public CreateJobRequest convert(FWMTCreateJobRequest ingest) {
     CreateJobBuilder builder = new CreateJobBuilder(datatypeFactory)
