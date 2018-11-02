@@ -163,8 +163,7 @@ public class TMJobServiceImpl extends WebServiceGatewaySupport {
 
   public void createJob(FWMTCreateJobRequest jobRequest) throws CTPException {
     final TMConverter tmConverter = tmConverters.get(jobRequest.getSurveyType());
-    SendCreateJobRequestMessage createRequest = TMJobConverter.createJob(jobRequest, tmConverter);
-    send(createRequest);
+    send(tmConverter.convert(jobRequest));
   }
 
   public void cancelJob(FWMTCancelJobRequest cancelRequest) {

@@ -12,6 +12,8 @@ import com.consiliumtechnologies.schemas.mobile._2015._05.optimisetypes.ObjectFa
 import com.consiliumtechnologies.schemas.mobile._2015._05.optimisetypes.ResourceIdentityType;
 import com.consiliumtechnologies.schemas.mobile._2015._05.optimisetypes.SkillCollectionType;
 import com.consiliumtechnologies.schemas.mobile._2015._05.optimisetypes.WorldIdentityType;
+import com.consiliumtechnologies.schemas.services.mobile._2009._03.messaging.SendCreateJobRequestMessage;
+import com.consiliumtechnologies.schemas.services.mobile._2009._03.messaging.SendMessageRequestInfo;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.lang.Nullable;
 
@@ -23,12 +25,27 @@ import java.util.List;
 import java.util.Map;
 
 public class CreateJobBuilder {
+  public static final String DEFAULT_JOB_QUEUE = "\\OPTIMISE\\INPUT";
+
+  SendCreateJobRequestMessage message;
   CreateJobRequest request;
   DatatypeFactory datatypeFactory;
   ObjectFactory objectFactory;
 
   public CreateJobBuilder(DatatypeFactory datatypeFactory) {
+    this.datatypeFactory = datatypeFactory;
+    this.objectFactory = new ObjectFactory();
+
+    setup();
+  }
+
+  private void setup() {
+    this.message = new SendCreateJobRequestMessage();
     this.request = new CreateJobRequest();
+
+    this.message.setSendMessageRequestInfo(new SendMessageRequestInfo());
+    this.message.setCreateJobRequest(this.request);
+
     JobType job = new JobType();
     this.request.setJob(job);
     job.setWorld(new WorldIdentityType());
@@ -39,14 +56,37 @@ public class CreateJobBuilder {
     job.getLocation().setAddressDetail(new AddressDetailType());
     job.getLocation().getAddressDetail().setLines(new AddressDetailType.Lines());
     job.setAdditionalProperties(new AdditionalPropertyCollectionType());
-    this.datatypeFactory = datatypeFactory;
-    this.objectFactory = new ObjectFactory();
   }
 
-  public CreateJobRequest build() {
-    CreateJobRequest r = request;
-    request = null;
-    return r;
+  private void tearDown() {
+    this.message = null;
+    this.request = null;
+  }
+
+  public SendCreateJobRequestMessage build() {
+    SendCreateJobRequestMessage message = this.message;
+    tearDown();
+    return message;
+  }
+
+  public CreateJobBuilder withQueue(String queue) {
+    message.getSendMessageRequestInfo().setQueueName(queue);
+    return this;
+  }
+
+  public CreateJobBuilder withDefaultQueue() {
+    message.getSendMessageRequestInfo().setQueueName(DEFAULT_JOB_QUEUE);
+    return this;
+  }
+
+  public CreateJobBuilder withKey(String key) {
+    message.getSendMessageRequestInfo().setKey(key);
+    return this;
+  }
+
+  public CreateJobBuilder withCorrelationId(String correlationId) {
+    message.getSendMessageRequestInfo().setCorrelationId(correlationId);
+    return this;
   }
 
   public CreateJobBuilder withDescription(String description) {
@@ -126,6 +166,14 @@ public class CreateJobBuilder {
     return this;
   }
 
+  public CreateJobBuilder addAddressLine(String line) {
+    List<String> requestLines = request.getJob().getLocation().getAddressDetail().getLines().getAddressLine();
+    if (StringUtils.isNotBlank(line)) {
+      requestLines.add(line);
+    }
+    return this;
+  }
+
   public CreateJobBuilder withAddressLines(String... lines) {
     List<String> requestLines = request.getJob().getLocation().getAddressDetail().getLines().getAddressLine();
     for (String line : lines) {
@@ -133,6 +181,12 @@ public class CreateJobBuilder {
         requestLines.add(line);
       }
     }
+    shrinkAddressLines();
+    return this;
+  }
+
+  public CreateJobBuilder shrinkAddressLines() {
+    List<String> requestLines = request.getJob().getLocation().getAddressDetail().getLines().getAddressLine();
     if (requestLines.size() == 6) {
       String addressConcat = requestLines.get(2) + " " + requestLines.get(3);
       requestLines.set(2, addressConcat);
