@@ -46,6 +46,21 @@ public class DeleteJobBuilder {
     return message;
   }
 
+  public DeleteJobBuilder withQueue(String queue) {
+    message.getSendMessageRequestInfo().setQueueName(queue);
+    return this;
+  }
+
+  public DeleteJobBuilder withDefaultQueue() {
+    message.getSendMessageRequestInfo().setQueueName(DEFAULT_JOB_QUEUE);
+    return this;
+  }
+
+  public DeleteJobBuilder withKey(String key) {
+    message.getSendMessageRequestInfo().setKey(key);
+    return this;
+  }
+
   public DeleteJobBuilder withJobIdentity(String identity) {
     this.request.setIdentity(new JobIdentityType());
     this.request.getIdentity().setReference(identity);
