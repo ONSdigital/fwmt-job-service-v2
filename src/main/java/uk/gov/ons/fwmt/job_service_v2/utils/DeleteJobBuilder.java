@@ -2,10 +2,15 @@ package uk.gov.ons.fwmt.job_service_v2.utils;
 
 import com.consiliumtechnologies.schemas.mobile._2015._05.optimisemessages.DeleteJobRequest;
 import com.consiliumtechnologies.schemas.mobile._2015._05.optimisemessages.ObjectFactory;
+import com.consiliumtechnologies.schemas.mobile._2015._05.optimisetypes.AuditType;
+import com.consiliumtechnologies.schemas.mobile._2015._05.optimisetypes.JobIdentityType;
 import com.consiliumtechnologies.schemas.services.mobile._2009._03.messaging.SendDeleteJobRequestMessage;
 import com.consiliumtechnologies.schemas.services.mobile._2009._03.messaging.SendMessageRequestInfo;
 
 import javax.xml.datatype.DatatypeFactory;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.GregorianCalendar;
 
 public class DeleteJobBuilder {
   public static final String DEFAULT_JOB_QUEUE = "\\OPTIMISE\\INPUT";
@@ -28,8 +33,6 @@ public class DeleteJobBuilder {
 
     this.message.setSendMessageRequestInfo(new SendMessageRequestInfo());
     this.message.setDeleteJobRequest(this.request);
-
-    this.request.set
   }
 
   private void tearDown() {
@@ -43,8 +46,28 @@ public class DeleteJobBuilder {
     return message;
   }
 
-  public DeleteJobBuilder withJobIdentity() {
+  public DeleteJobBuilder withJobIdentity(String identity) {
+    this.request.setIdentity(new JobIdentityType());
+    this.request.getIdentity().setReference(identity);
+    return this;
+  }
 
+  public DeleteJobBuilder withDeletedBy(String username, LocalDateTime dateTime) {
+    this.request.setDeletedBy(new AuditType());
+    this.request.getDeletedBy().setUsername(username);
+    GregorianCalendar cal = GregorianCalendar.from(dateTime.atZone(ZoneId.of("UTC")));
+    this.request.getDeletedBy().setDate(datatypeFactory.newXMLGregorianCalendar(cal));
+    return this;
+  }
+
+  public DeleteJobBuilder withDeletionNotes(String notes) {
+    this.request.setDeletionNotes(notes);
+    return this;
+  }
+
+  public DeleteJobBuilder withDeletionReason(String reason) {
+    this.request.setDeletionReason(reason);
+    return this;
   }
 
 }
