@@ -30,10 +30,9 @@ import static uk.gov.ons.fwmt.job_service_v2.utils.TMJobConverter.addAddressLine
 import static uk.gov.ons.fwmt.job_service_v2.utils.TMJobConverter.checkNumberOfAddressLines;
 
 @Component("LMS")
-public class LMSConverter implements TMConverter {
+public class OHSConverter implements TMConverter {
 
   private static final String DESCRIPTION = "OHS";
-  private static final int DURATION = 15;
   private static final boolean STATUS = false;
   private static final boolean EMERGENCY = false;
   private static final boolean DISPATCHED = false;
@@ -49,21 +48,47 @@ public class LMSConverter implements TMConverter {
   @Value("${totalmobile.modworld}")
   private String MOD_WORLD;
 
-  public CreateJobRequest convert(FWMTCreateJobRequest ingest) throws CTPException {
+  @Value("${fwmt.workTypes.ohs.duration}")
+  private int duration;
+
+  private DatatypeFactory datatypeFactory;
+  private ObjectFactory objectFactory;
+
+  public OHSConverter() throws CTPException {
+    try {
+      datatypeFactory = DatatypeFactory.newInstance();
+    } catch (DatatypeConfigurationException e) {
+      throw new CTPException(CTPException.Fault.SYSTEM_ERROR, e);
+    }
+    objectFactory = new ObjectFactory();
+  }
+
+  public CreateJobRequest convert(FWMTCreateJobRequest ingest) {
     CreateJobRequest createJobRequest = new CreateJobRequest();
     JobType job = new JobType();
+    createJobRequest.setJob(job);
+
+    job.setDescription(DESCRIPTION);
+    job.setDuration(duration);
+    job.setVisitComplete(STATUS);
+    job.setEmergency(EMERGENCY);
+    job.setDispatched(DISPATCHED);
+    job.setAppointmentPending(APPOINTMENT_PENDING);
+    job.setWorkType(WORK_TYPE);
+
+    job.setSkills(new SkillCollectionType());
+    job.getSkills().getSkill().add(SKILL);
 
     job.setIdentity(new JobIdentityType());
-    job.setSkills(new SkillCollectionType());
-    job.setLocation(new LocationType());
-    job.setContact(new ContactInfoType());
-    job.setWorld(new WorldIdentityType());
-
     job.getIdentity().setReference(ingest.getJobIdentity());
+
+    job.setContact(new ContactInfoType());
+    job.getContact().setName(ingest.getAddress().getPostCode());
+
+    job.setLocation(new LocationType());
     job.getLocation().setAddressDetail(new AddressDetailType());
     job.getLocation().getAddressDetail().setLines(new AddressDetailType.Lines());
     List<String> addressLines = job.getLocation().getAddressDetail().getLines().getAddressLine();
-
     addAddressLines(addressLines, ingest.getAddress().getLine1());
     addAddressLines(addressLines, ingest.getAddress().getLine2());
     addAddressLines(addressLines, ingest.getAddress().getLine3());
@@ -71,25 +96,19 @@ public class LMSConverter implements TMConverter {
     addAddressLines(addressLines, ingest.getAddress().getTownName());
     checkNumberOfAddressLines(addressLines);
 
-    ObjectFactory locationTypeOF = new ObjectFactory();
     if (ingest.getAddress().getLongitude() != null && ingest.getAddress().getLatitude() != null) {
       job.getLocation().getAddressDetail()
-          .setGeoX(locationTypeOF.createAddressDetailTypeGeoX(ingest.getAddress().getLongitude().floatValue()));
+          .setGeoX(objectFactory.createAddressDetailTypeGeoX(ingest.getAddress().getLongitude().floatValue()));
       job.getLocation().getAddressDetail()
-          .setGeoY(locationTypeOF.createAddressDetailTypeGeoY(ingest.getAddress().getLatitude().floatValue()));
+          .setGeoY(objectFactory.createAddressDetailTypeGeoY(ingest.getAddress().getLatitude().floatValue()));
     }
     job.getLocation().getAddressDetail().setPostCode(ingest.getAddress().getPostCode());
 
-    job.setWorkType(WORK_TYPE);
-
     GregorianCalendar dueDateCalendar = GregorianCalendar
         .from(ingest.getDueDate().atTime(23, 59, 59).atZone(ZoneId.of("UTC")));
-    try {
-      job.setDueDate(DatatypeFactory.newInstance().newXMLGregorianCalendar(dueDateCalendar));
-    } catch (DatatypeConfigurationException e) {
-      throw new CTPException(CTPException.Fault.SYSTEM_ERROR, e);
-    }
+    job.setDueDate(datatypeFactory.newXMLGregorianCalendar(dueDateCalendar));
 
+    job.setWorld(new WorldIdentityType());
     if (ingest.isPreallocatedJob()) {
       job.getWorld().setReference(DEFAULT_WORLD);
       if (StringUtils.isNotBlank(ingest.getMandatoryResourceAuthNo())) {
@@ -105,24 +124,12 @@ public class LMSConverter implements TMConverter {
     }
 
     job.setAdditionalProperties(new AdditionalPropertyCollectionType());
-    if(ingest.getAdditionalProperties() != null) {
+    if (ingest.getAdditionalProperties() != null) {
       TMJobConverter.addAdditionalPropertiesFromMap(job, ingest.getAdditionalProperties());
     }
     addAdditionalProperty(job, ADDITIONAL_PROPERTY_WAVE, DEFAULT_WAVE);
     addAdditionalProperty(job, ADDITIONAL_PROPERTY_TLA, DEFAULT_TLA);
     //TODO: Map Additional properties from Adapter
-
-    job.getContact().setName(ingest.getAddress().getPostCode());
-
-    job.setDescription(DESCRIPTION);
-    job.setDuration(DURATION);
-    job.setVisitComplete(STATUS);
-    job.getSkills().getSkill().add(SKILL);
-    job.setEmergency(EMERGENCY);
-    job.setDispatched(DISPATCHED);
-    job.setAppointmentPending(APPOINTMENT_PENDING);
-
-    createJobRequest.setJob(job);
 
     return createJobRequest;
   }

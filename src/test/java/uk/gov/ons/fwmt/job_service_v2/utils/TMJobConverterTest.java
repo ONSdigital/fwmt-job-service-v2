@@ -9,7 +9,7 @@ import uk.gov.ons.fwmt.fwmtgatewaycommon.data.FWMTCreateJobRequest;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.error.CTPException;
 import uk.gov.ons.fwmt.job_service_v2.converter.impl.CCSConverter;
 import uk.gov.ons.fwmt.job_service_v2.converter.impl.HouseholdConverter;
-import uk.gov.ons.fwmt.job_service_v2.converter.impl.LMSConverter;
+import uk.gov.ons.fwmt.job_service_v2.converter.impl.OHSConverter;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import java.math.BigDecimal;
@@ -22,7 +22,7 @@ import static org.junit.Assert.assertEquals;
 public class TMJobConverterTest {
 
   @Test
-  public void createHHJobTest() throws CTPException {
+  public void createHHJobTest() throws CTPException, DatatypeConfigurationException {
     String user = "bob.smith";
     FWMTCreateJobRequest ingest = new FWMTCreateJobRequest();
     Address address = new Address();
@@ -87,7 +87,7 @@ public class TMJobConverterTest {
   }
 
   @Test
-  public void createLMSJobTest() throws CTPException {
+  public void createLMSJobTest() throws CTPException, DatatypeConfigurationException {
     FWMTCreateJobRequest ingest = new FWMTCreateJobRequest();
     Address address = new Address();
     ingest.setActionType("Create");
@@ -106,7 +106,7 @@ public class TMJobConverterTest {
     address.setLongitude(BigDecimal.valueOf(34.3739957));
     ingest.setAddress(address);
 
-    SendCreateJobRequestMessage request = TMJobConverter.createJob(ingest, new LMSConverter());
+    SendCreateJobRequestMessage request = TMJobConverter.createJob(ingest, new OHSConverter());
 
     assertEquals(request.getCreateJobRequest().getJob().getIdentity().getReference(), "1234");
     assertEquals(request.getCreateJobRequest().getJob().getContact().getName(), "188961");
@@ -124,7 +124,7 @@ public class TMJobConverterTest {
   }
 
   @Test
-  public void createLMSJobTestNoAuthNo() throws CTPException {
+  public void createLMSJobTestNoAuthNo() throws CTPException, DatatypeConfigurationException {
     FWMTCreateJobRequest ingest = new FWMTCreateJobRequest();
     ingest.setPreallocatedJob(true);
     ingest.setMandatoryResourceAuthNo(null);
@@ -134,13 +134,13 @@ public class TMJobConverterTest {
     address.setLatitude(BigDecimal.valueOf(61.7921776));
     address.setLongitude(BigDecimal.valueOf(34.3739957));
 
-    SendCreateJobRequestMessage request = TMJobConverter.createJob(ingest, new LMSConverter());
+    SendCreateJobRequestMessage request = TMJobConverter.createJob(ingest, new OHSConverter());
     assertEquals(request.getCreateJobRequest().getJob().getWorld().getReference(), "Default");
     assertEquals(request.getCreateJobRequest().getJob().getAllocatedTo(), null);
   }
 
   @Test
-  public void createLMSJobTestNoPreallocatedJob() throws CTPException {
+  public void createLMSJobTestNoPreallocatedJob() throws CTPException, DatatypeConfigurationException {
     FWMTCreateJobRequest ingest = new FWMTCreateJobRequest();
     ingest.setPreallocatedJob(false);
     Address address = new Address();
@@ -150,13 +150,13 @@ public class TMJobConverterTest {
     address.setLatitude(BigDecimal.valueOf(61.7921776));
     address.setLongitude(BigDecimal.valueOf(34.3739957));
 
-    SendCreateJobRequestMessage request = TMJobConverter.createJob(ingest, new LMSConverter());
+    SendCreateJobRequestMessage request = TMJobConverter.createJob(ingest, new OHSConverter());
    // assertEquals(request.getCreateJobRequest().getJob().getWorld().getReference(), "MOD WORLD");
     assertEquals(request.getCreateJobRequest().getJob().getMandatoryResource().getUsername(), "temp");
   }
 
   @Test
-  public void createLMSJobTestNoPreallocatedJobNoAuthNo() throws CTPException {
+  public void createLMSJobTestNoPreallocatedJobNoAuthNo() throws CTPException, DatatypeConfigurationException {
     FWMTCreateJobRequest ingest = new FWMTCreateJobRequest();
     ingest.setPreallocatedJob(false);
     Address address = new Address();
@@ -166,13 +166,13 @@ public class TMJobConverterTest {
     address.setLatitude(BigDecimal.valueOf(61.7921776));
     address.setLongitude(BigDecimal.valueOf(34.3739957));
 
-    SendCreateJobRequestMessage request = TMJobConverter.createJob(ingest, new LMSConverter());
+    SendCreateJobRequestMessage request = TMJobConverter.createJob(ingest, new OHSConverter());
 //    assertEquals(request.getCreateJobRequest().getJob().getWorld().getReference(), "MOD WORLD");
     assertEquals(request.getCreateJobRequest().getJob().getMandatoryResource(), null);
   }
 
   @Test
-  public void createLMSJobTestNoSurveyType() throws CTPException {
+  public void createLMSJobTestNoSurveyType() throws CTPException, DatatypeConfigurationException {
     FWMTCreateJobRequest ingest = new FWMTCreateJobRequest();
     ingest.setPreallocatedJob(true);
     Address address = new Address();
@@ -181,7 +181,7 @@ public class TMJobConverterTest {
     address.setLatitude(BigDecimal.valueOf(61.7921776));
     address.setLongitude(BigDecimal.valueOf(34.3739957));
 
-    SendCreateJobRequestMessage request = TMJobConverter.createJob(ingest, new LMSConverter());
+    SendCreateJobRequestMessage request = TMJobConverter.createJob(ingest, new OHSConverter());
     assertEquals(request.getCreateJobRequest().getJob().getWorkType(), "OHS");
 
   }

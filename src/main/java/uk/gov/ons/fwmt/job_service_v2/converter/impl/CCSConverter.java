@@ -13,6 +13,7 @@ import com.consiliumtechnologies.schemas.mobile._2015._05.optimisetypes.WorldIde
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.data.FWMTCreateJobRequest;
+import uk.gov.ons.fwmt.fwmtgatewaycommon.error.CTPException;
 import uk.gov.ons.fwmt.job_service_v2.converter.TMConverter;
 
 import javax.xml.datatype.DatatypeConfigurationException;
@@ -33,13 +34,21 @@ public class CCSConverter implements TMConverter {
   @Value("${totalmobile.modworld}")
   private String MOD_WORLD;
 
+  @Value("${fwmt.workTypes.ccs.duration}")
+  private int duration;
+
   private DatatypeFactory datatypeFactory;
 
-  public CCSConverter() throws DatatypeConfigurationException {
-    datatypeFactory = DatatypeFactory.newInstance();
+  public CCSConverter() throws CTPException {
+    try {
+      datatypeFactory = DatatypeFactory.newInstance();
+    } catch (DatatypeConfigurationException e) {
+      throw new CTPException(CTPException.Fault.SYSTEM_ERROR, e);
+    }
   }
 
-  @Override public CreateJobRequest convert(FWMTCreateJobRequest ingest) {
+  @Override
+  public CreateJobRequest convert(FWMTCreateJobRequest ingest) {
     CreateJobRequest request = new CreateJobRequest();
     JobType job = new JobType();
     job.setIdentity(new JobIdentityType());
@@ -75,7 +84,7 @@ public class CCSConverter implements TMConverter {
 
     job.setDueDate(datatypeFactory.newXMLGregorianCalendar(dueDateCalendar));
 
-    job.setDuration(15);
+    job.setDuration(duration);
     job.setVisitComplete(false);
     job.setDispatched(false);
     job.setAppointmentPending(false);
