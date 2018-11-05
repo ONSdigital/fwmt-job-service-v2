@@ -13,12 +13,12 @@ import java.time.ZoneId;
 import java.util.GregorianCalendar;
 
 public class DeleteJobBuilder {
-  public static final String DEFAULT_JOB_QUEUE = "\\OPTIMISE\\INPUT";
+  private static final String DEFAULT_JOB_QUEUE = "\\OPTIMISE\\INPUT";
 
-  SendDeleteJobRequestMessage message;
-  DeleteJobRequest request;
-  DatatypeFactory datatypeFactory;
-  ObjectFactory objectFactory;
+  private SendDeleteJobRequestMessage message;
+  private DeleteJobRequest request;
+  private DatatypeFactory datatypeFactory;
+  private ObjectFactory objectFactory;
 
   public DeleteJobBuilder(DatatypeFactory datatypeFactory) {
     this.datatypeFactory = datatypeFactory;

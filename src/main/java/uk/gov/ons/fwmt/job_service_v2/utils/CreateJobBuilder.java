@@ -25,12 +25,12 @@ import java.util.List;
 import java.util.Map;
 
 public class CreateJobBuilder {
-  public static final String DEFAULT_JOB_QUEUE = "\\OPTIMISE\\INPUT";
+  private static final String DEFAULT_JOB_QUEUE = "\\OPTIMISE\\INPUT";
 
-  SendCreateJobRequestMessage message;
-  CreateJobRequest request;
-  DatatypeFactory datatypeFactory;
-  ObjectFactory objectFactory;
+  private SendCreateJobRequestMessage message;
+  private CreateJobRequest request;
+  private DatatypeFactory datatypeFactory;
+  private ObjectFactory objectFactory;
 
   public CreateJobBuilder(DatatypeFactory datatypeFactory) {
     this.datatypeFactory = datatypeFactory;
