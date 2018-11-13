@@ -32,7 +32,6 @@ apply plugin: 'org.ajoberstar.grgit'
 mainClassName = 'uk.gov.ons.fwmt.job_service_v2.ApplicationConfig'
 group = 'uk.gov.ons.fwmt'
 description = "fwmt-job-service"
-def repo = Grgit.open('.')
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -43,8 +42,6 @@ bootJar {
     group = 'uk.gov.ons.fwmt'
     baseName = 'fwmt-job-service-v2'
     manifest {
-        attributes(["Git-Commit": repo.head().getAbbreviatedId(7),
-                    "Git-Branch": repo.branch.getCurrent().getName() ], "common")
     }
     version = version
 }

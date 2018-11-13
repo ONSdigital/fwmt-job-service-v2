@@ -5,6 +5,14 @@ info:
   commit: @buildNumber@
   branch: @scmBranch@
   built: @timestamp@
+  
+management:
+  endpoint:
+    health:
+      enabled: true
+      show-details: always
+    info:
+      enabled: true
 
 server:
   contextPath: /jobs
@@ -29,11 +37,6 @@ spring:
     port: 5672
     virtualhost: /
 
-endpoints.enabled: false
-
-endpoints:
-    health.enabled: true
-    
 logging:
   level:
     root: WARN
@@ -54,11 +57,12 @@ security.user:
   password: "password"
 
 totalmobile:
-  username: "user"
-  password: "pass"
-  url: ""
+  username: 
+  password: 
+  url: http://localhost:9099
   modworld: "MOD WORLD"
-  message-queue-path: "/Services/TM/v20/Messaging/MessageQueueWs.asmx"
+#  message-queue-path: "/Services/TM/v20/Messaging/MessageQueueWs.asmx"
+  message-queue-path: "/tm/Mock/Services/TM/v20/Messaging/MessageQueueWs.wsdl"
   message-queue-wsdl-path: "src/main/resources/wsdl/Messaging_MessageQueueWs.wsdl"
   message-queue-namespace: "http://schemas.consiliumtechnologies.com/wsdl/mobile/2007/07/messaging/"
   message-queue-package: "com.consiliumtechnologies.schemas.services.mobile._2009._03.messaging"
