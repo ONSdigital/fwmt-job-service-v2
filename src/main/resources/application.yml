@@ -15,7 +15,7 @@ management:
       enabled: true
 
 server:
-  contextPath: /jobs
+  contextPath: /  
   port: 9999
 
 mock:
@@ -41,7 +41,7 @@ logging:
   level:
     root: WARN
     uk.gov.ons.fwmt: DEBUG
-    org.springframework: ERROR
+    org.springframework: DEBUG
     org.springframework.security: ERROR
     org.springframework.web: ERROR
     org.hibernate: ERROR
