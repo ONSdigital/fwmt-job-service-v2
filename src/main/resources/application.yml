@@ -7,7 +7,7 @@ info:
   built: @timestamp@
   
 management:
-  endpoint:
+  endpoints:
     health:
       enabled: true
       show-details: always
