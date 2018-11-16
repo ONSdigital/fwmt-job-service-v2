@@ -71,30 +71,6 @@ totalmobile:
     login-url: "/WebAdmin/Login"
     save-user-url: "/WebAdmin/Administration/Users/SaveUser"
 
-service:
-  resource:
-    username: "user"
-    password: "password"
-    baseUrl: "http://localhost:9093/resources"
-    operation:
-      users:
-        find:
-          path: "/users/auth/{authNo}"
-        findAlt:
-          path: "/users/alternative/{altAuthNo}"
-      jobs:
-        find:
-          path: "/jobs/{tmJobId}"
-        create:
-          path: "/jobs/"
-        update:
-          path: "/jobs/"
-        sendcsv:
-          path: "/jobFile/upload"
-      fieldPeriods:
-        find:
-          path: "/fieldPeriods/{fieldPeriod}"
-
 rabbitmq:
   initialinterval: 5000
   multiplier: 3.0
