@@ -1,6 +1,5 @@
 package uk.gov.ons.fwmt.job_service_v2.converter.impl;
 
-import com.consiliumtechnologies.schemas.mobile._2015._05.optimisemessages.CreateJobRequest;
 import com.consiliumtechnologies.schemas.services.mobile._2009._03.messaging.SendCreateJobRequestMessage;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -8,7 +7,6 @@ import uk.gov.ons.fwmt.fwmtgatewaycommon.data.FWMTCreateJobRequest;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.error.CTPException;
 import uk.gov.ons.fwmt.job_service_v2.converter.TMConverter;
 import uk.gov.ons.fwmt.job_service_v2.utils.CreateJobBuilder;
-import uk.gov.ons.fwmt.job_service_v2.utils.TMJobConverter;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
@@ -63,6 +61,7 @@ public class CCSConverter implements TMConverter {
         .withAdditionalProperty("CCS_AddrPostcode", ingest.getAddress().getPostCode());
 
     if (ingest.isPreallocatedJob()) {
+      // TODO lookup not defined yet
       builder.withWorld(defaultWorld).withAllocatedUser("test");
     } else {
       builder.withWorld(modWorld);
