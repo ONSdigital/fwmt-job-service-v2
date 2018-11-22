@@ -53,7 +53,7 @@ public class HouseholdConverter implements TMConverter {
         .withEmergency(false)
         .withDispatched(false)
         .withAppointmentPending(false)
-        .addSkill("Survey")
+        .addSkill("HH")
         .withIdentity(ingest.getJobIdentity())
         .withDueDate(ingest.getDueDate().atTime(23, 59, 59).atZone(ZoneId.of("UTC")))
         .withContactName(ingest.getAddress().getPostCode())
