@@ -71,16 +71,16 @@ public class OHSConverter implements TMConverter {
         .withAdditionalProperty("TLA", "OHS");
 
     if (ingest.isPreallocatedJob()) {
-      builder.withWorld(defaultWorld);
+      builder = builder.withWorld(defaultWorld);
       // TODO lookup not defined yet
       if (StringUtils.isNotBlank(ingest.getMandatoryResourceAuthNo())) {
-        builder.withAllocatedUser("test");
+        builder = builder.withAllocatedUser("test");
       }
     } else {
-      builder.withWorld(modWorld);
+      builder = builder.withWorld(modWorld);
       // TODO lookup not defined yet
       if (StringUtils.isNotBlank(ingest.getMandatoryResourceAuthNo())) {
-        builder.withAllocatedUser("temp");
+        builder = builder.withAllocatedUser("temp");
       }
     }
 

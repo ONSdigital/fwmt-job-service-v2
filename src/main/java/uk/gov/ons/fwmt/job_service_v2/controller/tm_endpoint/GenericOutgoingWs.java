@@ -43,20 +43,19 @@ public class GenericOutgoingWs {
 
     SendMessageResponse smr = new SendMessageResponse();
     QName qname = new QName("request");
-    JAXBElement<SendMessageResponse> jaxbElement = new JAXBElement<SendMessageResponse>(qname,
-        SendMessageResponse.class, smr);
+    JAXBElement<SendMessageResponse> jaxbElement = new JAXBElement<>(qname, SendMessageResponse.class, smr);
     jaxbElement.setValue(msg);
     log.debug("Incoming message received. Id:" + msg.getId());
 
     return jaxbElement;
   }
 
-  private FwmtOHSJobStatusNotification convertMessage(WebServiceAdapterOutputRequest value) throws CTPException {
+  private FwmtOHSJobStatusNotification convertMessage(WebServiceAdapterOutputRequest value) {
     String content = value.getContent();
     content = content.replaceAll("&lt;", "<");
     content = content.replaceAll("&gt;", ">");
     content = content.replaceAll("<!\\[CDATA\\[", "");
-    content = content.replaceAll("\\]\\]>", "");
+    content = content.replaceAll("]]>", "");
 
     FwmtOHSJobStatusNotification responseMessage;
     responseMessage = JAXB.unmarshal(new StringReader(content), FwmtOHSJobStatusNotification.class);

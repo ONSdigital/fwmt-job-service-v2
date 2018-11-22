@@ -27,10 +27,10 @@ import java.util.Map;
 public class CreateJobBuilder {
   private static final String DEFAULT_JOB_QUEUE = "\\OPTIMISE\\INPUT";
 
+  private final DatatypeFactory datatypeFactory;
+  private final ObjectFactory objectFactory;
   private SendCreateJobRequestMessage message;
   private CreateJobRequest request;
-  private DatatypeFactory datatypeFactory;
-  private ObjectFactory objectFactory;
 
   public CreateJobBuilder(DatatypeFactory datatypeFactory) {
     this.datatypeFactory = datatypeFactory;

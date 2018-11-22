@@ -95,7 +95,7 @@ public class TMJobServiceImpl extends WebServiceGatewaySupport {
   private static final Map<Class<?>, String> messageActionMap;
 
   // A list of all classes denoting valid TM messages
-  private static Class<?>[] knownRequestTypes = {
+  private final static Class<?>[] knownRequestTypes = {
       SendMessageRequest.class, TransformAndSendRequest.class, QueryMessagesRequest.class, GetMessageRequest.class,
       DeleteMessageRequest.class, RetryMessageRequest.class, ResetMessageRequest.class,
       SendCreateVisitRequestMessage.class, SendForceRecallVisitRequestMessage.class,
@@ -108,7 +108,7 @@ public class TMJobServiceImpl extends WebServiceGatewaySupport {
       SendCreateJobRequestMessage.class, SendDeleteJobRequestMessage.class,
       SendAddJobTasksRequestMessage.class, SendSaveAvailabilityRequestMessage.class,
       SendUpdateJobHeaderRequestMessage.class};
-  private static Class<?>[] knownResponseTypes = {
+  private final static Class<?>[] knownResponseTypes = {
       SendMessageResponse.class, TransformAndSendResponse.class, QueryMessagesResponse.class, GetMessageResponse.class,
       DeleteMessageResponse.class, RetryMessageResponse.class, ResetMessageResponse.class,
       SendCreateVisitRequestMessageResponse.class, SendForceRecallVisitRequestMessageResponse.class,

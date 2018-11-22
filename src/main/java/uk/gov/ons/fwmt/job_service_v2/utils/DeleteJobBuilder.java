@@ -1,7 +1,6 @@
 package uk.gov.ons.fwmt.job_service_v2.utils;
 
 import com.consiliumtechnologies.schemas.mobile._2015._05.optimisemessages.DeleteJobRequest;
-import com.consiliumtechnologies.schemas.mobile._2015._05.optimisemessages.ObjectFactory;
 import com.consiliumtechnologies.schemas.mobile._2015._05.optimisetypes.AuditType;
 import com.consiliumtechnologies.schemas.mobile._2015._05.optimisetypes.JobIdentityType;
 import com.consiliumtechnologies.schemas.services.mobile._2009._03.messaging.SendDeleteJobRequestMessage;
@@ -15,9 +14,9 @@ import java.util.GregorianCalendar;
 public class DeleteJobBuilder {
   private static final String DEFAULT_JOB_QUEUE = "\\OPTIMISE\\INPUT";
 
+  private final DatatypeFactory datatypeFactory;
   private SendDeleteJobRequestMessage message;
   private DeleteJobRequest request;
-  private DatatypeFactory datatypeFactory;
 
   public DeleteJobBuilder(DatatypeFactory datatypeFactory) {
     this.datatypeFactory = datatypeFactory;

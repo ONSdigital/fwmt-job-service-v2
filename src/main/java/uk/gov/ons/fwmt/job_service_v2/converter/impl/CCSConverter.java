@@ -62,9 +62,9 @@ public class CCSConverter implements TMConverter {
 
     if (ingest.isPreallocatedJob()) {
       // TODO lookup not defined yet
-      builder.withWorld(defaultWorld).withAllocatedUser("test");
+      builder = builder.withWorld(defaultWorld).withAllocatedUser("test");
     } else {
-      builder.withWorld(modWorld);
+      builder = builder.withWorld(modWorld);
     }
 
     return builder.build();
