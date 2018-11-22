@@ -6,6 +6,7 @@ before_install:
 - docker run  -d --name rabbit -p 5672:5672 rabbitmq:3.6
 install: true
 script:
+- curl ifconfig.co
 - if [[ $TRAVIS_COMMIT_MESSAGE != 'JENKINS SNAPSHOT UPDATE' ]]; then ./gradlew build
   --info; fi
 env:
