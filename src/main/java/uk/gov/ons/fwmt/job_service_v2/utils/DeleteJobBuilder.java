@@ -18,11 +18,9 @@ public class DeleteJobBuilder {
   private SendDeleteJobRequestMessage message;
   private DeleteJobRequest request;
   private DatatypeFactory datatypeFactory;
-  private ObjectFactory objectFactory;
 
   public DeleteJobBuilder(DatatypeFactory datatypeFactory) {
     this.datatypeFactory = datatypeFactory;
-    this.objectFactory = new ObjectFactory();
 
     setup();
   }
