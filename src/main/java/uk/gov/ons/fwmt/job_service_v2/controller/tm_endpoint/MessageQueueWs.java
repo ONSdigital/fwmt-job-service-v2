@@ -66,7 +66,7 @@ import javax.xml.bind.JAXBElement;
 public class MessageQueueWs {
   private static final String NAMESPACE_URI = "http://schemas.consiliumtechnologies.com/services/mobile/2007/07/messaging";
 
-  private ObjectFactory objectFactory = new ObjectFactory();
+  private final ObjectFactory objectFactory = new ObjectFactory();
 
   private void stub(String messageType) {
     log.debug("Found message of type {}", messageType);

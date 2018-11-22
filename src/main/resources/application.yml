@@ -5,7 +5,7 @@ info:
   commit: @buildNumber@
   branch: @scmBranch@
   built: @timestamp@
-  
+
 management:
   endpoints:
     health:
@@ -15,7 +15,6 @@ management:
       enabled: true
 
 server:
-  contextPath: /  
   port: 9999
 
 mock:
@@ -57,12 +56,12 @@ security.user:
   password: "password"
 
 totalmobile:
-  username: 
-  password: 
-  url: http://localhost:9099
+  username: "user"
+  password: "pass"
+  url: ""
+  default_world: "Default"
   modworld: "MOD WORLD"
-#  message-queue-path: "/Services/TM/v20/Messaging/MessageQueueWs.asmx"
-  message-queue-path: "/tm/Mock/Services/TM/v20/Messaging/MessageQueueWs.wsdl"
+  message-queue-path: "/Services/TM/v20/Messaging/MessageQueueWs.asmx"
   message-queue-wsdl-path: "src/main/resources/wsdl/Messaging_MessageQueueWs.wsdl"
   message-queue-namespace: "http://schemas.consiliumtechnologies.com/wsdl/mobile/2007/07/messaging/"
   message-queue-package: "com.consiliumtechnologies.schemas.services.mobile._2009._03.messaging"

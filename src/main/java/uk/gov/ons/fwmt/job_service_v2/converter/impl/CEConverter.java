@@ -1,46 +1,29 @@
 package uk.gov.ons.fwmt.job_service_v2.converter.impl;
 
-import com.consiliumtechnologies.schemas.mobile._2009._03.visitstypes.AdditionalPropertyCollectionType;
-import com.consiliumtechnologies.schemas.mobile._2015._05.optimisemessages.CreateJobRequest;
-import com.consiliumtechnologies.schemas.mobile._2015._05.optimisetypes.AddressDetailType;
-import com.consiliumtechnologies.schemas.mobile._2015._05.optimisetypes.ContactInfoType;
-import com.consiliumtechnologies.schemas.mobile._2015._05.optimisetypes.JobIdentityType;
-import com.consiliumtechnologies.schemas.mobile._2015._05.optimisetypes.JobType;
-import com.consiliumtechnologies.schemas.mobile._2015._05.optimisetypes.ObjectFactory;
-import com.consiliumtechnologies.schemas.mobile._2015._05.optimisetypes.SkillCollectionType;
-import com.consiliumtechnologies.schemas.mobile._2015._05.optimisetypes.WorldIdentityType;
+import com.consiliumtechnologies.schemas.services.mobile._2009._03.messaging.SendCreateJobRequestMessage;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.data.FWMTCreateJobRequest;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.error.CTPException;
 import uk.gov.ons.fwmt.job_service_v2.converter.TMConverter;
+import uk.gov.ons.fwmt.job_service_v2.utils.CreateJobBuilder;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import java.time.ZoneId;
-import java.util.GregorianCalendar;
-import java.util.List;
-
-import static uk.gov.ons.fwmt.job_service_v2.utils.TMJobConverter.addAdditionalPropertiesFromMap;
-import static uk.gov.ons.fwmt.job_service_v2.utils.TMJobConverter.addAdditionalProperty;
-import static uk.gov.ons.fwmt.job_service_v2.utils.TMJobConverter.addAddressLines;
-import static uk.gov.ons.fwmt.job_service_v2.utils.TMJobConverter.checkNumberOfAddressLines;
 
 @Component("CE")
 public class CEConverter implements TMConverter {
-
-  private static final String WORK_TYPE = "CE";
-  private static final String SKILL = "CE";
-  private static final String DESCRIPTION = "CE";
-
-  private DatatypeFactory datatypeFactory;
-  private ObjectFactory objectFactory;
+  @Value("${totalmobile.default_world}")
+  private String defaultWorld;
 
   @Value("${totalmobile.modworld}")
-  private String MOD_WORLD;
+  private String modWorld;
 
   @Value("${fwmt.workTypes.ce.duration}")
   private int duration;
+
+  private DatatypeFactory datatypeFactory;
 
   public CEConverter() throws CTPException {
     try {
@@ -48,76 +31,45 @@ public class CEConverter implements TMConverter {
     } catch (DatatypeConfigurationException e) {
       throw new CTPException(CTPException.Fault.SYSTEM_ERROR, e);
     }
-    objectFactory = new ObjectFactory();
+  }
+
+  public CEConverter(String defaultWorld, String modWorld, int duration) throws CTPException {
+    this();
+    this.defaultWorld = defaultWorld;
+    this.modWorld = modWorld;
+    this.duration = duration;
   }
 
   @Override
-  public CreateJobRequest convert(FWMTCreateJobRequest ingest) {
-    // root object
-    CreateJobRequest request = new CreateJobRequest();
-    JobType job = new JobType();
-    request.setJob(job);
-
-    // simple details
-    job.setWorkType(WORK_TYPE);
-    job.setDescription(DESCRIPTION);
-    job.setDuration(duration);
-    job.setVisitComplete(false);
-    job.setEmergency(false);
-    job.setDispatched(false);
-    job.setAppointmentPending(false);
-    job.setDescription(ingest.getAddress().getOrganisationName());
-
-    // world
-    job.setWorld(new WorldIdentityType());
-    job.getWorld().setReference(MOD_WORLD);
-
-    // skills
-    job.setSkills(new SkillCollectionType());
-    job.getSkills().getSkill().add(SKILL);
-
-    // identity
-    job.setIdentity(new JobIdentityType());
-    job.getIdentity().setReference(ingest.getJobIdentity());
-
-    // due date
-    GregorianCalendar dueDateCalendar = GregorianCalendar
-        .from(ingest.getDueDate().atTime(23, 59, 59).atZone(ZoneId.of("UTC")));
-    job.setDueDate(datatypeFactory.newXMLGregorianCalendar(dueDateCalendar));
-
-    // contact information
-    job.setContact(new ContactInfoType());
-    job.getContact().setName(ingest.getContact().getForename() + " " + ingest.getContact().getSurname());
-    job.getContact().setWorkPhone(ingest.getContact().getPhoneNumber());
-    job.getContact().setEmail(ingest.getContact().getEmail());
-
-    // address information
-    job.getLocation().setAddressDetail(new AddressDetailType());
-    job.getLocation().getAddressDetail().setLines(new AddressDetailType.Lines());
-    List<String> addressLines = job.getLocation().getAddressDetail().getLines().getAddressLine();
-    addAddressLines(addressLines, ingest.getAddress().getLine1());
-    addAddressLines(addressLines, ingest.getAddress().getLine2());
-    addAddressLines(addressLines, ingest.getAddress().getLine3());
-    addAddressLines(addressLines, ingest.getAddress().getLine4());
-    addAddressLines(addressLines, ingest.getAddress().getTownName());
-    checkNumberOfAddressLines(addressLines);
-    job.getLocation().getAddressDetail().setPostCode(ingest.getAddress().getPostCode());
-    if (ingest.getAddress().getLongitude() != null) {
-      float geoX = ingest.getAddress().getLongitude().floatValue();
-      job.getLocation().getAddressDetail().setGeoX(objectFactory.createAddressDetailTypeGeoX(geoX));
-    }
-    if (ingest.getAddress().getLatitude() != null) {
-      float geoY = ingest.getAddress().getLatitude().floatValue();
-      job.getLocation().getAddressDetail().setGeoY(objectFactory.createAddressDetailTypeGeoY(geoY));
-    }
-
-    // additional properties
-    job.setAdditionalProperties(new AdditionalPropertyCollectionType());
-    if (ingest.getAdditionalProperties() != null) {
-      addAdditionalPropertiesFromMap(job, ingest.getAdditionalProperties());
-    }
-    addAdditionalProperty(job, "CaseRef", ingest.getJobIdentity());
-
-    return request;
+  public SendCreateJobRequestMessage convert(FWMTCreateJobRequest ingest) {
+    return new CreateJobBuilder(datatypeFactory)
+        .withDefaultQueue()
+        .withKey(ingest.getJobIdentity())
+        .withWorld(modWorld)
+        .withWorkType("CE")
+        .withDescription(ingest.getAddress().getOrganisationName())
+        .withDuration(duration)
+        .withVisitComplete(false)
+        .withEmergency(false)
+        .withDispatched(false)
+        .withAppointmentPending(false)
+        .addSkill("CE")
+        .withIdentity(ingest.getJobIdentity())
+        .withDueDate(ingest.getDueDate().atTime(23, 59, 59).atZone(ZoneId.of("UTC")))
+        .withContactName(ingest.getContact().getForename() + " " + ingest.getContact().getSurname())
+        .withContactEmail(ingest.getContact().getEmail())
+        .withContactPhone(ingest.getContact().getPhoneNumber())
+        .withAddressLines(
+            ingest.getAddress().getLine1(),
+            ingest.getAddress().getLine2(),
+            ingest.getAddress().getLine3(),
+            ingest.getAddress().getLine4(),
+            ingest.getAddress().getTownName()
+        )
+        .withPostCode(ingest.getAddress().getPostCode())
+        .withGeoCoords(ingest.getAddress().getLongitude(), ingest.getAddress().getLatitude())
+        .withAdditionalProperties(ingest.getAdditionalProperties())
+        .withAdditionalProperty("CaseRef", ingest.getJobIdentity())
+        .build();
   }
 }

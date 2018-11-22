@@ -18,7 +18,7 @@ public class JobServiceImpl implements JobService {
   @Autowired
   private RMProducer rmProducer;
 
-  @Override public void createJob(FWMTCreateJobRequest jobRequest) throws CTPException{
+  @Override public void createJob(FWMTCreateJobRequest jobRequest) throws CTPException {
     tmJobService.createJob(jobRequest);
   }
 

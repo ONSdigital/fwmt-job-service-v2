@@ -1,18 +1,15 @@
 package uk.gov.ons.fwmt.job_service_v2.controller;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.List;
-
 
 @Slf4j
 @RestController
@@ -22,7 +19,7 @@ public class RabbitCheckHealthController {
   ConnectionFactory factory;
 
   @RequestMapping(value = "/rabbitHealth", method = RequestMethod.GET, produces = "application/json")
-  public List<String> rabbitHealth(){
+  public List<String> rabbitHealth() {
 
     RabbitAdmin rabbitAdmin = new RabbitAdmin(factory);
 
