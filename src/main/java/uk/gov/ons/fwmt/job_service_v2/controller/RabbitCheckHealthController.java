@@ -1,42 +1,32 @@
 package uk.gov.ons.fwmt.job_service_v2.controller;
 
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 
 
 @Slf4j
 @RestController
+@RequestMapping("/rabbitHealth")
 public class RabbitCheckHealthController {
 
   @Autowired
   ConnectionFactory factory;
 
-  @RequestMapping(value = "/rabbitHealth", method = RequestMethod.GET, produces = "application/json")
-  public List<String> rabbitHealth(){
-
+  @RequestMapping(value = "/queue", method = RequestMethod.GET, produces = "application/json")
+  public boolean canAccessQueue(@RequestParam("qname") String qname) {
     RabbitAdmin rabbitAdmin = new RabbitAdmin(factory);
-
-    List<String> results = new ArrayList<>();
-
-    String result1 = rabbitAdmin.getQueueProperties("jobsvc-adapter").getProperty("QUEUE_NAME");
-    String result2 = rabbitAdmin.getQueueProperties("adapter-jobSvc").getProperty("QUEUE_NAME");
-    String result3 = rabbitAdmin.getQueueProperties("adapter-rm").getProperty("QUEUE_NAME");
-
-    results.add(result1);
-    results.add(result2);
-    results.add(result3);
-
-    return results;
+    String result1 = rabbitAdmin.getQueueProperties(qname).getProperty("QUEUE_NAME");
+    if (qname.equals(result1)) {
+      return true;
+    }
+    return false;
   }
 
 }
