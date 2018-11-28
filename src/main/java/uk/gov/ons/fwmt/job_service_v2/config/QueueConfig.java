@@ -29,9 +29,9 @@ import static uk.gov.ons.fwmt.fwmtgatewaycommon.config.QueueNames.JOB_SVC_ADAPTE
 @Configuration
 public class QueueConfig {
 
-  private int initialInterval;
-  private double multiplier;
-  private int maxInterval;
+  private final int initialInterval;
+  private final double multiplier;
+  private final int maxInterval;
 
   public QueueConfig(@Value("${rabbitmq.initialinterval}") Integer initialInterval,
       @Value("${rabbitmq.multiplier}") Double multiplier,

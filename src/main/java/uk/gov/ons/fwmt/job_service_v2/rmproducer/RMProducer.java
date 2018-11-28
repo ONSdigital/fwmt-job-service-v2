@@ -24,7 +24,7 @@ public class RMProducer {
   public void send(FwmtOHSJobStatusNotification fwmtOHSJobStatusNotification) throws CTPException {
     try {
       final String notification = objectMapper.writeValueAsString(fwmtOHSJobStatusNotification);
-      log.info("Message sent to queue :{}",fwmtOHSJobStatusNotification.getJobIdentity());
+      log.info("Message sent to queue :{}", fwmtOHSJobStatusNotification.getJobIdentity());
       template.convertAndSend(QueueNames.JOBSVC_TO_ADAPTER_QUEUE, notification);
     } catch (JsonProcessingException e) {
       throw new CTPException(CTPException.Fault.SYSTEM_ERROR, "Failed to process message into JSON.", e);

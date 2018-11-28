@@ -95,7 +95,7 @@ public class TMJobServiceImpl extends WebServiceGatewaySupport {
   private static final Map<Class<?>, String> messageActionMap;
 
   // A list of all classes denoting valid TM messages
-  private static Class<?>[] knownRequestTypes = {
+  private final static Class<?>[] knownRequestTypes = {
       SendMessageRequest.class, TransformAndSendRequest.class, QueryMessagesRequest.class, GetMessageRequest.class,
       DeleteMessageRequest.class, RetryMessageRequest.class, ResetMessageRequest.class,
       SendCreateVisitRequestMessage.class, SendForceRecallVisitRequestMessage.class,
@@ -108,7 +108,7 @@ public class TMJobServiceImpl extends WebServiceGatewaySupport {
       SendCreateJobRequestMessage.class, SendDeleteJobRequestMessage.class,
       SendAddJobTasksRequestMessage.class, SendSaveAvailabilityRequestMessage.class,
       SendUpdateJobHeaderRequestMessage.class};
-  private static Class<?>[] knownResponseTypes = {
+  private final static Class<?>[] knownResponseTypes = {
       SendMessageResponse.class, TransformAndSendResponse.class, QueryMessagesResponse.class, GetMessageResponse.class,
       DeleteMessageResponse.class, RetryMessageResponse.class, ResetMessageResponse.class,
       SendCreateVisitRequestMessageResponse.class, SendForceRecallVisitRequestMessageResponse.class,
@@ -139,12 +139,12 @@ public class TMJobServiceImpl extends WebServiceGatewaySupport {
 
   @Autowired
   public TMJobServiceImpl(
-          @Value("${totalmobile.url}") String url,
-          @Value("${totalmobile.message-queue-path}") String messageQueuePath,
-          @Value("${totalmobile.message-queue-package}") String messageQueuePackage,
-          @Value("${totalmobile.message-queue-namespace}") String namespace,
-          @Value("${totalmobile.username}") String username,
-          @Value("${totalmobile.password}") String password) throws Exception {
+      @Value("${totalmobile.url}") String url,
+      @Value("${totalmobile.message-queue-path}") String messageQueuePath,
+      @Value("${totalmobile.message-queue-package}") String messageQueuePackage,
+      @Value("${totalmobile.message-queue-namespace}") String namespace,
+      @Value("${totalmobile.username}") String username,
+      @Value("${totalmobile.password}") String password) throws Exception {
     this.messageQueueUrl = url + messageQueuePath;
     this.namespace = namespace;
 
@@ -163,13 +163,12 @@ public class TMJobServiceImpl extends WebServiceGatewaySupport {
 
   public void createJob(FWMTCreateJobRequest jobRequest) throws CTPException {
     final TMConverter tmConverter = tmConverters.get(jobRequest.getSurveyType());
-    SendCreateJobRequestMessage createRequest = TMJobConverter.createJob(jobRequest, tmConverter);
-    send(createRequest);
+    send(tmConverter.convert(jobRequest));
   }
 
   public void cancelJob(FWMTCancelJobRequest cancelRequest) {
     SendDeleteJobRequestMessage deleteRequest = TMJobConverter
-            .deleteJob(cancelRequest.getJobIdentity(), cancelRequest.getReason(), tmAdminUsername);
+        .deleteJob(cancelRequest.getJobIdentity(), cancelRequest.getReason(), tmAdminUsername);
     send(deleteRequest);
   }
 

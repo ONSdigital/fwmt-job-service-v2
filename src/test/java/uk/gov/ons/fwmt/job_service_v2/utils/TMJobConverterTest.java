@@ -1,5 +1,6 @@
 package uk.gov.ons.fwmt.job_service_v2.utils;
 
+import com.consiliumtechnologies.schemas.mobile._2015._05.optimisetypes.LocationType;
 import com.consiliumtechnologies.schemas.services.mobile._2009._03.messaging.SendCreateJobRequestMessage;
 import com.consiliumtechnologies.schemas.services.mobile._2009._03.messaging.SendDeleteJobRequestMessage;
 import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
@@ -12,17 +13,17 @@ import uk.gov.ons.fwmt.job_service_v2.converter.impl.HouseholdConverter;
 import uk.gov.ons.fwmt.job_service_v2.converter.impl.OHSConverter;
 
 import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 public class TMJobConverterTest {
 
   @Test
-  public void createHHJobTest() throws CTPException, DatatypeConfigurationException {
+  public void createHHJobTest() throws CTPException {
     String user = "bob.smith";
     FWMTCreateJobRequest ingest = new FWMTCreateJobRequest();
     Address address = new Address();
@@ -42,19 +43,20 @@ public class TMJobConverterTest {
     address.setLongitude(BigDecimal.valueOf(34.3739957));
     ingest.setAddress(address);
 
-    SendCreateJobRequestMessage request = TMJobConverter.createJob(ingest, new HouseholdConverter());
+    HouseholdConverter converter = new HouseholdConverter("Default", "Mod", 0);
+    SendCreateJobRequestMessage request = converter.convert(ingest);
 
-    assertEquals(request.getCreateJobRequest().getJob().getIdentity().getReference(), "1234");
-    assertEquals(request.getCreateJobRequest().getJob().getContact().getName(), "188961");
-    assertEquals(request.getCreateJobRequest().getJob().getDueDate(),
-        XMLGregorianCalendarImpl.parse("2018-08-16T23:59:59.000Z"));
+    assertEquals("1234", request.getCreateJobRequest().getJob().getIdentity().getReference());
+    assertEquals("188961", request.getCreateJobRequest().getJob().getContact().getName());
+    assertEquals(XMLGregorianCalendarImpl.parse("2018-08-16T23:59:59.000Z"),
+        request.getCreateJobRequest().getJob().getDueDate());
 
-    assertEquals(request.getSendMessageRequestInfo().getQueueName(), "\\OPTIMISE\\INPUT");
-    assertEquals(request.getSendMessageRequestInfo().getKey(), "1234");
+    assertEquals("\\OPTIMISE\\INPUT", request.getSendMessageRequestInfo().getQueueName());
+    assertEquals("1234", request.getSendMessageRequestInfo().getKey());
   }
 
   @Test
-  public void createCCSJobTest() throws CTPException, DatatypeConfigurationException {
+  public void createCCSJobTest() throws CTPException {
     String user = "bob.smith";
     FWMTCreateJobRequest ingest = new FWMTCreateJobRequest();
     Address address = new Address();
@@ -74,20 +76,21 @@ public class TMJobConverterTest {
     address.setLongitude(BigDecimal.valueOf(34.3739957));
     ingest.setAddress(address);
 
-    SendCreateJobRequestMessage request = TMJobConverter.createJob(ingest, new CCSConverter());
+    CCSConverter converter = new CCSConverter("Default", "Mod", 0);
+    SendCreateJobRequestMessage request = converter.convert(ingest);
 
-    assertEquals(request.getCreateJobRequest().getJob().getIdentity().getReference(), "1234");
-    assertEquals(request.getCreateJobRequest().getJob().getContact().getName(), "188961");
-    assertEquals(request.getCreateJobRequest().getJob().getDueDate(),
-        XMLGregorianCalendarImpl.parse("2018-08-16T23:59:59.000Z"));
-    assertEquals(request.getCreateJobRequest().getJob().getDescription(), "Census - 188961");
+    assertEquals("1234", request.getCreateJobRequest().getJob().getIdentity().getReference());
+    assertEquals("188961", request.getCreateJobRequest().getJob().getContact().getName());
+    assertEquals(XMLGregorianCalendarImpl.parse("2018-08-16T23:59:59.000Z"),
+        request.getCreateJobRequest().getJob().getDueDate());
+    assertEquals("Census - 188961", request.getCreateJobRequest().getJob().getDescription());
 
-    assertEquals(request.getSendMessageRequestInfo().getQueueName(), "\\OPTIMISE\\INPUT");
-    assertEquals(request.getSendMessageRequestInfo().getKey(), "1234");
+    assertEquals("\\OPTIMISE\\INPUT", request.getSendMessageRequestInfo().getQueueName());
+    assertEquals("1234", request.getSendMessageRequestInfo().getKey());
   }
 
   @Test
-  public void createLMSJobTest() throws CTPException, DatatypeConfigurationException {
+  public void createLMSJobTest() throws CTPException {
     FWMTCreateJobRequest ingest = new FWMTCreateJobRequest();
     Address address = new Address();
     ingest.setActionType("Create");
@@ -106,25 +109,26 @@ public class TMJobConverterTest {
     address.setLongitude(BigDecimal.valueOf(34.3739957));
     ingest.setAddress(address);
 
-    SendCreateJobRequestMessage request = TMJobConverter.createJob(ingest, new OHSConverter());
+    OHSConverter converter = new OHSConverter("Default", "Mod", 0);
+    SendCreateJobRequestMessage request = converter.convert(ingest);
 
-    assertEquals(request.getCreateJobRequest().getJob().getIdentity().getReference(), "1234");
-    assertEquals(request.getCreateJobRequest().getJob().getContact().getName(), "188961");
-    assertEquals(request.getCreateJobRequest().getJob().getDueDate(),
-        XMLGregorianCalendarImpl.parse("2018-08-16T23:59:59.000Z"));
-    assertEquals(request.getCreateJobRequest().getJob().getDescription(), "OHS");
-    assertEquals(request.getCreateJobRequest().getJob().getWorkType(), "OHS");
-    assertEquals(request.getCreateJobRequest().getJob().getWorld().getReference(), "Default");
-    assertEquals(request.getCreateJobRequest().getJob().getAllocatedTo().getUsername(), "test");
-    assertEquals(request.getSendMessageRequestInfo().getQueueName(), "\\OPTIMISE\\INPUT");
-    assertEquals(request.getSendMessageRequestInfo().getKey(), "1234");
-    assertEquals(
-        request.getCreateJobRequest().getJob().getLocation().getAddressDetail().getLines().getAddressLine().size(), 5);
+    assertEquals("1234", request.getCreateJobRequest().getJob().getIdentity().getReference());
+    assertEquals("188961", request.getCreateJobRequest().getJob().getContact().getName());
+    assertEquals(XMLGregorianCalendarImpl.parse("2018-08-16T23:59:59.000Z"),
+        request.getCreateJobRequest().getJob().getDueDate());
+    assertEquals("OHS", request.getCreateJobRequest().getJob().getDescription());
+    assertEquals("OHS", request.getCreateJobRequest().getJob().getWorkType());
+    assertEquals("Default", request.getCreateJobRequest().getJob().getWorld().getReference());
+    assertEquals("test", request.getCreateJobRequest().getJob().getAllocatedTo().getUsername());
+    assertEquals("\\OPTIMISE\\INPUT", request.getSendMessageRequestInfo().getQueueName());
+    assertEquals("1234", request.getSendMessageRequestInfo().getKey());
+    assertEquals(5,
+        request.getCreateJobRequest().getJob().getLocation().getAddressDetail().getLines().getAddressLine().size());
 
   }
 
   @Test
-  public void createLMSJobTestNoAuthNo() throws CTPException, DatatypeConfigurationException {
+  public void createLMSJobTestNoAuthNo() throws CTPException {
     FWMTCreateJobRequest ingest = new FWMTCreateJobRequest();
     ingest.setPreallocatedJob(true);
     ingest.setMandatoryResourceAuthNo(null);
@@ -134,13 +138,14 @@ public class TMJobConverterTest {
     address.setLatitude(BigDecimal.valueOf(61.7921776));
     address.setLongitude(BigDecimal.valueOf(34.3739957));
 
-    SendCreateJobRequestMessage request = TMJobConverter.createJob(ingest, new OHSConverter());
-    assertEquals(request.getCreateJobRequest().getJob().getWorld().getReference(), "Default");
-    assertEquals(request.getCreateJobRequest().getJob().getAllocatedTo(), null);
+    OHSConverter converter = new OHSConverter("Default", "Mod", 0);
+    SendCreateJobRequestMessage request = converter.convert(ingest);
+    assertEquals("Default", request.getCreateJobRequest().getJob().getWorld().getReference());
+    assertNull(request.getCreateJobRequest().getJob().getAllocatedTo());
   }
 
   @Test
-  public void createLMSJobTestNoPreallocatedJob() throws CTPException, DatatypeConfigurationException {
+  public void createLMSJobTestNoPreallocatedJob() throws CTPException {
     FWMTCreateJobRequest ingest = new FWMTCreateJobRequest();
     ingest.setPreallocatedJob(false);
     Address address = new Address();
@@ -150,13 +155,14 @@ public class TMJobConverterTest {
     address.setLatitude(BigDecimal.valueOf(61.7921776));
     address.setLongitude(BigDecimal.valueOf(34.3739957));
 
-    SendCreateJobRequestMessage request = TMJobConverter.createJob(ingest, new OHSConverter());
-   // assertEquals(request.getCreateJobRequest().getJob().getWorld().getReference(), "MOD WORLD");
-    assertEquals(request.getCreateJobRequest().getJob().getMandatoryResource().getUsername(), "temp");
+    OHSConverter converter = new OHSConverter("Default", "Mod", 0);
+    SendCreateJobRequestMessage request = converter.convert(ingest);
+    assertEquals("Mod", request.getCreateJobRequest().getJob().getWorld().getReference());
+    assertNull(request.getCreateJobRequest().getJob().getMandatoryResource());
   }
 
   @Test
-  public void createLMSJobTestNoPreallocatedJobNoAuthNo() throws CTPException, DatatypeConfigurationException {
+  public void createLMSJobTestNoPreAllocatedJobNoAuthNo() throws CTPException {
     FWMTCreateJobRequest ingest = new FWMTCreateJobRequest();
     ingest.setPreallocatedJob(false);
     Address address = new Address();
@@ -166,13 +172,14 @@ public class TMJobConverterTest {
     address.setLatitude(BigDecimal.valueOf(61.7921776));
     address.setLongitude(BigDecimal.valueOf(34.3739957));
 
-    SendCreateJobRequestMessage request = TMJobConverter.createJob(ingest, new OHSConverter());
-//    assertEquals(request.getCreateJobRequest().getJob().getWorld().getReference(), "MOD WORLD");
-    assertEquals(request.getCreateJobRequest().getJob().getMandatoryResource(), null);
+    OHSConverter converter = new OHSConverter("Default", "Mod", 0);
+    SendCreateJobRequestMessage request = converter.convert(ingest);
+    assertEquals("Mod", request.getCreateJobRequest().getJob().getWorld().getReference());
+    assertNull(request.getCreateJobRequest().getJob().getMandatoryResource());
   }
 
   @Test
-  public void createLMSJobTestNoSurveyType() throws CTPException, DatatypeConfigurationException {
+  public void createLMSJobTestNoSurveyType() throws CTPException {
     FWMTCreateJobRequest ingest = new FWMTCreateJobRequest();
     ingest.setPreallocatedJob(true);
     Address address = new Address();
@@ -181,56 +188,61 @@ public class TMJobConverterTest {
     address.setLatitude(BigDecimal.valueOf(61.7921776));
     address.setLongitude(BigDecimal.valueOf(34.3739957));
 
-    SendCreateJobRequestMessage request = TMJobConverter.createJob(ingest, new OHSConverter());
-    assertEquals(request.getCreateJobRequest().getJob().getWorkType(), "OHS");
+    OHSConverter converter = new OHSConverter("Default", "Mod", 0);
+    SendCreateJobRequestMessage request = converter.convert(ingest);
+    assertEquals("OHS", request.getCreateJobRequest().getJob().getWorkType());
 
   }
 
   @Test
-  public void addAddressLinesTest() {
-    List<String> addressLines = new ArrayList<>();
-    String addressLine1 = "number";
-    String addressLine2 = "street";
-    String addressLine3 = "town";
-    String addressLine4 = "city";
+  public void addAddressLinesTest() throws DatatypeConfigurationException {
+    SendCreateJobRequestMessage message = new CreateJobBuilder(DatatypeFactory.newInstance())
+        .addAddressLine("number")
+        .addAddressLine("street")
+        .addAddressLine("town")
+        .addAddressLine("city")
+        .build();
 
-    TMJobConverter.addAddressLines(addressLines, addressLine1);
-    TMJobConverter.addAddressLines(addressLines, addressLine2);
-    TMJobConverter.addAddressLines(addressLines, addressLine3);
-    TMJobConverter.addAddressLines(addressLines, addressLine4);
+    LocationType address = message.getCreateJobRequest().getJob().getLocation();
 
-    assertEquals(4, addressLines.size());
+    assertEquals(4, address.getAddressDetail().getLines().getAddressLine().size());
   }
 
   @Test
-  public void checkNumberOfAddressLinesTest() {
-    List<String> addressLines = new ArrayList<>();
-    String addressLine1 = "number";
-    String addressLine2 = "street";
-    String addressLine3 = "street";
-    String addressLine4 = "street";
-    String addressLine5 = "town";
-    String addressLine6 = "city";
+  public void checkNumberOfAddressLinesTest() throws DatatypeConfigurationException {
+    SendCreateJobRequestMessage message1 = new CreateJobBuilder(DatatypeFactory.newInstance())
+        .addAddressLine("number")
+        .addAddressLine("street")
+        .addAddressLine("street")
+        .addAddressLine("street")
+        .addAddressLine("town")
+        .addAddressLine("city")
+        .build();
 
-    TMJobConverter.addAddressLines(addressLines, addressLine1);
-    TMJobConverter.addAddressLines(addressLines, addressLine2);
-    TMJobConverter.addAddressLines(addressLines, addressLine3);
-    TMJobConverter.addAddressLines(addressLines, addressLine4);
-    TMJobConverter.addAddressLines(addressLines, addressLine5);
-    TMJobConverter.addAddressLines(addressLines, addressLine6);
+    LocationType address1 = message1.getCreateJobRequest().getJob().getLocation();
 
-    assertEquals(6, addressLines.size());
+    assertEquals(6, address1.getAddressDetail().getLines().getAddressLine().size());
 
-    TMJobConverter.checkNumberOfAddressLines(addressLines);
+    SendCreateJobRequestMessage message2 = new CreateJobBuilder(DatatypeFactory.newInstance())
+        .addAddressLine("number")
+        .addAddressLine("street")
+        .addAddressLine("street")
+        .addAddressLine("street")
+        .addAddressLine("town")
+        .addAddressLine("city")
+        .shrinkAddressLines()
+        .build();
 
-    assertEquals(5, addressLines.size());
+    LocationType address2 = message2.getCreateJobRequest().getJob().getLocation();
+
+    assertEquals(5, address2.getAddressDetail().getLines().getAddressLine().size());
   }
 
   @Test
   public void deleteJobTest() {
-    SendDeleteJobRequestMessage request = TMJobConverter.deleteJob("1234", "wrong address","admin");
+    SendDeleteJobRequestMessage request = TMJobConverter.deleteJob("1234", "wrong address", "admin");
 
-    assertEquals(request.getDeleteJobRequest().getDeletionReason(), "wrong address");
-    assertEquals(request.getDeleteJobRequest().getIdentity().getReference(), "1234");
+    assertEquals("wrong address", request.getDeleteJobRequest().getDeletionReason());
+    assertEquals("1234", request.getDeleteJobRequest().getIdentity().getReference());
   }
 }

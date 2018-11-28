@@ -36,7 +36,7 @@ description = "fwmt-job-service"
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
-version = '0.0.43-SNAPSHOT'
+version = '0.0.45-SNAPSHOT'
 
 bootJar {
     group = 'uk.gov.ons.fwmt'
@@ -49,8 +49,10 @@ bootJar {
 repositories {
     mavenLocal()
     mavenCentral()
-    maven { url "http://artifactory-sdc.onsdigital.uk/artifactory/libs-snapshot-local" }
-    maven { url "http://artifactory-sdc.onsdigital.uk/artifactory/libs-release-local" }
+    if (!project.hasProperty('omitSDCArtifactory')) {
+        maven { url "http://artifactory-sdc.onsdigital.uk/artifactory/libs-snapshot-local" }
+        maven { url "http://artifactory-sdc.onsdigital.uk/artifactory/libs-release-local" }
+    }
     maven { url "https://oss.sonatype.org/content/repositories/libs-snapshot" }
     maven { url "http://repo.maven.apache.org/maven2" }
 }

@@ -24,6 +24,7 @@ import uk.gov.ons.fwmt.job_service_v2.converter.TMConverter;
 import uk.gov.ons.fwmt.job_service_v2.converter.impl.HouseholdConverter;
 
 import javax.xml.bind.JAXBElement;
+import javax.xml.datatype.DatatypeConfigurationException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
@@ -182,7 +183,7 @@ public class TMJobServiceImplTest {
   }
 
   @Test
-  public void createJob() throws CTPException {
+  public void createJob() throws CTPException, DatatypeConfigurationException {
     FWMTCreateJobRequest fwmtCreateJobRequest = new FWMTCreateJobRequest();
     Address address = new Address();
     address.setPostCode("188961");

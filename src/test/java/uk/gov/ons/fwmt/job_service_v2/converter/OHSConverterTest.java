@@ -1,6 +1,7 @@
 package uk.gov.ons.fwmt.job_service_v2.converter;
 
 import com.consiliumtechnologies.schemas.mobile._2015._05.optimisemessages.CreateJobRequest;
+import com.consiliumtechnologies.schemas.services.mobile._2009._03.messaging.SendCreateJobRequestMessage;
 import org.junit.Test;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.data.Address;
 import uk.gov.ons.fwmt.fwmtgatewaycommon.data.FWMTCreateJobRequest;
@@ -15,9 +16,8 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class OHSConverterTest {
-
   @Test
-  public void converter() throws CTPException, DatatypeConfigurationException {
+  public void converter() throws CTPException {
 
     FWMTCreateJobRequest fwmtCreateJobRequest = new FWMTCreateJobRequest();
     Address address = new Address();
@@ -39,14 +39,17 @@ public class OHSConverterTest {
     fwmtCreateJobRequest.setAddress(address);
     OHSConverter OHSConverter = new OHSConverter();
 
-    CreateJobRequest converted = OHSConverter.convert(fwmtCreateJobRequest);
+    SendCreateJobRequestMessage message = OHSConverter.convert(fwmtCreateJobRequest);
+    CreateJobRequest request = message.getCreateJobRequest();
 
-    assertThat(converted.getJob().getAdditionalProperties().getAdditionalProperty().get(0).getName()).isEqualTo("caseId");
-    assertThat(converted.getJob().getAdditionalProperties().getAdditionalProperty().get(0).getValue()).isEqualTo("e225b52c-f8c5-4841-86c7-52f568fb5cd8");
-    assertThat(converted.getJob().getAdditionalProperties().getAdditionalProperty().get(1).getName()).isEqualTo("wave");
-    assertThat(converted.getJob().getAdditionalProperties().getAdditionalProperty().get(1).getValue()).isEqualTo("1");
-    assertThat(converted.getJob().getAdditionalProperties().getAdditionalProperty().get(2).getName()).isEqualTo("TLA");
-    assertThat(converted.getJob().getAdditionalProperties().getAdditionalProperty().get(2).getValue()).isEqualTo("OHS");
+    assertThat(request.getJob().getAdditionalProperties().getAdditionalProperty().get(0).getName())
+        .isEqualTo("caseId");
+    assertThat(request.getJob().getAdditionalProperties().getAdditionalProperty().get(0).getValue())
+        .isEqualTo("e225b52c-f8c5-4841-86c7-52f568fb5cd8");
+    assertThat(request.getJob().getAdditionalProperties().getAdditionalProperty().get(1).getName()).isEqualTo("wave");
+    assertThat(request.getJob().getAdditionalProperties().getAdditionalProperty().get(1).getValue()).isEqualTo("1");
+    assertThat(request.getJob().getAdditionalProperties().getAdditionalProperty().get(2).getName()).isEqualTo("TLA");
+    assertThat(request.getJob().getAdditionalProperties().getAdditionalProperty().get(2).getValue()).isEqualTo("OHS");
   }
 
 }
