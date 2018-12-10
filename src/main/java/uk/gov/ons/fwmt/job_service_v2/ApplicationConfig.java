@@ -5,6 +5,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.retry.annotation.EnableRetry;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 /**
  * Main entry point into the TM Gateway
@@ -16,6 +17,7 @@ import org.springframework.retry.annotation.EnableRetry;
 @SpringBootApplication
 @Configuration
 @EnableRetry
+@EnableSwagger2
 public class ApplicationConfig {
 
   public static void main(String[] args) {
