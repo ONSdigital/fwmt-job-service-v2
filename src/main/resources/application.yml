@@ -58,7 +58,7 @@ security.user:
 totalmobile:
   username: "user"
   password: "pass"
-  url: ""
+  url: "http://localhost:9099/tm/Mock"
   default_world: "Default"
   modworld: "MOD WORLD"
   message-queue-path: "/Services/TM/v20/Messaging/MessageQueueWs.asmx"
@@ -69,6 +69,30 @@ totalmobile:
   web:
     login-url: "/WebAdmin/Login"
     save-user-url: "/WebAdmin/Administration/Users/SaveUser"
+
+service:
+  resource:
+    username: "user"
+    password: "password"
+    baseUrl: "http://localhost:9099/resources"
+    operation:
+      users:
+        find:
+          path: "/users/auth/{authNo}"
+        findAlt:
+          path: "/users/alternative/{altAuthNo}"
+      jobs:
+        find:
+          path: "/jobs/{tmJobId}"
+        create:
+          path: "/jobs/"
+        update:
+          path: "/jobs/"
+        sendcsv:
+          path: "/jobFile/upload"
+      fieldPeriods:
+        find:
+          path: "/fieldPeriods/{fieldPeriod}"
 
 rabbitmq:
   initialinterval: 5000
