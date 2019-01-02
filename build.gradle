@@ -35,7 +35,7 @@ description = 'fwmt-job-service'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
-version = '0.0.48-SNAPSHOT'
+version = '0.0.49-SNAPSHOT'
 
 bootJar {
     group = 'uk.gov.ons.fwmt'
